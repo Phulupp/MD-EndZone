@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=117" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=120" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=117" />
-  <link rel="stylesheet" href="css/base/reset.css?v=117" />
-  <link rel="stylesheet" href="css/base/textures.css?v=117" />
-  <link rel="stylesheet" href="css/views/auth.css?v=117" />
-  <link rel="stylesheet" href="css/components/forms.css?v=117" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=117" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=117" />
-  <link rel="stylesheet" href="css/components/cards.css?v=117" />
-  <link rel="stylesheet" href="css/components/badges.css?v=117" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=117" />
-  <link rel="stylesheet" href="css/components/tables.css?v=117" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=117" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=117" />
-  <link rel="stylesheet" href="css/components/modals.css?v=117" />
-  <link rel="stylesheet" href="css/views/admin.css?v=117" />
-  <link rel="stylesheet" href="css/components/toast.css?v=117" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=117" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=117" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=120" />
+  <link rel="stylesheet" href="css/base/reset.css?v=120" />
+  <link rel="stylesheet" href="css/base/textures.css?v=120" />
+  <link rel="stylesheet" href="css/views/auth.css?v=120" />
+  <link rel="stylesheet" href="css/components/forms.css?v=120" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=120" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=120" />
+  <link rel="stylesheet" href="css/components/cards.css?v=120" />
+  <link rel="stylesheet" href="css/components/badges.css?v=120" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=120" />
+  <link rel="stylesheet" href="css/components/tables.css?v=120" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=120" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=120" />
+  <link rel="stylesheet" href="css/components/modals.css?v=120" />
+  <link rel="stylesheet" href="css/views/admin.css?v=120" />
+  <link rel="stylesheet" href="css/components/toast.css?v=120" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=120" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=120" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -360,7 +360,7 @@
             <div class="pat-kopf">
               <div class="pat-suche">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-                <input type="text" id="patienten-search" placeholder="Patient suchen" autocomplete="off" />
+                <input type="text" id="patienten-search" placeholder="Patient oder Inhalt suchen (Name, Befund, Allergie ...)" autocomplete="off" />
               </div>
               <button class="btn btn--primary" id="btn-patient-anlegen">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -385,6 +385,8 @@
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
               <span>Zurück zu Patientenakten</span>
             </button>
+
+            <p class="anwesenheit" id="patient-anwesend" hidden><span class="anwesenheit__punkt"></span><span id="patient-anwesend-text"></span></p>
 
             <div class="patient-seite">
               <div class="md-panel pblatt">
@@ -433,6 +435,11 @@
                     <label for="patient-notfallkontakt-telefon">Telefonnummer</label>
                     <input type="text" id="patient-notfallkontakt-telefon" class="md-input" />
                   </div>
+                </div>
+
+                <div class="konflikt-hinweis" id="patient-konflikt" hidden>
+                  <span id="patient-konflikt-text"></span>
+                  <button type="button" class="konflikt-hinweis__aktion" id="btn-patient-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
                 </div>
 
                 <p class="field-error" id="patient-profil-error" hidden></p>
@@ -574,6 +581,7 @@
           <label for="patient-anlegen-name">Name</label>
           <input type="text" id="patient-anlegen-name" class="md-input" placeholder="Vor- und Nachname" autocomplete="off" />
         </div>
+        <div class="aehnlich" id="patient-anlegen-aehnlich" hidden></div>
         <p class="field-error" id="patient-anlegen-error" hidden></p>
       </div>
       <div class="modal__footer">
@@ -599,6 +607,12 @@
       <div class="modal__body">
         <input type="hidden" id="akte-editing-id" value="" />
         <input type="hidden" id="akte-form-patient-id" value="" />
+
+        <p class="anwesenheit" id="akte-anwesend" hidden><span class="anwesenheit__punkt"></span><span id="akte-anwesend-text"></span></p>
+        <div class="konflikt-hinweis" id="akte-konflikt" hidden>
+          <span id="akte-konflikt-text"></span>
+          <button type="button" class="konflikt-hinweis__aktion" id="btn-akte-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
+        </div>
 
         <div class="akte-feldzeile">
           <label for="akte-datum">Datum &amp; Uhrzeit</label>
@@ -656,6 +670,8 @@
       </div>
       <div class="modal__footer">
         <button class="btn btn--danger" id="btn-akte-loeschen" style="margin-right: auto;">Löschen</button>
+        <button class="btn btn--ghost" id="btn-akte-kopieren">Kopieren</button>
+        <button class="btn btn--ghost" id="btn-akte-drucken">Drucken</button>
         <button class="btn btn--ghost" id="btn-akte-bearbeiten">Bearbeiten</button>
         <button class="btn btn--ghost" data-close-modal="modal-akte-detail">Schließen</button>
       </div>
@@ -785,22 +801,22 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=117"></script>
-  <script defer src="js/core/config.js?v=117"></script>
-  <script defer src="js/core/state.js?v=117"></script>
-  <script defer src="js/core/dom.js?v=117"></script>
-  <script defer src="js/core/firebase-init.js?v=117"></script>
-  <script defer src="js/core/utils.js?v=117"></script>
-  <script defer src="js/ui/modals.js?v=117"></script>
-  <script defer src="js/ui/nav.js?v=117"></script>
-  <script defer src="js/ui/presence.js?v=117"></script>
-  <script defer src="js/views/startseite.js?v=117"></script>
-  <script defer src="js/views/patientenakten.js?v=117"></script>
-  <script defer src="js/views/beispiele.js?v=117"></script>
-  <script defer src="js/views/einstellungen.js?v=117"></script>
-  <script defer src="js/views/admin.js?v=117"></script>
-  <script defer src="js/ui/version-check.js?v=117"></script>
-  <script defer src="js/main.js?v=117"></script>
-  <script type="module" src="js/auth.js?v=117"></script>
+  <script defer src="js/firebase-config.js?v=120"></script>
+  <script defer src="js/core/config.js?v=120"></script>
+  <script defer src="js/core/state.js?v=120"></script>
+  <script defer src="js/core/dom.js?v=120"></script>
+  <script defer src="js/core/firebase-init.js?v=120"></script>
+  <script defer src="js/core/utils.js?v=120"></script>
+  <script defer src="js/ui/modals.js?v=120"></script>
+  <script defer src="js/ui/nav.js?v=120"></script>
+  <script defer src="js/ui/presence.js?v=120"></script>
+  <script defer src="js/views/startseite.js?v=120"></script>
+  <script defer src="js/views/patientenakten.js?v=120"></script>
+  <script defer src="js/views/beispiele.js?v=120"></script>
+  <script defer src="js/views/einstellungen.js?v=120"></script>
+  <script defer src="js/views/admin.js?v=120"></script>
+  <script defer src="js/ui/version-check.js?v=120"></script>
+  <script defer src="js/main.js?v=120"></script>
+  <script type="module" src="js/auth.js?v=120"></script>
 </body>
 </html>

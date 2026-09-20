@@ -23,6 +23,12 @@
     el.viewTitle.textContent = meta.title;
     el.viewSubtitle.textContent = meta.subtitle;
 
+    // Für "X sieht diesen Patienten gerade an" (siehe js/ui/presence.js).
+    if (typeof setzePraesenzPatient === "function") {
+      setzePraesenzPatient(view === "patient-detail" ? offenerPatientId : null);
+    }
+    if (typeof aktualisiereAnwesenheit === "function") aktualisiereAnwesenheit();
+
     window.scrollTo({ top: 0 });
   }
 

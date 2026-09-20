@@ -97,11 +97,6 @@
 
 .table-card {
   position: relative;
-  background: linear-gradient(165deg, var(--leather-700) 0%, var(--leather-800) 55%, var(--leather-800) 100%);
-  border: 1px solid var(--leather-edge);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card), inset 0 -16px 26px rgba(0, 0, 0, 0.16);
-  padding: 4px;
   margin-bottom: 20px;
 }
 
@@ -126,10 +121,9 @@
   align-items: center;
   gap: 10px;
   background: var(--leather-800);
-  border: 1.5px solid var(--leather-edge);
-  border-radius: var(--radius-md);
-  padding: 11px 16px;
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--leather-edge-soft);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
   flex: 1;
   min-width: 220px;
 }

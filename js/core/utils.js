@@ -75,5 +75,5 @@
   function rangBadgeHtml(rolle) {
     if (!rolle) return "";
     const farbe = RANG_AKZENTE[rolle] || RANG_AKZENT_STANDARD;
-    return `<span class="badge badge--outline" style="background:${farbe}26;color:${farbe};border-color:${farbe};">${escapeHtml(rolle)}</span>`;
+    return `<span class="badge" style="color:${farbe};">${escapeHtml(rolle)}</span>`;
   }

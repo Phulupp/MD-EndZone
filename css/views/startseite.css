@@ -1,96 +1,117 @@
 /* --------------------------------------------------------------------------
    17. Startseite
-   -------------------------------------------------------------------------- */
+   --------------------------------------------------------------------------
+   Kein Kachel-Raster: Begrüßung, zwei große Kennzahlen und zwei Einstiegs-
+   zeilen, die nur durch Haarlinien getrennt sind. */
 .startseite-hero {
-  padding: 36px 4px 26px;
+  padding: 4px 0 40px;
 }
 
 .startseite-hero__eyebrow {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--wood-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .startseite-hero__name {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
   margin-top: 6px;
 }
 
 .startseite-stats {
   display: flex;
-  gap: 40px;
-  margin: 4px 4px 32px;
-  padding-bottom: 26px;
-  border-bottom: 1px solid var(--leather-edge);
+  flex-wrap: wrap;
+  gap: 20px 72px;
+  margin: 0 0 48px;
 }
 
 .startseite-stat {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .startseite-stat__wert {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 44px;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
   color: var(--wood-text);
   font-variant-numeric: tabular-nums;
 }
 
 .startseite-stat__label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 13.5px;
   color: var(--wood-text-soft);
 }
 
 .startseite-kacheln {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--leather-edge);
 }
 
 .startseite-kachel {
-  display: block;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  column-gap: 24px;
+  align-items: center;
   width: 100%;
   text-align: left;
-  padding: 24px 26px;
-  background: var(--leather-700);
-  border: 1px solid var(--leather-edge);
-  border-radius: var(--radius-lg);
+  padding: 28px 14px;
+  background: none;
+  border-bottom: 1px solid var(--leather-edge-soft);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  transition: background 0.12s ease;
 }
 
 .startseite-kachel:hover {
-  border-color: var(--brass);
-  background: var(--leather-600);
-  transform: translateY(-2px);
+  background: rgba(130, 170, 190, 0.06);
 }
 
 .startseite-kachel__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
-  background: var(--brass-soft);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: flex;
+  color: var(--wood-text-soft);
+  transition: color 0.12s ease;
+}
+
+.startseite-kachel:hover .startseite-kachel__icon {
   color: var(--brass-bright);
-  margin-bottom: 16px;
 }
 
 .startseite-kachel h3 {
-  font-size: 15px;
-  margin-bottom: 6px;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .startseite-kachel p {
-  font-size: 12.5px;
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 14.5px;
   color: var(--wood-text-muted);
-  line-height: 1.6;
+  line-height: 1.5;
+}
+
+.startseite-kachel::after {
+  content: "\2192";
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  font-size: 20px;
+  color: var(--wood-text-placeholder);
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.startseite-kachel:hover::after {
+  color: var(--brass-bright);
+  transform: translateX(4px);
 }

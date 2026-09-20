@@ -9,11 +9,10 @@
    Allergiehinweis. */
 
 /* --- Gemeinsame Bausteine ------------------------------------------------ */
+/* Kein Kasten: Bereiche werden nur durch Abstand, Trennlinien und
+   Schrifthierarchie gegliedert. */
 .md-panel {
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge-soft);
-  border-radius: var(--radius-lg);
-  padding: 32px 34px;
+  padding: 0;
 }
 
 .md-feld {
@@ -61,29 +60,21 @@
   box-shadow: 0 1px 0 var(--brass-bright);
 }
 
+/* Mehrzeilige Felder wie einzeilige: nur eine Unterkante, wachsen mit dem
+   Text mit (siehe passeTextareasAn in js/views/patientenakten.js). */
 textarea.md-input {
-  min-height: 72px;
-  padding: 12px 14px;
-  background: rgba(130, 170, 190, 0.05);
-  border: 1px solid var(--leather-edge-soft);
-  border-radius: 6px;
+  min-height: 40px;
   line-height: 1.55;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
 }
 
-textarea.md-input:hover {
-  border-color: rgba(130, 170, 190, 0.34);
-}
-
-textarea.md-input:focus {
-  border-color: var(--brass-bright);
-  box-shadow: none;
-}
-
-/* Allergiefeld: sobald etwas eingetragen ist, rote Kante + getönter Grund. */
-.md-feld--warn textarea.md-input:not(:placeholder-shown) {
+/* Allergiefeld: nur wenn wirklich etwas Relevantes eingetragen ist (nicht
+   bei "/", "keine" o. ä., siehe hatEintrag), bekommt es eine rote Kante. */
+.md-feld--warn.md-feld--aktiv textarea.md-input {
+  padding-left: 12px;
   border-left: 3px solid var(--status-danger-bright);
-  background: var(--status-danger-soft);
+  border-bottom-color: transparent;
 }
 
 .md-grid-2 {
@@ -203,19 +194,50 @@ textarea.md-input:focus {
 }
 
 .pat-zeile__name {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: block;
   min-width: 0;
   font-size: 15px;
   font-weight: 600;
   color: var(--wood-text);
 }
 
-.pat-zeile__name > span:first-child {
+.pat-zeile__titel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pat-zeile__titel > span:first-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Fundstelle bei einer Inhaltssuche: wo steht der Suchbegriff. */
+.pat-zeile__treffer {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--wood-text-muted);
+}
+
+.pat-zeile__treffer-ort {
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wood-text-soft);
+}
+
+.pat-zeile mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: rgba(217, 68, 82, 0.28);
+  color: #ffffff;
 }
 
 .pat-zeile__warn {
@@ -286,14 +308,32 @@ textarea.md-input:focus {
 
 .patient-seite {
   display: grid;
-  grid-template-columns: minmax(360px, 440px) 1fr;
-  gap: 28px;
+  grid-template-columns: minmax(360px, 420px) 1fr;
   align-items: start;
+}
+
+.pblatt {
+  padding-right: 48px;
+  border-right: 1px solid var(--leather-edge-soft);
+}
+
+.pakten {
+  padding-left: 52px;
 }
 
 @media (max-width: 1000px) {
   .patient-seite {
     grid-template-columns: 1fr;
+  }
+  .pblatt {
+    padding-right: 0;
+    padding-bottom: 36px;
+    border-right: none;
+    border-bottom: 1px solid var(--leather-edge-soft);
+  }
+  .pakten {
+    padding-left: 0;
+    padding-top: 36px;
   }
 }
 
@@ -419,34 +459,42 @@ textarea.md-input:focus {
   content: "";
   position: absolute;
   left: 5px;
-  top: 16px;
-  bottom: 16px;
+  top: 14px;
+  bottom: 6px;
   width: 1px;
   background: var(--leather-edge);
 }
 
+/* Einträge ohne Kasten: getrennt durch Abstand + Haarlinie. Beim Überfahren
+   wird nur die Akte-Nummer unterstrichen. */
 .akte-eintrag {
   position: relative;
-  margin-bottom: 10px;
-  padding: 22px 26px 24px;
-  background: rgba(130, 170, 190, 0.04);
-  border: 1px solid var(--leather-edge-soft);
-  border-radius: var(--radius-lg);
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--leather-edge-soft);
   cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
-.akte-eintrag:hover,
+.akte-eintrag:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.akte-eintrag:hover .akte-eintrag__nr,
+.akte-eintrag:focus-visible .akte-eintrag__nr {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .akte-eintrag:focus-visible {
   outline: none;
-  background: var(--leather-700);
-  border-color: rgba(130, 170, 190, 0.34);
 }
 
 .akte-eintrag__punkt {
   position: absolute;
   left: -32px;
-  top: 27px;
+  top: 8px;
   width: 11px;
   height: 11px;
   box-sizing: border-box;
@@ -462,8 +510,8 @@ textarea.md-input:focus {
 
 .akte-eintrag__loeschen {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: -4px;
+  right: 0;
   width: 32px;
   height: 32px;
   display: flex;
@@ -529,8 +577,6 @@ textarea.md-input:focus {
   grid-template-columns: 150px minmax(0, 1fr);
   gap: 12px 24px;
   margin: 0;
-  padding-top: 16px;
-  border-top: 1px solid var(--leather-edge-soft);
 }
 
 .akte-eintrag__felder dt {
@@ -730,9 +776,25 @@ textarea.md-input:focus {
   color: var(--wood-text-placeholder);
 }
 
+/* Im Formular zum Schreiben längerer Texte bleibt eine sichtbare
+   Schreibfläche - hier ist ein Feld mit Grund sinnvoll. */
 .akte-feldzeile textarea.md-input {
   min-height: 96px;
+  padding: 12px 14px;
   font-size: 15.5px;
+  overflow: hidden;
+  background: rgba(130, 170, 190, 0.05);
+  border: 1px solid var(--leather-edge-soft);
+  border-radius: 6px;
+}
+
+.akte-feldzeile textarea.md-input:hover {
+  border-color: rgba(130, 170, 190, 0.34);
+}
+
+.akte-feldzeile textarea.md-input:focus {
+  border-color: var(--brass-bright);
+  box-shadow: none;
 }
 
 .akte-feldzeile input.md-input {
@@ -754,5 +816,162 @@ textarea.md-input:focus {
   }
   .akte-blatt__kopf h3 {
     font-size: 28px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18d. Kollisionsschutz, Ähnlichkeitsliste, Druck
+   -------------------------------------------------------------------------- */
+.anwesenheit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  font-size: 13.5px;
+  color: var(--wood-text-muted);
+}
+
+.anwesenheit[hidden] {
+  display: none;
+}
+
+.modal--akte .anwesenheit {
+  margin: 18px 0 4px;
+}
+
+.anwesenheit__punkt {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--status-done);
+  animation: online-dot-puls 2.4s ease-in-out infinite alternate;
+}
+
+.konflikt-hinweis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+  margin-top: 22px;
+  padding: 12px 0 12px 14px;
+  border-left: 3px solid var(--status-open);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--wood-text);
+}
+
+.konflikt-hinweis[hidden] {
+  display: none;
+}
+
+.modal--akte .konflikt-hinweis {
+  margin: 14px 0 4px;
+}
+
+.konflikt-hinweis__aktion {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brass-bright);
+  white-space: nowrap;
+}
+
+.konflikt-hinweis__aktion:hover {
+  text-decoration: underline;
+}
+
+.konflikt-hinweis__aktion[hidden] {
+  display: none;
+}
+
+.aehnlich {
+  margin-top: 18px;
+}
+
+.aehnlich[hidden] {
+  display: none;
+}
+
+.aehnlich__titel {
+  margin-bottom: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--status-open);
+}
+
+.aehnlich__titel--warn {
+  color: var(--status-danger-bright);
+}
+
+.aehnlich__zeile {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.aehnlich__zeile:hover .aehnlich__name {
+  color: var(--brass-bright);
+}
+
+.aehnlich__name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--wood-text);
+}
+
+.aehnlich__info {
+  font-size: 12.5px;
+  color: var(--wood-text-soft);
+}
+
+/* Drucken: nur das geöffnete Akte-Fenster, hell und ohne Bedienelemente. */
+@media print {
+  body > *:not(#modal-akte-detail) {
+    display: none !important;
+  }
+
+  #modal-akte-detail,
+  #modal-akte-detail .modal.modal--akte {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+    opacity: 1 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  #modal-akte-detail * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #999999 !important;
+    box-shadow: none !important;
+  }
+
+  #modal-akte-detail .modal__footer,
+  #modal-akte-detail .modal__close {
+    display: none !important;
+  }
+
+  #modal-akte-detail .modal__body {
+    overflow: visible !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  #modal-akte-detail .akte-abschnitt {
+    break-inside: avoid;
   }
 }

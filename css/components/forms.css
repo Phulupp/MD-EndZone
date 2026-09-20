@@ -2,12 +2,10 @@
    6. Formularfelder
    -------------------------------------------------------------------------- */
 .field-label {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--wood-text-muted);
-  margin: 12px 0 6px;
+  margin: 16px 0 6px;
   display: block;
 }
 
@@ -49,36 +47,146 @@
 
 .field-input {
   width: 100%;
-  border: 1.5px solid #2a4048;
-  background: var(--leather-900);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 10px 13px;
-  font-size: 13.5px;
+  border: 1px solid var(--leather-edge-soft);
+  background: rgba(130, 170, 190, 0.05);
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: 14px;
   font-family: var(--font-body);
   color: var(--wood-text);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .field-input::placeholder {
   color: var(--wood-text-placeholder);
-  font-style: italic;
 }
 
 .field-input:hover {
-  border-color: #3c5a64;
+  border-color: rgba(130, 170, 190, 0.34);
 }
 
 .field-input:focus {
   outline: none;
-  border-color: var(--brass);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 0 3px var(--brass-soft);
+  border-color: var(--brass-bright);
 }
 
 .field-textarea {
   resize: vertical;
   min-height: 70px;
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+/* Verstecktes Original-<select> hinter dem Custom-Dropdown (siehe
+   erzeugeCustomSelect in js/core/dom.js): bleibt als Wahrheitsquelle im DOM,
+   ist aber nicht sichtbar/klickbar. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+select.field-input {
+  color-scheme: dark;
+}
+
+/* Eigenes Dropdown: der Trigger sieht aus wie ein normales Feld, die
+   aufgeklappte Liste ist fixiert positioniert (Position/Breite per JS, das
+   Panel hängt dafür an <body>) und wird deshalb nie von scrollenden
+   Modal-Bereichen abgeschnitten. */
+.custom-select {
+  position: relative;
+}
+
+.custom-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--wood-text);
+  background: rgba(130, 170, 190, 0.05);
+  border: 1px solid var(--leather-edge-soft);
+  border-radius: 6px;
+  text-align: left;
+  transition: border-color 0.15s ease;
+}
+
+.custom-select__trigger:hover {
+  border-color: rgba(130, 170, 190, 0.34);
+}
+
+.custom-select__trigger--offen {
+  border-color: var(--brass-bright);
+}
+
+.custom-select__chevron {
+  color: var(--wood-text-muted);
+  font-size: 12px;
+  transition: transform 0.15s ease;
+}
+
+.custom-select__trigger--offen .custom-select__chevron {
+  transform: rotate(180deg);
+  color: var(--brass-bright);
+}
+
+.custom-select__trigger--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.custom-select__panel {
+  position: fixed;
+  z-index: 500;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--leather-900);
+  border: 1px solid var(--leather-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  scrollbar-width: thin;
+  scrollbar-color: var(--leather-edge) transparent;
+}
+
+.custom-select__panel[hidden] {
+  display: none;
+}
+
+.custom-select__option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--wood-text);
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+.custom-select__option:hover {
+  background: rgba(130, 170, 190, 0.1);
+}
+
+.custom-select__option--aktiv {
+  color: var(--brass-bright);
+  font-weight: 700;
+}
+
+.custom-select__leer {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--wood-text-soft);
 }
 
 .field-error {

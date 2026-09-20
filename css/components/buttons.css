@@ -23,7 +23,6 @@
   background: var(--brass);
   color: #ffffff;
   border: 1px solid var(--brass-deep);
-  box-shadow: var(--shadow-card);
 }
 
 .btn--primary:hover {

@@ -79,6 +79,9 @@
     offenerPatientId = null;
     offeneAkteDetailId = null;
     offenerPatientGesehen = false;
+    profilBasisStempel = 0;
+    profilGeaendert = false;
+    akteBasisStempel = 0;
   }
 
   window.addEventListener("hof:auth-approved", (event) => starteApp(event.detail));

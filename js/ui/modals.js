@@ -21,6 +21,8 @@
     const overlay = document.getElementById(id);
     if (overlay) overlay.classList.remove("modal-overlay--visible");
     offeneModalStapel = offeneModalStapel.filter((x) => x !== id);
+    // Akte-Formular zu = ich bearbeite sie nicht mehr (siehe presence.js).
+    if (id === "modal-akte-form" && typeof setzePraesenzAkte === "function") setzePraesenzAkte(null);
   }
 
   document.querySelectorAll("[data-open-modal]").forEach((btn) => {

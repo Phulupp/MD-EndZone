@@ -1,16 +1,34 @@
 /* --------------------------------------------------------------------------
    19. Beispiele (Behandlungsleitfäden)
-   -------------------------------------------------------------------------- */
+   --------------------------------------------------------------------------
+   Lesbare Artikel statt Karten: Titel, Text, Haarlinie dazwischen. */
+.beispiel-karte {
+  margin-bottom: 0;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.beispiel-karte:first-child {
+  padding-top: 8px;
+}
+
+.beispiel-karte:last-child {
+  border-bottom: none;
+}
+
 .beispiel-karte__kopf {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .beispiel-karte__kopf h3 {
   flex: 1;
   margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .beispiel-karte__pfeile {
@@ -27,8 +45,9 @@
 }
 
 .beispiel-karte__text {
+  max-width: 780px;
   white-space: pre-wrap;
-  font-size: 13.5px;
-  line-height: 1.6;
+  font-size: 15.5px;
+  line-height: 1.7;
   color: var(--wood-text);
 }

@@ -36,21 +36,6 @@
   gap: 13px;
 }
 
-/* Dezenter Rot-Schein hinter dem Icon - negatives z-index, damit er
-   garantiert hinter dem Icon bleibt. */
-.sidebar__brand::before {
-  content: "";
-  position: absolute;
-  left: 42px;
-  top: 42px;
-  width: 84px;
-  height: 84px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--brass-soft) 0%, rgba(217, 68, 82, 0) 72%);
-  pointer-events: none;
-  z-index: -1;
-}
-
 /* Weißer Kreis mit rotem Puls-Icon - bewusste Anlehnung an das klassische
    Rotkreuz-Symbol (rot auf weiß statt umgekehrt), damit "mehr Weiß" nicht
    nur Text-/Randfarbe bleibt, sondern an einer prominenten Stelle wirklich
@@ -66,7 +51,6 @@
   background: #f4f7f8;
   border: 2px solid var(--brass-bright);
   color: var(--brass-bright);
-  box-shadow: var(--shadow-card), 0 0 0 4px var(--brass-soft);
 }
 
 .sidebar__brand-icon svg {
@@ -147,8 +131,7 @@
 
 .sidebar__item:hover {
   color: var(--wood-text);
-  background: var(--leather-700);
-  transform: translateX(2px);
+  background: rgba(130, 170, 190, 0.08);
 }
 
 .sidebar__item:hover svg {
@@ -156,14 +139,9 @@
 }
 
 .sidebar__item--active {
-  color: #eaf4f7;
-  background: var(--leather-600);
+  color: #ffffff;
+  background: rgba(217, 68, 82, 0.1);
   border-left-color: var(--brass-bright);
-  box-shadow: 0 1px 0 rgba(180, 210, 225, 0.05) inset, 0 4px 10px rgba(0, 0, 0, 0.22);
-}
-
-.sidebar__item--active:hover {
-  transform: none;
 }
 
 .sidebar__item--active svg {
@@ -315,17 +293,14 @@
   color: var(--wood-text-muted);
   padding: 9px 16px;
   border-radius: 999px;
-  background: linear-gradient(165deg, var(--leather-700) 0%, var(--leather-800) 100%);
-  border: 1.5px solid var(--leather-edge);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(180, 210, 225, 0.05) inset;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, color 0.15s ease;
+  background: transparent;
+  border: 1px solid var(--leather-edge);
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .online-widget__btn:hover {
   color: var(--wood-text);
-  border-color: var(--brass);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(180, 210, 225, 0.07) inset, 0 0 0 3px var(--brass-soft);
-  transform: translateY(-1px);
+  border-color: rgba(130, 170, 190, 0.45);
 }
 
 .online-widget__btn #online-count {
@@ -359,11 +334,11 @@
   top: calc(100% + 8px);
   right: 0;
   width: 210px;
-  background: linear-gradient(165deg, var(--leather-700) 0%, var(--leather-800) 30%, var(--leather-800) 100%);
-  border: 1.5px solid var(--leather-edge);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-raised), 0 1px 0 rgba(180, 210, 225, 0.05) inset;
-  padding: 12px;
+  background: var(--leather-800);
+  border: 1px solid var(--leather-edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  padding: 14px;
   z-index: 50;
 }
 
@@ -470,28 +445,30 @@
 /* Tabs (Verwaltung: Benutzer/Aktivitäts-Log) */
 .tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 22px;
+  gap: 28px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
+  border-bottom: 1px solid var(--leather-edge-soft);
 }
 
+/* Reiter als Textzeile mit Unterstreichung statt Pillen. */
 .tabs__tab {
-  padding: 9px 18px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 700;
+  padding: 10px 0;
+  margin-bottom: -1px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--wood-text-muted);
-  background: rgba(130, 170, 190, 0.1);
-  border: 1px solid transparent;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .tabs__tab:hover {
-  border-color: var(--leather-edge);
+  color: var(--wood-text);
 }
 
 .tabs__tab--active {
-  background: var(--wood-800);
-  color: var(--brass-bright);
-  border-color: var(--wood-line);
+  color: var(--wood-text);
+  border-bottom-color: var(--brass-bright);
 }

@@ -29,6 +29,69 @@
   // ist noch nicht angekommen", z. B. direkt nach dem Anlegen).
   let offenerPatientGesehen = false;
 
+  // Ist in einem Freitextfeld wirklich etwas Relevantes eingetragen? Reine
+  // Platzhalter ("/", "-", "keine", "nein", "keine bekannt" ...) zählen als
+  // leer - sonst würde z. B. "/" als Allergie gewertet und markiert.
+  function hatEintrag(wert) {
+    const t = (wert || "").trim().toLowerCase();
+    if (!t) return false;
+    if (/^[\s\/\\\-–—_.,;:?!*+#~]+$/.test(t)) return false;
+    return !/^(keine?|kein|nein|nix|nichts|n\/?a|unbekannt|nicht bekannt)( (bekannt|erfasst|vorhanden|angegeben|allergien?|vorerkrankungen?))*\.?$/.test(t);
+  }
+
+  // Textfelder (.md-input) wachsen mit ihrem Inhalt statt zu scrollen. Muss
+  // bei sichtbarem Feld laufen (versteckt ist scrollHeight 0).
+  function passeTextareasAn(container) {
+    (container || document).querySelectorAll("textarea.md-input").forEach((ta) => {
+      ta.style.height = "auto";
+      if (ta.scrollHeight > 0) ta.style.height = `${ta.scrollHeight + (ta.offsetHeight - ta.clientHeight)}px`;
+    });
+  }
+
+  document.addEventListener("input", (event) => {
+    const ta = event.target;
+    if (ta && ta.matches && ta.matches("textarea.md-input")) passeTextareasAn(ta.parentElement);
+  });
+
+  function aktualisiereAllergieMarkierung() {
+    if (!el.patientAllergien) return;
+    const feld = el.patientAllergien.closest(".md-feld");
+    if (feld) feld.classList.toggle("md-feld--aktiv", hatEintrag(el.patientAllergien.value));
+  }
+
+  if (el.patientAllergien) el.patientAllergien.addEventListener("input", aktualisiereAllergieMarkierung);
+
+  // --- Text-Hilfen für Suche und Duplikat-Erkennung ------------------------
+  // "falte": Kleinschreibung + Akzente weg ("Müller" -> "muller"), Länge bleibt
+  // dabei gleich, damit Fundstellen im Originaltext markiert werden können.
+  function falte(text) {
+    return (text || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
+  }
+
+  function normalisiere(text) {
+    return falte(text).replace(/\s+/g, " ").trim();
+  }
+
+  // Editierabstand inkl. Buchstabendreher ("Adrain" -> "Adrian" = 1). Namen
+  // sind kurz, daher genügt die einfache Matrix.
+  function editDistanz(a, b) {
+    if (a === b) return 0;
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...new Array(b.length).fill(0)]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  function namenAlsText(namen) {
+    if (namen.length <= 1) return namen[0] || "";
+    return `${namen.slice(0, -1).join(", ")} und ${namen[namen.length - 1]}`;
+  }
+
   // Default-Wert für das <input type="datetime-local"> beim Anlegen einer
   // neuen Akte - "jetzt", auf die Minute genau.
   function jetzigerZeitpunkt() {
@@ -58,11 +121,12 @@
         (snap) => {
           akten = [];
           snap.forEach((docSnap) => akten.push({ id: docSnap.id, ...docSnap.data() }));
-          // Nur Anzeige-Listen werden live nachgezogen (kein Eingabeformular
-          // -> nichts, was dabei überschrieben werden könnte).
+          // Anzeige-Listen werden live nachgezogen; ein offenes Akte-Formular
+          // wird nie überschrieben, nur auf fremde Änderungen hingewiesen.
           renderPatientenListe();
           if (offenerPatientId) renderPatientDetailAkten(offenerPatientId);
           renderStartseiteStats();
+          pruefeAkteKonflikt();
         },
         (fehler) => console.error("Akten konnten nicht geladen werden:", fehler)
       );
@@ -84,16 +148,16 @@
           patienten.sort((a, b) => (a.name || "").localeCompare(b.name || "", "de", { sensitivity: "base" }));
           renderPatientenListe();
           renderStartseiteStats();
-          // Das Profilformular der gerade offenen Patienten-Seite wird hier
-          // bewusst NICHT neu befüllt: sonst würde eine Änderung eines
-          // anderen Spielers die noch ungespeicherte Eingabe des aktuellen
-          // Nutzers mitten im Tippen überschreiben. Nur der Titel und die
-          // "zuletzt bearbeitet"-Zeile laufen live mit.
+          // Das Profilformular der gerade offenen Patienten-Seite wird nie
+          // über ungespeicherte Eingaben hinweg überschrieben (siehe
+          // pruefeProfilKonflikt): hat der Nutzer noch nichts getippt, wird es
+          // still aktualisiert, sonst erscheint ein Hinweis mit Wahl.
           if (offenerPatientId) {
             const p = patienten.find((x) => x.id === offenerPatientId);
             if (p) {
               offenerPatientGesehen = true;
               aktualisiereProfilKopf(p);
+              pruefeProfilKonflikt(p);
             } else if (offenerPatientGesehen) {
               // Ein Admin hat den Patienten gelöscht, während er hier offen war.
               offenerPatientId = null;
@@ -108,15 +172,71 @@
   }
 
   // --- Patientenliste + Suche ----------------------------------------------
+  // Durchsucht nicht nur den Namen, sondern alle Profilfelder und den Inhalt
+  // aller Akten eines Patienten. Jedes Suchwort muss irgendwo vorkommen
+  // (Groß-/Kleinschreibung und Akzente egal). Treffer im Namen stehen oben;
+  // bei Treffern nur im Inhalt zeigt die Zeile zusätzlich die Fundstelle.
+  function patientFelder(p) {
+    const felder = [
+      ["Geburtsdatum", p.geburtsdatum],
+      ["Telefon", p.telefonnummer],
+      ["Allergien", p.allergien],
+      ["Vorerkrankungen", p.vorerkrankungen],
+      ["Hinweise", p.besondereHinweise],
+      ["Notfallkontakt", p.notfallkontakt],
+      ["Notfallkontakt Telefon", p.notfallkontaktTelefon],
+    ].map(([ort, text]) => ({ ort, text: text || "" }));
+    patientAkten(p.id).forEach((a, index) => {
+      [
+        ["Behandlungsgrund", a.behandlungsgrund],
+        ["Befund", a.befund],
+        ["Behandlung", a.behandlung],
+        ["Bemerkungen", a.bemerkungen],
+      ].forEach(([feld, text]) => felder.push({ ort: `Akte ${index + 1} · ${feld}`, text: text || "" }));
+    });
+    return felder;
+  }
+
+  function sucheInPatient(p, tokens) {
+    const name = normalisiere(p.name);
+    const felder = patientFelder(p);
+    const gefaltet = felder.map((f) => falte(f.text));
+    if (!tokens.every((t) => name.includes(t) || gefaltet.some((g) => g.includes(t)))) return null;
+    if (tokens.every((t) => name.includes(t))) return { imName: true, fundstelle: null };
+    const token = tokens.find((t) => !name.includes(t));
+    const index = gefaltet.findIndex((g) => g.includes(token));
+    return {
+      imName: false,
+      fundstelle: index < 0 ? null : { ort: felder[index].ort, text: felder[index].text, start: gefaltet[index].indexOf(token), laenge: token.length },
+    };
+  }
+
+  function fundstelleHtml(f) {
+    const von = Math.max(0, f.start - 36);
+    const bis = Math.min(f.text.length, f.start + f.laenge + 64);
+    const flach = (s) => escapeHtml(s.replace(/\s+/g, " "));
+    return `<span class="pat-zeile__treffer"><span class="pat-zeile__treffer-ort">${escapeHtml(f.ort)}</span>${von > 0 ? "…" : ""}${flach(
+      f.text.slice(von, f.start)
+    )}<mark>${flach(f.text.slice(f.start, f.start + f.laenge))}</mark>${flach(f.text.slice(f.start + f.laenge, bis))}${bis < f.text.length ? "…" : ""}</span>`;
+  }
+
+  // Liefert [{ p, treffer }] - treffer ist null ohne Suchbegriff.
   function gefiltertPatienten() {
-    const begriff = patientenSuche.trim().toLowerCase();
-    if (!begriff) return patienten;
-    return patienten.filter((p) => (p.name || "").toLowerCase().includes(begriff));
+    const tokens = normalisiere(patientenSuche).split(" ").filter(Boolean);
+    if (!tokens.length) return patienten.map((p) => ({ p, treffer: null }));
+    const ergebnisse = [];
+    patienten.forEach((p) => {
+      const treffer = sucheInPatient(p, tokens);
+      if (treffer) ergebnisse.push({ p, treffer });
+    });
+    // Sortierung ist stabil: innerhalb der Gruppen bleibt es alphabetisch.
+    return ergebnisse.sort((a, b) => Number(b.treffer.imName) - Number(a.treffer.imName));
   }
 
   function renderPatientenListe() {
     if (!el.patientenListe) return;
     const liste = gefiltertPatienten();
+    const suche = patientenSuche.trim() !== "";
     el.patientenEmpty.hidden = patienten.length !== 0;
     el.patientenNoResults.hidden = !(patienten.length > 0 && liste.length === 0);
 
@@ -125,17 +245,18 @@
       return;
     }
 
-    // Register mit Buchstabengruppen (die Liste kommt bereits nach Name
-    // sortiert aus Firestore, siehe startePatientenListener).
+    // Register mit Buchstabengruppen (die Liste ist bereits alphabetisch
+    // sortiert, siehe startePatientenListener) - bei einer Suche ohne
+    // Gruppen, damit die Treffer-Reihenfolge (Name zuerst) sichtbar bleibt.
     let html = `<div class="pat-spaltenkopf">
         <span>Patient</span><span>Geburtsdatum</span><span>Akten</span><span>Letzte Behandlung</span><span></span>
       </div>`;
     let aktuellerBuchstabe = "";
-    liste.forEach((p) => {
+    liste.forEach(({ p, treffer }) => {
       // Diakritika entfernen, damit Ä/Ö/Ü in der Gruppe A/O/U landen.
       const erster = (p.name || "").trim().normalize("NFD").charAt(0).toLocaleUpperCase("de");
       const buchstabe = /\p{L}/u.test(erster) ? erster : "#";
-      if (buchstabe !== aktuellerBuchstabe) {
+      if (!suche && buchstabe !== aktuellerBuchstabe) {
         aktuellerBuchstabe = buchstabe;
         html += `<div class="pat-gruppe">${escapeHtml(buchstabe)}</div>`;
       }
@@ -143,8 +264,11 @@
       const letzte = seine.reduce((max, a) => (a.datum && a.datum > max ? a.datum : max), "");
       html += `<div class="pat-zeile" data-patient-oeffnen="${p.id}">
           <span class="pat-zeile__name">
-            <span>${escapeHtml(p.name)}</span>
-            ${p.allergien ? '<span class="pat-zeile__warn">Allergien</span>' : ""}
+            <span class="pat-zeile__titel">
+              <span>${escapeHtml(p.name)}</span>
+              ${hatEintrag(p.allergien) ? '<span class="pat-zeile__warn">Allergien</span>' : ""}
+            </span>
+            ${treffer && treffer.fundstelle ? fundstelleHtml(treffer.fundstelle) : ""}
           </span>
           <span class="pat-zeile__geb">${escapeHtml(p.geburtsdatum || "—")}</span>
           <span class="pat-zeile__akten">${seine.length}</span>
@@ -171,11 +295,79 @@
   }
 
   // --- Patient anlegen -------------------------------------------------
+  // Duplikat-Schutz: Beim Tippen werden bereits vorhandene, ähnliche Namen
+  // angezeigt (auch vertauschte Reihenfolge, Tippfehler, angefangene Namen).
+  // Ein exakt gleicher Name wird erst nach ausdrücklicher Bestätigung ("Trotzdem
+  // anlegen") angelegt - zwei Patienten mit demselben Namen kann es im RP
+  // durchaus geben, aber nicht versehentlich.
+  function aehnlichePatienten(name) {
+    const q = normalisiere(name);
+    if (q.length < 3) return [];
+    const qt = q.split(" ");
+    const passt = (von, gegen) =>
+      von.every((t) => gegen.some((g) => g === t || (t.length >= 3 && g.startsWith(t)) || (t.length >= 5 && g.length >= 5 && editDistanz(t, g) <= 1)));
+    const treffer = [];
+    patienten.forEach((p) => {
+      const c = normalisiere(p.name);
+      if (!c) return;
+      const ct = c.split(" ");
+      const exakt = qt.length === ct.length && [...qt].sort().join(" ") === [...ct].sort().join(" ");
+      if (exakt || passt(qt, ct) || passt(ct, qt)) treffer.push({ patient: p, exakt });
+    });
+    return treffer.sort((a, b) => Number(b.exakt) - Number(a.exakt)).slice(0, 4);
+  }
+
+  let anlegenTrotzdemBestaetigt = false;
+
+  function aktualisiereAehnlichkeit() {
+    anlegenTrotzdemBestaetigt = false;
+    el.btnConfirmPatientAnlegen.textContent = "Anlegen";
+    versteckeFeldFehler(el.patientAnlegenError);
+    const treffer = aehnlichePatienten(el.patientAnlegenName.value);
+    el.patientAnlegenAehnlich.hidden = treffer.length === 0;
+    if (!treffer.length) {
+      el.patientAnlegenAehnlich.innerHTML = "";
+      return;
+    }
+    const gleich = treffer.some((t) => t.exakt);
+    el.patientAnlegenAehnlich.innerHTML =
+      `<p class="aehnlich__titel${gleich ? " aehnlich__titel--warn" : ""}">${
+        gleich ? "Diesen Patienten gibt es schon" : "Ähnliche Patienten sind bereits angelegt"
+      }</p>` +
+      treffer
+        .map(({ patient }) => {
+          const n = patientAkten(patient.id).length;
+          const info = [patient.geburtsdatum, `${n} ${n === 1 ? "Akte" : "Akten"}`].filter(Boolean).join(" · ");
+          return `<button type="button" class="aehnlich__zeile" data-aehnlich-oeffnen="${patient.id}">
+              <span class="aehnlich__name">${escapeHtml(patient.name)}</span>
+              <span class="aehnlich__info">${escapeHtml(info)}</span>
+            </button>`;
+        })
+        .join("");
+  }
+
+  if (el.patientAnlegenName) {
+    el.patientAnlegenName.addEventListener("input", aktualisiereAehnlichkeit);
+    el.patientAnlegenName.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && el.btnConfirmPatientAnlegen) el.btnConfirmPatientAnlegen.click();
+    });
+  }
+
+  if (el.patientAnlegenAehnlich) {
+    el.patientAnlegenAehnlich.addEventListener("click", (event) => {
+      const zeile = event.target.closest("[data-aehnlich-oeffnen]");
+      if (!zeile) return;
+      schliesseModal("modal-patient-anlegen");
+      oeffnePatientSeite(zeile.getAttribute("data-aehnlich-oeffnen"));
+    });
+  }
+
   if (el.btnPatientAnlegen) {
     el.btnPatientAnlegen.addEventListener("click", () => {
       el.patientAnlegenName.value = "";
-      versteckeFeldFehler(el.patientAnlegenError);
+      aktualisiereAehnlichkeit();
       oeffneModal("modal-patient-anlegen");
+      el.patientAnlegenName.focus();
     });
   }
 
@@ -184,6 +376,11 @@
       versteckeFeldFehler(el.patientAnlegenError);
       const name = el.patientAnlegenName.value.trim();
       if (!name) return zeigeFeldFehler(el.patientAnlegenError, "Bitte gib einen Namen ein.");
+      if (aehnlichePatienten(name).some((t) => t.exakt) && !anlegenTrotzdemBestaetigt) {
+        anlegenTrotzdemBestaetigt = true;
+        el.btnConfirmPatientAnlegen.textContent = "Trotzdem anlegen";
+        return zeigeFeldFehler(el.patientAnlegenError, "Einen Patienten mit diesem Namen gibt es schon. Zum Anlegen noch einmal klicken.");
+      }
       try {
         const ref = await db.collection(PATIENTEN_COLLECTION).add({
           name,
@@ -291,6 +488,56 @@
     el.patientNotfallkontakt.value = p.notfallkontakt || "";
     el.patientNotfallkontaktTelefon.value = p.notfallkontaktTelefon || "";
     versteckeFeldFehler(el.patientProfilError);
+    aktualisiereAllergieMarkierung();
+    passeTextareasAn(el.patientDetailName.closest(".pblatt"));
+    profilBasisStempel = zeitstempelWert(p.bearbeitetAm);
+    profilGeaendert = false;
+    setzeProfilKonflikt(false);
+  }
+
+  // --- Kollisionsschutz Profil -----------------------------------------------
+  // Mehrere Spieler können dasselbe Profil offen haben. Ändert jemand anderes
+  // es, während ich es offen habe:
+  // - habe ich noch nichts getippt: Felder werden still aktualisiert,
+  // - habe ich schon getippt: Hinweis + Wahl (neu laden ODER "Trotzdem
+  //   speichern", was die fremde Änderung überschreibt).
+  // "profilBasisStempel" ist der Änderungszeitpunkt der Version, die gerade
+  // im Formular steht.
+  let profilBasisStempel = 0;
+  let profilGeaendert = false;
+
+  function setzeProfilKonflikt(aktiv, text) {
+    if (!el.patientKonflikt) return;
+    el.patientKonflikt.hidden = !aktiv;
+    if (aktiv) el.patientKonfliktText.textContent = text;
+    el.btnConfirmPatientProfil.textContent = aktiv ? "Trotzdem speichern" : "Speichern";
+  }
+
+  function pruefeProfilKonflikt(p) {
+    if (!aktuellerNutzer) return;
+    const stempel = zeitstempelWert(p.bearbeitetAm);
+    if (p.bearbeiter === aktuellerNutzer.name) {
+      // Eigene Änderung (kommt nach dem Speichern als Snapshot zurück).
+      if (stempel) profilBasisStempel = stempel;
+      setzeProfilKonflikt(false);
+      return;
+    }
+    if (stempel <= profilBasisStempel) return;
+    if (!profilGeaendert) {
+      fuellePatientDetailFelder(p);
+      return;
+    }
+    setzeProfilKonflikt(true, `${p.bearbeiter || "Jemand"} hat dieses Profil gerade geändert (${formatDatumUhrzeit(p.bearbeitetAm)}). Wenn du jetzt speicherst, wird das überschrieben.`);
+  }
+
+  const profilBlatt = el.patientDetailName ? el.patientDetailName.closest(".pblatt") : null;
+  if (profilBlatt) profilBlatt.addEventListener("input", () => (profilGeaendert = true));
+
+  if (el.btnPatientKonfliktLaden) {
+    el.btnPatientKonfliktLaden.addEventListener("click", () => {
+      const p = patienten.find((x) => x.id === offenerPatientId);
+      if (p) fuellePatientDetailFelder(p);
+    });
   }
 
   if (el.btnConfirmPatientProfil) {
@@ -316,6 +563,7 @@
             bearbeiter: aktuellerNutzer ? aktuellerNutzer.name : null,
             bearbeitetAm: firebase.firestore.FieldValue.serverTimestamp(),
           });
+        profilGeaendert = false;
         zeigeToast("Profil gespeichert.");
       } catch (fehler) {
         console.error(fehler);
@@ -412,6 +660,18 @@
   }
 
   // --- Akte anlegen/bearbeiten (ein gemeinsames Formular) -------------------
+  function fuelleAkteFormFelder(a) {
+    // Altwerte ohne Uhrzeit (noch mit reinem Datumsfeld angelegte Akten)
+    // werden auf "00:00" ergänzt, sonst würde das datetime-local-Feld sie
+    // stillschweigend verwerfen und leer bleiben.
+    el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
+    el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
+    el.akteBefund.value = a ? a.befund || "" : "";
+    el.akteBehandlung.value = a ? a.behandlung || "" : "";
+    el.akteBemerkungen.value = a ? a.bemerkungen || "" : "";
+    passeTextareasAn(el.akteBehandlungsgrund.closest(".modal__body"));
+  }
+
   function oeffneAkteFormModal(patientId, akteId) {
     bearbeiteteAkteId = akteId;
     const patient = patienten.find((x) => x.id === patientId);
@@ -422,16 +682,90 @@
     const a = akteId ? akten.find((x) => x.id === akteId) : null;
     el.akteFormTitel.textContent = akteId ? "Akte bearbeiten" : "Neue Akte";
     el.akteEditingId.value = akteId || "";
-    // Altwerte ohne Uhrzeit (noch mit reinem Datumsfeld angelegte Akten)
-    // werden auf "00:00" ergänzt, sonst würde das datetime-local-Feld sie
-    // stillschweigend verwerfen und leer bleiben.
-    el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
-    el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
-    el.akteBefund.value = a ? a.befund || "" : "";
-    el.akteBehandlung.value = a ? a.behandlung || "" : "";
-    el.akteBemerkungen.value = a ? a.bemerkungen || "" : "";
+    akteBasisStempel = a ? zeitstempelWert(a.bearbeitetAm) : 0;
+    setzeAkteKonflikt(false);
 
     oeffneModal("modal-akte-form");
+    fuelleAkteFormFelder(a);
+    // Anderen zeigen, dass ich diese Akte gerade bearbeite.
+    setzePraesenzAkte(akteId || null);
+    aktualisiereAnwesenheit();
+  }
+
+  // --- Kollisionsschutz Akte -------------------------------------------------
+  // Wie beim Profil: ändert jemand anderes die Akte, während ich sie im
+  // Formular offen habe, erscheint ein Hinweis; das Speichern überschreibt
+  // dann bewusst ("Trotzdem speichern"). Ein offenes Formular wird nie still
+  // überschrieben.
+  let akteBasisStempel = 0;
+
+  function akteFormSichtbar() {
+    const overlay = document.getElementById("modal-akte-form");
+    return !!overlay && overlay.classList.contains("modal-overlay--visible");
+  }
+
+  function setzeAkteKonflikt(aktiv, text, geloescht) {
+    if (!el.akteKonflikt) return;
+    el.akteKonflikt.hidden = !aktiv;
+    if (aktiv) el.akteKonfliktText.textContent = text;
+    el.btnAkteKonfliktLaden.hidden = !!geloescht;
+    el.btnConfirmAkte.disabled = !!geloescht;
+    el.btnConfirmAkte.textContent = aktiv && !geloescht ? "Trotzdem speichern" : "Speichern";
+  }
+
+  function pruefeAkteKonflikt() {
+    if (!bearbeiteteAkteId || !aktuellerNutzer || !akteFormSichtbar()) return;
+    const a = akten.find((x) => x.id === bearbeiteteAkteId);
+    if (!a) {
+      setzeAkteKonflikt(true, "Diese Akte wurde inzwischen gelöscht und kann nicht mehr gespeichert werden.", true);
+      return;
+    }
+    const stempel = zeitstempelWert(a.bearbeitetAm);
+    if (a.bearbeiter === aktuellerNutzer.name) {
+      if (stempel) akteBasisStempel = stempel;
+      setzeAkteKonflikt(false);
+      return;
+    }
+    if (stempel <= akteBasisStempel) return;
+    setzeAkteKonflikt(true, `${a.bearbeiter || "Jemand"} hat diese Akte gerade geändert (${formatDatumUhrzeit(a.bearbeitetAm)}). Wenn du jetzt speicherst, wird das überschrieben.`);
+  }
+
+  if (el.btnAkteKonfliktLaden) {
+    el.btnAkteKonfliktLaden.addEventListener("click", () => {
+      const a = akten.find((x) => x.id === bearbeiteteAkteId);
+      if (!a) return;
+      akteBasisStempel = zeitstempelWert(a.bearbeitetAm);
+      fuelleAkteFormFelder(a);
+      setzeAkteKonflikt(false);
+    });
+  }
+
+  // --- Anwesenheit ("X sieht/bearbeitet gerade ...") -----------------------
+  // Datenquelle: praesenzListe (js/ui/presence.js), die Ort-Angaben stehen im
+  // Heartbeat jeder Session.
+  function andereAn(feld, id) {
+    if (!id) return [];
+    const meineUid = aktuellerNutzer ? aktuellerNutzer.uid : null;
+    const namen = [];
+    praesenzListe.forEach((s) => {
+      if (s[feld] === id && s.uid !== meineUid && !namen.includes(s.name)) namen.push(s.name);
+    });
+    return namen;
+  }
+
+  function aktualisiereAnwesenheit() {
+    if (el.patientAnwesend) {
+      const namen = aktuelleAnsicht === "patient-detail" ? andereAn("patientId", offenerPatientId) : [];
+      el.patientAnwesend.hidden = namen.length === 0;
+      if (namen.length) el.patientAnwesendText.textContent = `${namenAlsText(namen)} ${namen.length === 1 ? "sieht" : "sehen"} diesen Patienten gerade an.`;
+    }
+    if (el.akteAnwesend) {
+      const namen = akteFormSichtbar() ? andereAn("akteId", bearbeiteteAkteId) : [];
+      el.akteAnwesend.hidden = namen.length === 0;
+      if (namen.length) {
+        el.akteAnwesendText.textContent = `${namenAlsText(namen)} ${namen.length === 1 ? "bearbeitet" : "bearbeiten"} diese Akte gerade. Änderungen können sich überschneiden.`;
+      }
+    }
   }
 
   if (el.btnConfirmAkte) {
@@ -510,6 +844,59 @@
       schliesseModal("modal-akte-detail");
       oeffneAkteFormModal(a.patientId, a.id);
     });
+  }
+
+  // --- Akte kopieren / drucken ---------------------------------------------
+  // Kopieren liefert reinen Text (für Discord, Notizen); Drucken nutzt die
+  // Browser-Druckfunktion, der @media-print-Block in css/views/
+  // patientenakten.css blendet dafür alles außer dem Akte-Fenster aus.
+  function akteAlsText(a) {
+    const patient = patienten.find((x) => x.id === a.patientId);
+    const nummer = patientAkten(a.patientId).findIndex((x) => x.id === a.id) + 1;
+    const autor = a.bearbeiter && a.bearbeiter !== a.erstelltVon ? `${a.erstelltVon || "—"} (zuletzt bearbeitet: ${a.bearbeiter})` : a.erstelltVon || "—";
+    const zeilen = [`Behandlungsakte - Akte ${nummer}`, `Patient: ${patient ? patient.name : "—"}`, `Datum: ${formatDatumZeit(a.datum)}`, `Verfasst von: ${autor}`, ""];
+    [
+      ["Behandlungsgrund", a.behandlungsgrund],
+      ["Befund", a.befund],
+      ["Behandlung", a.behandlung],
+      ["Bemerkungen", a.bemerkungen],
+    ].forEach(([titel, wert]) => zeilen.push(`${titel}:`, wert || "Keine Angaben", ""));
+    return zeilen.join("\n").trim();
+  }
+
+  async function kopiereText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (fehler) {
+      // Fallback für Umgebungen ohne Clipboard-API (z. B. unsicherer Kontext).
+      const feld = document.createElement("textarea");
+      feld.value = text;
+      feld.style.position = "fixed";
+      feld.style.opacity = "0";
+      document.body.appendChild(feld);
+      feld.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch (e) {
+        ok = false;
+      }
+      feld.remove();
+      return ok;
+    }
+  }
+
+  if (el.btnAkteKopieren) {
+    el.btnAkteKopieren.addEventListener("click", async () => {
+      const a = akten.find((x) => x.id === offeneAkteDetailId);
+      if (!a) return;
+      zeigeToast((await kopiereText(akteAlsText(a))) ? "Akte in die Zwischenablage kopiert." : "Kopieren nicht möglich.");
+    });
+  }
+
+  if (el.btnAkteDrucken) {
+    el.btnAkteDrucken.addEventListener("click", () => window.print());
   }
 
   if (el.btnAkteLoeschen) {

@@ -1,54 +1,29 @@
 /* --------------------------------------------------------------------------
-   Badges — gemeinsame Basis für kleine "Pillen"-Hinweise (Rang-Badge in der
-   Sidebar, Konto-Status/Verwalter-Markierung in der Benutzerverwaltung).
+   Badges - bewusst keine Pillen: farbiger Text mit einem kleinen Quadrat davor
+   (Rang, Konto-Status, Verwalter-Markierung in der Benutzerverwaltung). Die
+   Farbe kommt per Modifier oder inline (Rangfarbe, siehe rangBadgeHtml).
    -------------------------------------------------------------------------- */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
-.badge--outline {
-  background: transparent;
-  border: 1px solid currentColor;
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  background: currentColor;
 }
 
-/* Admin/Verwaltung: Konto-Status ("Wartet auf Freigabe"/"Abgelehnt"/
-   "Gesperrt") und die "Verwalter"-Markierung nutzten bisher eigenes,
-   handgestricktes CSS (.settings-list__wartet/__protected in
-   css/views/admin.css) statt dieser geteilten .badge-Basis, die der Rest
-   der App (Kontakte, Bestellungen, Kunden, Hofbuch) für dasselbe
-   Pillen-Muster verwendet - eine künftige Änderung an Padding/Radius/
-   Schriftgröße der Badges wäre hier sonst stillschweigend nicht
-   angekommen. Nur die Farben/der Punkt bleiben eigene Modifier-Klassen. */
 .badge--danger-soft {
   color: var(--status-danger-bright);
-  background: var(--status-danger-soft);
-  margin-left: 8px;
 }
 
 .badge--verwalter {
-  color: var(--brass-bright);
-  background: var(--brass-soft);
-  padding-left: 20px;
-  margin-left: 8px;
-  position: relative;
-}
-
-.badge--verwalter::before {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brass-deep);
+  color: var(--wood-text-muted);
 }
