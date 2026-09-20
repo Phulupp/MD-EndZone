@@ -133,7 +133,7 @@
     if (!b) return;
     el.benutzerDetailsName.textContent = b.username || "Unbekannt";
 
-    const rangOptions = BENUTZER_RAENGE.map((r) => `<option value="${r}" ${r === b.rolle ? "selected" : ""}>${r}</option>`).join("");
+    const rangOptions = BENUTZER_RAENGE.map((r) => `<option value="${r}" ${r === normalisiereRang(b.rolle) ? "selected" : ""}>${r}</option>`).join("");
 
     el.benutzerDetailsBody.innerHTML = `
       <div class="detail-grid">

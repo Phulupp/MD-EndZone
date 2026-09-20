@@ -74,6 +74,7 @@
   // schlichter Text zu sein.
   function rangBadgeHtml(rolle) {
     if (!rolle) return "";
+    rolle = normalisiereRang(rolle);
     const farbe = RANG_AKZENTE[rolle] || RANG_AKZENT_STANDARD;
     return `<span class="badge" style="color:${farbe};">${escapeHtml(rolle)}</span>`;
   }

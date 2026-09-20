@@ -12,12 +12,36 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 121;
+  const VERSION_AKTUELL = 123;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
-  const BENUTZER_RAENGE = ["Praktikant", "Rettungssanitäter", "Assistenzarzt", "Facharzt", "Chefarzt", "Ärztlicher Leiter"];
-  const NEUER_BENUTZER_STANDARD_RANG = "Praktikant";
+  // Reihenfolge = Hierarchie, aufsteigend (der letzte Rang ist der höchste).
+  const BENUTZER_RAENGE = [
+    "Azubi",
+    "Sanitätshelfer",
+    "Rettungssanitäter",
+    "Notfallsanitäter",
+    "Organisatorischer Leiter Rettungsdienst",
+    "Medizinstudent",
+    "Notarzt",
+    "Leitender Notarzt",
+    "Ärztlicher Leiter Rettungsdienst",
+  ];
+  const NEUER_BENUTZER_STANDARD_RANG = "Azubi";
+
+  // Bereits vergebene Ränge aus der früheren Liste, die es so nicht mehr gibt
+  // und eindeutig einem neuen Rang entsprechen. Nur für die ANZEIGE (Sidebar,
+  // Benutzerverwaltung) - in der Datenbank steht weiter der alte Wert, bis ein
+  // Verwalter dem Benutzer einen Rang neu zuweist.
+  const RANG_ALIAS = {
+    Praktikant: "Azubi",
+    "Ärztlicher Leiter": "Ärztlicher Leiter Rettungsdienst",
+  };
+
+  function normalisiereRang(rolle) {
+    return RANG_ALIAS[rolle] || rolle;
+  }
 
   // Optischer Akzent für die Rang-Badge - JEDER Rang bekommt jetzt eine
   // eigene Farbe (abgestuft von gedämpftem Blau-Grau für Junior-Ränge bis
@@ -26,21 +50,24 @@
   // aktualisiereSidebarRang in js/main.js (Sidebar-Profilkarte) und
   // rangBadgeHtml in js/core/utils.js (Benutzerverwaltung).
   const RANG_AKZENTE = {
-    Praktikant: "#6b7d89",
-    Rettungssanitäter: "#4f92a6",
-    Assistenzarzt: "#5b8fd6",
-    Facharzt: "#c9a227",
-    Chefarzt: "#d9724a",
-    "Ärztlicher Leiter": "#d94452",
+    Azubi: "#6b7d89",
+    Sanitätshelfer: "#4f92a6",
+    Rettungssanitäter: "#3fa58f",
+    Notfallsanitäter: "#58a865",
+    "Organisatorischer Leiter Rettungsdienst": "#5b8fd6",
+    Medizinstudent: "#8b7fd6",
+    Notarzt: "#c9a227",
+    "Leitender Notarzt": "#d9724a",
+    "Ärztlicher Leiter Rettungsdienst": "#d94452",
   };
   // Fallback für unbekannte/veraltete Rang-Werte (z. B. noch nicht
   // umgestellte Bestandsaccounts) - neutrales Blau-Grau statt eines Fehlers.
   const RANG_AKZENT_STANDARD = "#6b7d89";
-  // Nur diese beiden bekommen zusätzlich den leuchtenden Akzentring um den
+  // Die Leitungsränge bekommen zusätzlich den leuchtenden Akzentring um den
   // Avatar (siehe .sidebar__user-avatar--akzent in css/layout/shell.css) -
-  // eine zusätzliche, seltenere Auszeichnung für die Führungsebene, obendrauf
-  // auf die Farbbadge, die jeder Rang bekommt.
-  const RANG_AKZENTRING = ["Chefarzt", "Ärztlicher Leiter"];
+  // eine zusätzliche Auszeichnung für die Führungsebene, obendrauf auf die
+  // Farbbadge, die jeder Rang bekommt.
+  const RANG_AKZENTRING = ["Notarzt", "Leitender Notarzt", "Ärztlicher Leiter Rettungsdienst"];
 
   const PATIENTEN_COLLECTION = "patienten";
   const AKTEN_COLLECTION = "akten";

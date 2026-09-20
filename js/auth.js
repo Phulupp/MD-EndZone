@@ -74,7 +74,7 @@ const firebaseConfig = window.firebaseConfig;
 
 // Der Rang, den ein neu registrierter Benutzer automatisch erhält (unterster
 // Rang der MD-Hierarchie) - siehe erstelleBenutzerProfil weiter unten.
-const STANDARD_RANG_NEUER_BENUTZER = "Praktikant";
+const STANDARD_RANG_NEUER_BENUTZER = "Azubi";
 
 if (!firebaseConfig || !firebaseConfig.apiKey) {
   console.warn("auth.js: Firebase-Konfiguration fehlt - Login-System wird nicht gestartet.");

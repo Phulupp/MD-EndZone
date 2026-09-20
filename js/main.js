@@ -9,7 +9,10 @@
   // BENUTZER_RAENGE, gefüllt bis zur eigenen Stufe) - die beiden
   // Spitzenränge (RANG_AKZENTRING) bekommen zusätzlich einen leuchtenden
   // Akzentring um den Avatar.
-  function aktualisiereSidebarRang(rolle) {
+  function aktualisiereSidebarRang(gespeicherterRang) {
+    // Alte, umbenannte Ränge werden für die Anzeige auf den neuen Namen
+    // abgebildet (siehe RANG_ALIAS in js/core/config.js).
+    const rolle = normalisiereRang(gespeicherterRang);
     el.sidebarUserRole.textContent = rolle;
     const farbe = RANG_AKZENTE[rolle] || RANG_AKZENT_STANDARD;
     el.sidebarUserRole.style.color = farbe;
