@@ -23,6 +23,8 @@
   let unsubLeitfaeden = null;
   let leitfaeden = [];
   let leitfadenKategorien = [];
+  let termine = [];
+  let unsubTermine = null;
 
   let unsubPresence = null;
 

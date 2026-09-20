@@ -124,6 +124,28 @@
     btnAkteKonfliktLaden: document.getElementById("btn-akte-konflikt-laden"),
     btnAkteLoeschen: document.getElementById("btn-akte-loeschen"),
 
+    // Termine (siehe js/views/termine.js)
+    termineFilter: document.getElementById("termine-filter"),
+    termineListe: document.getElementById("termine-liste"),
+    termineEmpty: document.getElementById("termine-empty"),
+    btnTerminNeu: document.getElementById("btn-termin-neu"),
+    terminModalTitel: document.getElementById("termin-modal-titel"),
+    terminEditingId: document.getElementById("termin-editing-id"),
+    terminPatientInput: document.getElementById("termin-patient-input"),
+    terminPatientVorschlaege: document.getElementById("termin-patient-vorschlaege"),
+    terminPatientHinweis: document.getElementById("termin-patient-hinweis"),
+    terminDatum: document.getElementById("termin-datum"),
+    terminArtSelect: document.getElementById("termin-art-select"),
+    terminArtFreiFeld: document.getElementById("termin-art-frei-feld"),
+    terminArtFrei: document.getElementById("termin-art-frei"),
+    terminGrund: document.getElementById("termin-grund"),
+    terminNotiz: document.getElementById("termin-notiz"),
+    terminStatusFeld: document.getElementById("termin-status-feld"),
+    terminStatusSelect: document.getElementById("termin-status-select"),
+    terminError: document.getElementById("termin-error"),
+    btnConfirmTermin: document.getElementById("btn-confirm-termin"),
+    btnTerminLoeschen: document.getElementById("btn-termin-loeschen"),
+
     // Beispiele (Behandlungsleitfäden)
     beispieleKrumen: document.getElementById("beispiele-krumen"),
     beispieleListe: document.getElementById("beispiele-liste"),
@@ -321,4 +343,4 @@
 
   // Alle noch verbliebenen "normalen" <select>-Felder der Seite auf das
   // dunkle Custom-Dropdown umstellen (Startseite, Rang bei neuen Benutzern).
-  [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect].forEach(erzeugeCustomSelect);
+  [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach(erzeugeCustomSelect);

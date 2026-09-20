@@ -148,6 +148,8 @@
           patienten.sort((a, b) => (a.name || "").localeCompare(b.name || "", "de", { sensitivity: "base" }));
           renderPatientenListe();
           renderStartseiteStats();
+          // Termine zeigen den aktuellen Patientennamen (und den Link zur Akte).
+          if (typeof renderTermine === "function") renderTermine();
           // Das Profilformular der gerade offenen Patienten-Seite wird nie
           // über ungespeicherte Eingaben hinweg überschrieben (siehe
           // pruefeProfilKonflikt): hat der Nutzer noch nichts getippt, wird es

@@ -1,0 +1,212 @@
+/* --------------------------------------------------------------------------
+   22. Termine
+   --------------------------------------------------------------------------
+   Terminliste nach Tag gruppiert, in derselben ruhigen Zeilen-Optik wie das
+   Patientenregister: Uhrzeit, Art, Patient (mit Grund), Status, Abhaken. */
+.termine-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.termine-kopf .tabs {
+  margin: 0;
+  border-bottom: none;
+}
+
+.termine-kopf .btn {
+  margin-bottom: 10px;
+}
+
+.termine-anzahl {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brass-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.termine-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 38px 0 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--wood-text-muted);
+}
+
+.termine-tag:first-child {
+  margin-top: 4px;
+}
+
+.termine-tag__marke {
+  color: var(--brass-bright);
+}
+
+.termin-zeile {
+  display: grid;
+  grid-template-columns: 64px 190px minmax(0, 1fr) 110px 34px;
+  align-items: center;
+  column-gap: 20px;
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.termine-tag + .termin-zeile {
+  border-top: 1px solid var(--leather-edge);
+}
+
+.termin-zeile:hover,
+.termin-zeile:focus-visible {
+  outline: none;
+  background: rgba(130, 170, 190, 0.06);
+}
+
+.termin-zeile__zeit {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wood-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.termin-zeile__art {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--wood-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.termin-zeile__haupt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+
+.termin-zeile__patient {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15.5px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--wood-text);
+}
+
+.termin-zeile__patient--link:hover {
+  color: var(--brass-bright);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.termin-zeile__grund {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--wood-text-soft);
+}
+
+.termin-zeile__status {
+  font-size: 12.5px;
+}
+
+.termin-zeile--erledigt .termin-zeile__zeit,
+.termin-zeile--erledigt .termin-zeile__haupt {
+  opacity: 0.7;
+}
+
+.termin-zeile--abgesagt .termin-zeile__zeit,
+.termin-zeile--abgesagt .termin-zeile__art,
+.termin-zeile--abgesagt .termin-zeile__haupt {
+  opacity: 0.5;
+}
+
+.termin-zeile--abgesagt .termin-zeile__patient {
+  text-decoration: line-through;
+}
+
+.termin-zeile__aktion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--wood-text-soft);
+  transition: color 0.12s ease, background 0.12s ease;
+}
+
+.termin-zeile__aktion:hover {
+  color: var(--status-done);
+  background: var(--status-done-soft);
+}
+
+@media (max-width: 820px) {
+  .termin-zeile {
+    grid-template-columns: 56px minmax(0, 1fr) 34px;
+    column-gap: 14px;
+  }
+  .termin-zeile__art,
+  .termin-zeile__status {
+    display: none;
+  }
+}
+
+/* --- Patienten-Vorschläge im Termin-Dialog ---------------------------------- */
+.termin-vorschlaege {
+  margin-top: 6px;
+  border-top: 1px solid var(--leather-edge-soft);
+}
+
+.termin-vorschlaege[hidden] {
+  display: none;
+}
+
+.termin-vorschlag {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.termin-vorschlag:hover .termin-vorschlag__name {
+  color: var(--brass-bright);
+}
+
+.termin-vorschlag__name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--wood-text);
+}
+
+.termin-vorschlag__info {
+  font-size: 12.5px;
+  color: var(--wood-text-soft);
+}
+
+.termin-hinweis {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--wood-text-soft);
+}
+
+.termin-hinweis:empty {
+  display: none;
+}

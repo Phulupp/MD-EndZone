@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 128;
+  const VERSION_AKTUELL = 129;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -72,6 +72,13 @@
   const PATIENTEN_COLLECTION = "patienten";
   const AKTEN_COLLECTION = "akten";
 
+  // Termine (MRT, CT, ...): eine Collection, ein Dokument pro Termin - siehe
+  // js/views/termine.js. "Sonstiges" erlaubt eine eigene Bezeichnung, damit die
+  // Liste der Arten nicht fest verdrahtet sein muss.
+  const TERMINE_COLLECTION = "termine";
+  const TERMIN_ARTEN = ["MRT", "CT / CCT", "Psychologisches Gespräch", "Sonstiges"];
+  const TERMIN_ART_SONSTIGES = "Sonstiges";
+
   // Zugriffslinks: schreibgeschützte Kopie einer Akte, die jeder mit dem Link
   // (auch ohne Konto) ansehen kann - siehe js/views/akte-link.js und akte.html.
   // Die Kopie ist nur begrenzt gültig.
@@ -105,6 +112,7 @@
     // Kein Sidebar-Button - wird per oeffnePatientSeite (js/views/
     // patientenakten.js) geöffnet, Titel dort auf den Patientennamen gesetzt.
     "patient-detail": { title: "Patient", subtitle: "Patientenakte" },
+    termine: { title: "Termine", subtitle: "Anstehende MRT-, CT- und weitere Termine der Patienten." },
     beispiele: { title: "Beispiele", subtitle: "Behandlungsleitfäden für häufige Fälle." },
     einstellungen: { title: "Einstellungen", subtitle: "Persönliche Einstellungen." },
     admin: { title: "Verwaltung", subtitle: "Benutzerverwaltung — nur für Verwalter sichtbar." },

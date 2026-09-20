@@ -43,6 +43,7 @@
     startePatientenListener();
     starteAktenListener();
     starteLeitfaedenListener();
+    starteTermineListener();
     if (istAdmin()) starteBenutzerverwaltung();
 
     zeigeAnsicht(ladeStartseite());
@@ -70,8 +71,8 @@
 
   function stoppeApp() {
     aktuellerNutzer = null;
-    [unsubPatienten, unsubAkten, unsubLeitfaeden].forEach((unsub) => unsub && unsub());
-    unsubPatienten = unsubAkten = unsubLeitfaeden = null;
+    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine].forEach((unsub) => unsub && unsub());
+    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = null;
     stoppeBenutzerverwaltung();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
@@ -79,6 +80,7 @@
     akten = [];
     leitfaeden = [];
     leitfadenKategorien = [];
+    termine = [];
     beispieleKategorieId = null;
     beispieleBeispielId = null;
     bearbeiteteAkteId = null;

@@ -203,6 +203,13 @@ service cloud.firestore {
       allow read, write: if istFreigegeben();
     }
 
+    // Termine (MRT, CT, ...): ein Dokument pro Termin, verknüpft mit einem
+    // Patienten ("patientId") oder mit einem frei eingetragenen Namen. Jeder
+    // freigegebene Nutzer darf Termine anlegen, lesen, bearbeiten und löschen.
+    match /termine/{dokument} {
+      allow read, write: if istFreigegeben();
+    }
+
     // Zugriffslinks: eine schreibgeschützte KOPIE einer Akte (nicht die Akte
     // selbst), die per Link auch ohne Konto lesbar ist. Die Dokument-ID ist ein
     // zufälliger, nicht erratbarer Schlüssel (>= 32 Zeichen). Einzelabruf
