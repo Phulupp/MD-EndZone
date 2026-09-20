@@ -129,7 +129,17 @@ select.field-input {
   border-color: var(--brass-bright);
 }
 
+/* Lange Einträge (z. B. Rangnamen) werden im Feld mit "..." gekürzt statt es
+   zu sprengen; in der aufgeklappten Liste umbrechen sie (siehe unten). */
+.custom-select__trigger > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .custom-select__chevron {
+  flex-shrink: 0;
   color: var(--wood-text-muted);
   font-size: 12px;
   transition: transform 0.15s ease;
@@ -149,6 +159,7 @@ select.field-input {
   position: fixed;
   z-index: 500;
   max-height: 280px;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 6px;
   background: var(--leather-900);
@@ -169,7 +180,10 @@ select.field-input {
   text-align: left;
   padding: 10px 12px;
   font-size: 14px;
+  line-height: 1.4;
   color: var(--wood-text);
+  white-space: normal;
+  overflow-wrap: anywhere;
   border-radius: var(--radius-md);
   background: transparent;
 }

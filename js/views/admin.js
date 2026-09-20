@@ -145,7 +145,7 @@
             : ""
         }
         <div class="detail-row detail-row--rang"><span class="detail-row__label">Rang</span>
-          <select class="field-input" id="detail-rolle-select" style="max-width:220px;">${rangOptions}</select></div>
+          <select class="field-input" id="detail-rolle-select" style="flex:1 1 240px;max-width:330px;">${rangOptions}</select></div>
         <div class="detail-row"><span class="detail-row__label">Verwalterrechte</span>
           <label class="field-checkbox-row"><input type="checkbox" id="detail-admin-checkbox" ${b.isAdmin ? "checked" : ""}/> Verwalter</label></div>
         <div class="detail-row"><span class="detail-row__label">Status</span>
