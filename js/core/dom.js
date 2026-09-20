@@ -48,7 +48,6 @@
 
     // Patient-Detail: eigene Ansicht statt Modal (siehe view-patient-detail
     // in index.html und oeffnePatientSeite in js/views/patientenakten.js).
-    patientDetailAvatar: document.getElementById("patient-detail-avatar"),
     patientDetailId: document.getElementById("patient-detail-id"),
     patientDetailName: document.getElementById("patient-detail-name"),
     patientGeburtsdatum: document.getElementById("patient-geburtsdatum"),

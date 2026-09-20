@@ -489,14 +489,18 @@
     }
     if (hatEintrag(p.vorerkrankungen)) html += zeile("Vorerkrankungen", p.vorerkrankungen);
     if (hatEintrag(p.besondereHinweise)) html += zeile("Besondere Hinweise", p.besondereHinweise);
-    return html || '<p class="phinweise__leer">Noch keine medizinischen Hinweise erfasst.</p>';
+    return html;
   }
 
   function aktualisiereProfilKopf(p) {
-    if (el.patientDetailAvatar) el.patientDetailAvatar.textContent = initialenAvatar(p.name);
     if (el.patientKopfName) el.patientKopfName.textContent = p.name || "Patient";
     if (el.patientKopfDaten) el.patientKopfDaten.innerHTML = kopfDatenHtml(p);
-    if (el.patientHinweise) el.patientHinweise.innerHTML = hinweiseHtml(p);
+    if (el.patientHinweise) {
+      // Ohne Hinweise bleibt der Bereich komplett weg (kein Leertext).
+      const hinweise = hinweiseHtml(p);
+      el.patientHinweise.innerHTML = hinweise;
+      el.patientHinweise.hidden = !hinweise;
+    }
     if (el.patientProfilMeta) {
       el.patientProfilMeta.textContent = p.bearbeiter
         ? `Zuletzt bearbeitet von ${p.bearbeiter} · ${formatDatumUhrzeit(p.bearbeitetAm)}`
@@ -685,7 +689,7 @@
         ? ""
         : tokens.length
         ? `${sichtbar.length} von ${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}`
-        : `${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}, neueste zuerst`;
+        : `${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}`;
     }
 
     if (gesamt && !sichtbar.length) {
@@ -704,30 +708,22 @@
             monat = `<h4 class="akten-monat">${escapeHtml(m)}</h4>`;
           }
         }
-        // Beschriftete Kurzfassung: nur ausgefüllte Felder, damit schon in
-        // der Liste klar ist, was wo eingetragen wurde.
-        const felder = [
-          ["Behandlungsgrund", a.behandlungsgrund || "—", true],
-          ["Hergang", a.hergang],
-          ["Befund", a.befund],
-          ["Behandlung", a.behandlung],
-          ["Zusätzliche Infos", a.bemerkungen],
-        ]
-          .filter(([, wert]) => wert)
-          .map(([label, wert, haupt]) => `<dt>${label}</dt><dd${haupt ? ' class="akte-eintrag__haupt"' : ""}>${escapeHtml(wert)}</dd>`)
-          .join("");
-        return `${monat}<article class="akte-eintrag${nummer === gesamt ? " akte-eintrag--neu" : ""}" tabindex="0" data-akte-oeffnen="${a.id}">
-            <span class="akte-eintrag__punkt"></span>
-            <button type="button" class="akte-eintrag__loeschen" data-akte-loeschen="${a.id}" data-akte-nummer="${nummer}" title="Akte ${nummer} löschen" aria-label="Akte ${nummer} löschen">
+        // Zugeklappt: Behandlungsgrund + eine Vorschau-Zeile (Hergang, sonst
+        // Befund/Behandlung). Der ganze Inhalt steht im Akte-Fenster.
+        const vorschau = a.hergang || a.befund || a.behandlung || "";
+        return `${monat}<div class="akte-zeile" tabindex="0" data-akte-oeffnen="${a.id}">
+            <span class="akte-zeile__nr">Akte ${nummer}</span>
+            <span class="akte-zeile__haupt">
+              <span class="akte-zeile__titel">${escapeHtml(a.behandlungsgrund || "—")}</span>
+              ${vorschau ? `<span class="akte-zeile__vorschau">${escapeHtml(vorschau)}</span>` : ""}
+            </span>
+            <span class="akte-zeile__datum">${escapeHtml(formatDatumZeit(a.datum))}</span>
+            <span class="akte-zeile__autor">${escapeHtml(a.erstelltVon || "—")}</span>
+            <button type="button" class="akte-zeile__loeschen" data-akte-loeschen="${a.id}" data-akte-nummer="${nummer}" title="Akte ${nummer} löschen" aria-label="Akte ${nummer} löschen">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
-            <div class="akte-eintrag__kopf">
-              <span class="akte-eintrag__nr">Akte ${nummer}</span>
-              <span>${escapeHtml(formatDatumZeit(a.datum))}</span>
-              <span class="akte-eintrag__autor">${escapeHtml(a.erstelltVon || "—")}</span>
-            </div>
-            <dl class="akte-eintrag__felder">${felder}</dl>
-          </article>`;
+            <svg class="akte-zeile__pfeil" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
+          </div>`;
       })
       .join("");
   }

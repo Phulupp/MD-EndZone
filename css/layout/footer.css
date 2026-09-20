@@ -1,18 +1,19 @@
 /* --------------------------------------------------------------------------
    20. Footer
-   -------------------------------------------------------------------------- */
+   --------------------------------------------------------------------------
+   Nur noch eine kleine Zeile mit den beiden Rechtstexten - der Name der
+   Abteilung steht schon in der Sidebar und muss nicht auf jeder Seite wiederholt
+   werden. Keine Trennlinie mehr. */
 .page-footer {
-  padding: 22px 0 10px;
-  border-top: 1px solid var(--leather-edge);
-  margin-top: 10px;
+  margin-top: 56px;
+  padding: 0 0 8px;
   color: var(--wood-text-soft);
-  font-size: 11px;
+  font-size: 11.5px;
   line-height: 1.7;
 }
 
 .page-footer__links {
   display: flex;
   gap: 18px;
-  margin-top: 6px;
+  margin: 0;
 }
-
