@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=125" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=126" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=125" />
-  <link rel="stylesheet" href="css/base/reset.css?v=125" />
-  <link rel="stylesheet" href="css/base/textures.css?v=125" />
-  <link rel="stylesheet" href="css/views/auth.css?v=125" />
-  <link rel="stylesheet" href="css/components/forms.css?v=125" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=125" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=125" />
-  <link rel="stylesheet" href="css/components/cards.css?v=125" />
-  <link rel="stylesheet" href="css/components/badges.css?v=125" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=125" />
-  <link rel="stylesheet" href="css/components/tables.css?v=125" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=125" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=125" />
-  <link rel="stylesheet" href="css/components/modals.css?v=125" />
-  <link rel="stylesheet" href="css/views/admin.css?v=125" />
-  <link rel="stylesheet" href="css/components/toast.css?v=125" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=125" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=125" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=126" />
+  <link rel="stylesheet" href="css/base/reset.css?v=126" />
+  <link rel="stylesheet" href="css/base/textures.css?v=126" />
+  <link rel="stylesheet" href="css/views/auth.css?v=126" />
+  <link rel="stylesheet" href="css/components/forms.css?v=126" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=126" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=126" />
+  <link rel="stylesheet" href="css/components/cards.css?v=126" />
+  <link rel="stylesheet" href="css/components/badges.css?v=126" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=126" />
+  <link rel="stylesheet" href="css/components/tables.css?v=126" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=126" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=126" />
+  <link rel="stylesheet" href="css/components/modals.css?v=126" />
+  <link rel="stylesheet" href="css/views/admin.css?v=126" />
+  <link rel="stylesheet" href="css/components/toast.css?v=126" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=126" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=126" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -393,30 +393,63 @@
 
             <p class="anwesenheit" id="patient-anwesend" hidden><span class="anwesenheit__punkt"></span><span id="patient-anwesend-text"></span></p>
 
-            <div class="patient-seite">
-              <div class="md-panel pblatt">
-                <div class="pblatt__kopf">
-                  <span class="pblatt__avatar" id="patient-detail-avatar">?</span>
-                  <div class="pblatt__name md-feld">
-                    <label for="patient-detail-name">Name</label>
-                    <input type="text" id="patient-detail-name" class="md-input" />
-                  </div>
+            <!-- Kopf: Name groß, darunter die Stammdaten in einer Zeile. Hier wird
+                 nur gelesen - bearbeitet wird erst nach "Bearbeiten" (Formular
+                 weiter unten). -->
+            <div class="pkopf">
+              <div class="pkopf__id">
+                <span class="pkopf__avatar" id="patient-detail-avatar">?</span>
+                <div class="pkopf__text">
+                  <h2 class="pkopf__name" id="patient-kopf-name">Patient</h2>
+                  <div class="pkopf__daten" id="patient-kopf-daten"></div>
                 </div>
-                <input type="hidden" id="patient-detail-id" value="" />
+              </div>
+              <div class="pkopf__aktionen">
+                <button type="button" class="btn btn--ghost" id="btn-patient-bearbeiten">Bearbeiten</button>
+                <button type="button" class="btn btn--primary" id="btn-akte-neu">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neue Akte</span>
+                </button>
+              </div>
+            </div>
 
-                <h4 class="pblatt__titel">Stammdaten</h4>
-                <div class="md-grid-2">
-                  <div class="md-feld">
-                    <label for="patient-geburtsdatum">Geburtsdatum</label>
-                    <input type="text" id="patient-geburtsdatum" class="md-input" placeholder="TT.MM.JJJJ" />
-                  </div>
-                  <div class="md-feld">
-                    <label for="patient-telefonnummer">Telefonnummer</label>
-                    <input type="text" id="patient-telefonnummer" class="md-input" />
-                  </div>
+            <!-- Medizinische Hinweise (nur Ausgefülltes; Allergien als rote Zeile) -->
+            <div class="phinweise" id="patient-hinweise"></div>
+
+            <!-- Bearbeiten-Formular (nur nach Klick auf "Bearbeiten" sichtbar) -->
+            <div class="pedit" id="patient-edit" hidden>
+              <input type="hidden" id="patient-detail-id" value="" />
+
+              <h4 class="pedit__titel">Stammdaten</h4>
+              <div class="md-grid-3">
+                <div class="md-feld">
+                  <label for="patient-detail-name">Name</label>
+                  <input type="text" id="patient-detail-name" class="md-input" />
                 </div>
+                <div class="md-feld">
+                  <label for="patient-geburtsdatum">Geburtsdatum</label>
+                  <input type="text" id="patient-geburtsdatum" class="md-input" placeholder="TT.MM.JJJJ" />
+                </div>
+                <div class="md-feld">
+                  <label for="patient-telefonnummer">Telefonnummer</label>
+                  <input type="text" id="patient-telefonnummer" class="md-input" />
+                </div>
+              </div>
 
-                <h4 class="pblatt__titel">Medizinische Hinweise</h4>
+              <h4 class="pedit__titel">Notfallkontakt</h4>
+              <div class="md-grid-3">
+                <div class="md-feld">
+                  <label for="patient-notfallkontakt">Name</label>
+                  <input type="text" id="patient-notfallkontakt" class="md-input" />
+                </div>
+                <div class="md-feld">
+                  <label for="patient-notfallkontakt-telefon">Telefonnummer</label>
+                  <input type="text" id="patient-notfallkontakt-telefon" class="md-input" />
+                </div>
+              </div>
+
+              <h4 class="pedit__titel">Medizinische Hinweise</h4>
+              <div class="md-grid-3">
                 <div class="md-feld md-feld--warn">
                   <label for="patient-allergien">Allergien / Unverträglichkeiten</label>
                   <textarea id="patient-allergien" class="md-input" rows="2" placeholder="Nichts erfasst"></textarea>
@@ -429,49 +462,42 @@
                   <label for="patient-besondere-hinweise">Besondere Hinweise</label>
                   <textarea id="patient-besondere-hinweise" class="md-input" rows="2" placeholder="Nichts erfasst"></textarea>
                 </div>
-
-                <h4 class="pblatt__titel">Notfallkontakt</h4>
-                <div class="md-grid-2">
-                  <div class="md-feld">
-                    <label for="patient-notfallkontakt">Name</label>
-                    <input type="text" id="patient-notfallkontakt" class="md-input" />
-                  </div>
-                  <div class="md-feld">
-                    <label for="patient-notfallkontakt-telefon">Telefonnummer</label>
-                    <input type="text" id="patient-notfallkontakt-telefon" class="md-input" />
-                  </div>
-                </div>
-
-                <div class="konflikt-hinweis" id="patient-konflikt" hidden>
-                  <span id="patient-konflikt-text"></span>
-                  <button type="button" class="konflikt-hinweis__aktion" id="btn-patient-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
-                </div>
-
-                <p class="field-error" id="patient-profil-error" hidden></p>
-                <div class="pblatt__fuss">
-                  <p class="pblatt__meta" id="patient-profil-meta"></p>
-                  <button class="btn btn--primary" id="btn-confirm-patient-profil">Speichern</button>
-                </div>
-                <button type="button" class="pblatt__loeschen" id="btn-patient-loeschen" hidden>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                  <span>Patient samt Akten löschen</span>
-                </button>
               </div>
 
-              <div class="md-panel pakten">
-                <div class="pakten__kopf">
-                  <div>
-                    <h3>Behandlungsakten</h3>
-                    <p class="pakten__anzahl" id="patient-akten-anzahl"></p>
-                  </div>
-                  <button type="button" class="btn btn--primary btn--sm" id="btn-akte-neu">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    <span>Neue Akte</span>
-                  </button>
-                </div>
-                <div class="akten-zeitleiste" id="patient-akten-liste"></div>
-                <p class="empty-state" id="patient-akten-leer" hidden>Noch keine Akten für diesen Patienten.</p>
+              <div class="konflikt-hinweis" id="patient-konflikt" hidden>
+                <span id="patient-konflikt-text"></span>
+                <button type="button" class="konflikt-hinweis__aktion" id="btn-patient-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
               </div>
+
+              <p class="field-error" id="patient-profil-error" hidden></p>
+              <div class="pedit__aktionen">
+                <button type="button" class="btn btn--primary" id="btn-confirm-patient-profil">Speichern</button>
+                <button type="button" class="btn btn--ghost" id="btn-patient-abbrechen">Abbrechen</button>
+              </div>
+            </div>
+
+            <!-- Akten: volle Breite -->
+            <div class="pakten">
+              <div class="pakten__kopf">
+                <div>
+                  <h3>Behandlungsakten</h3>
+                  <p class="pakten__anzahl" id="patient-akten-anzahl"></p>
+                </div>
+                <input type="text" class="pakten__suche" id="patient-akten-suche" placeholder="In den Akten suchen" autocomplete="off" hidden />
+              </div>
+              <div class="akten-zeitleiste" id="patient-akten-liste"></div>
+              <div class="pakten__leer" id="patient-akten-leer" hidden>
+                <p>Für diesen Patienten gibt es noch keine Akte.</p>
+                <button type="button" class="btn btn--primary" id="btn-akte-erste">Erste Akte anlegen</button>
+              </div>
+            </div>
+
+            <div class="pfuss">
+              <p class="pfuss__meta" id="patient-profil-meta"></p>
+              <button type="button" class="pfuss__loeschen" id="btn-patient-loeschen" hidden>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                <span>Patient samt Akten löschen</span>
+              </button>
             </div>
           </section>
 
@@ -846,25 +872,25 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=125"></script>
-  <script defer src="js/core/config.js?v=125"></script>
-  <script defer src="js/core/state.js?v=125"></script>
-  <script defer src="js/core/dom.js?v=125"></script>
-  <script defer src="js/core/firebase-init.js?v=125"></script>
-  <script defer src="js/core/utils.js?v=125"></script>
-  <script defer src="js/core/akte-dokument.js?v=125"></script>
-  <script defer src="js/core/akte-pdf.js?v=125"></script>
-  <script defer src="js/ui/modals.js?v=125"></script>
-  <script defer src="js/ui/nav.js?v=125"></script>
-  <script defer src="js/ui/presence.js?v=125"></script>
-  <script defer src="js/views/startseite.js?v=125"></script>
-  <script defer src="js/views/patientenakten.js?v=125"></script>
-  <script defer src="js/views/akte-link.js?v=125"></script>
-  <script defer src="js/views/beispiele.js?v=125"></script>
-  <script defer src="js/views/einstellungen.js?v=125"></script>
-  <script defer src="js/views/admin.js?v=125"></script>
-  <script defer src="js/ui/version-check.js?v=125"></script>
-  <script defer src="js/main.js?v=125"></script>
-  <script type="module" src="js/auth.js?v=125"></script>
+  <script defer src="js/firebase-config.js?v=126"></script>
+  <script defer src="js/core/config.js?v=126"></script>
+  <script defer src="js/core/state.js?v=126"></script>
+  <script defer src="js/core/dom.js?v=126"></script>
+  <script defer src="js/core/firebase-init.js?v=126"></script>
+  <script defer src="js/core/utils.js?v=126"></script>
+  <script defer src="js/core/akte-dokument.js?v=126"></script>
+  <script defer src="js/core/akte-pdf.js?v=126"></script>
+  <script defer src="js/ui/modals.js?v=126"></script>
+  <script defer src="js/ui/nav.js?v=126"></script>
+  <script defer src="js/ui/presence.js?v=126"></script>
+  <script defer src="js/views/startseite.js?v=126"></script>
+  <script defer src="js/views/patientenakten.js?v=126"></script>
+  <script defer src="js/views/akte-link.js?v=126"></script>
+  <script defer src="js/views/beispiele.js?v=126"></script>
+  <script defer src="js/views/einstellungen.js?v=126"></script>
+  <script defer src="js/views/admin.js?v=126"></script>
+  <script defer src="js/ui/version-check.js?v=126"></script>
+  <script defer src="js/main.js?v=126"></script>
+  <script type="module" src="js/auth.js?v=126"></script>
 </body>
 </html>

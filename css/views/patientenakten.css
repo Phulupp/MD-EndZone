@@ -289,13 +289,17 @@ textarea.md-input {
 }
 
 /* --------------------------------------------------------------------------
-   18b. Patientenseite: links das Patientenblatt, rechts die Akten
-   -------------------------------------------------------------------------- */
+   18b. Patientenseite
+   --------------------------------------------------------------------------
+   Erst lesen, dann bearbeiten: oben der Kopf mit Name und Stammdaten in einer
+   Zeile, darunter die medizinischen Hinweise (Allergien als rote Zeile), dann
+   die Akten in voller Breite. Das Bearbeiten-Formular klappt nur nach Klick
+   auf "Bearbeiten" auf (Klasse .patient-seite--bearbeiten am Abschnitt). */
 .patient-seite__zurueck {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 22px;
+  margin: 8px 0 26px;
   font-size: 12.5px;
   font-weight: 600;
   color: var(--wood-text-muted);
@@ -306,49 +310,24 @@ textarea.md-input {
   color: var(--brass-bright);
 }
 
-.patient-seite {
-  display: grid;
-  grid-template-columns: minmax(360px, 420px) 1fr;
-  align-items: start;
-}
-
-.pblatt {
-  padding-right: 48px;
-  border-right: 1px solid var(--leather-edge-soft);
-}
-
-.pakten {
-  padding-left: 52px;
-}
-
-@media (max-width: 1000px) {
-  .patient-seite {
-    grid-template-columns: 1fr;
-  }
-  .pblatt {
-    padding-right: 0;
-    padding-bottom: 36px;
-    border-right: none;
-    border-bottom: 1px solid var(--leather-edge-soft);
-  }
-  .pakten {
-    padding-left: 0;
-    padding-top: 36px;
-  }
-}
-
-.pblatt__kopf {
+.pkopf {
   display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  padding-bottom: 22px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px 32px;
 }
 
-.pblatt__avatar {
-  width: 52px;
-  height: 52px;
+.pkopf__id {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
+.pkopf__avatar {
+  width: 68px;
+  height: 68px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -356,28 +335,122 @@ textarea.md-input {
   border: 1px solid var(--brass);
   border-radius: var(--radius-lg);
   color: var(--brass-bright);
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 
-.pblatt__kopf .pblatt__name {
-  flex: 1;
+.pkopf__text {
   min-width: 0;
+}
+
+.pkopf__name {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--wood-text);
+  overflow-wrap: anywhere;
+}
+
+.pkopf__daten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  margin-top: 14px;
+}
+
+.pkopf__eintrag {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pkopf__label {
+  font-size: 12.5px;
+  color: var(--wood-text-soft);
+}
+
+.pkopf__wert {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--wood-text);
+}
+
+.pkopf__leer {
+  font-size: 14px;
+  color: var(--wood-text-placeholder);
+}
+
+.pkopf__aktionen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+/* --- Hinweise (Lese-Ansicht) ---------------------------------------------- */
+.phinweise {
+  margin: 30px 0 0;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.phinweise .akte-hinweis {
   margin-top: 0;
 }
 
-.pblatt__name .md-input {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+.phinweise .akte-hinweis__zeile,
+.phinweise__zeile {
+  white-space: pre-line;
 }
 
-.pblatt__titel {
+.phinweise__zeile {
+  margin: 12px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--wood-text);
+}
+
+.phinweise .akte-hinweis + .phinweise__zeile {
+  margin-top: 16px;
+}
+
+.phinweise__label {
+  margin-right: 10px;
+  font-weight: 600;
+  color: var(--wood-text-soft);
+}
+
+.phinweise__leer {
+  margin: 0;
+  font-size: 14px;
+  color: var(--wood-text-placeholder);
+}
+
+/* --- Bearbeiten-Formular --------------------------------------------------- */
+.patient-seite--bearbeiten .pkopf__daten,
+.patient-seite--bearbeiten .phinweise,
+.patient-seite--bearbeiten #btn-patient-bearbeiten {
+  display: none;
+}
+
+.pedit {
+  margin: 30px 0 0;
+  padding: 0 0 32px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+}
+
+.pedit[hidden] {
+  display: none;
+}
+
+.pedit__titel {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin: 30px 0 4px;
+  margin: 30px 0 0;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -385,34 +458,58 @@ textarea.md-input {
   color: var(--wood-text-muted);
 }
 
-.pblatt__titel::after {
+.pedit__titel:first-of-type {
+  margin-top: 0;
+}
+
+.pedit__titel::after {
   content: "";
   flex: 1;
   height: 1px;
   background: var(--leather-edge-soft);
 }
 
-.pblatt__fuss {
+.md-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 32px;
+}
+
+.md-grid-3 > .md-feld,
+.md-grid-3 > .md-feld:first-child {
+  margin-top: 20px;
+}
+
+.pedit__aktionen {
   display: flex;
   align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+/* --- Fuß der Seite ---------------------------------------------------------- */
+.pfuss {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-top: 28px;
-  padding-top: 18px;
+  gap: 12px 24px;
+  margin-top: 56px;
+  padding-top: 22px;
   border-top: 1px solid var(--leather-edge-soft);
 }
 
-.pblatt__meta {
-  font-size: 11.5px;
+.pfuss__meta {
+  margin: 0;
+  font-size: 12px;
   line-height: 1.45;
   color: var(--wood-text-soft);
 }
 
-.pblatt__loeschen {
+.pfuss__loeschen {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 22px;
   padding: 0;
   font-size: 12.5px;
   font-weight: 600;
@@ -420,12 +517,89 @@ textarea.md-input {
   transition: color 0.15s ease;
 }
 
-.pblatt__loeschen:hover {
+.pfuss__loeschen:hover {
   color: var(--status-danger-bright);
 }
 
-.pblatt__loeschen[hidden] {
+.pfuss__loeschen[hidden] {
   display: none;
+}
+
+@media (max-width: 900px) {
+  .md-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .pkopf__name {
+    font-size: 28px;
+  }
+  .pkopf__avatar {
+    width: 54px;
+    height: 54px;
+    font-size: 18px;
+  }
+}
+
+/* --- Akten-Bereich ---------------------------------------------------------- */
+.pakten {
+  margin-top: 36px;
+}
+
+.pakten__suche {
+  width: 280px;
+  max-width: 100%;
+  padding: 9px 14px;
+  background: var(--leather-800);
+  border: 1px solid var(--leather-edge-soft);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--wood-text);
+  transition: border-color 0.15s ease;
+}
+
+.pakten__suche[hidden] {
+  display: none;
+}
+
+.pakten__suche::placeholder {
+  color: var(--wood-text-placeholder);
+}
+
+.pakten__suche:hover {
+  border-color: rgba(130, 170, 190, 0.34);
+}
+
+.pakten__suche:focus {
+  outline: none;
+  border-color: var(--brass-bright);
+}
+
+.pakten__leer {
+  padding: 48px 0 24px;
+  text-align: center;
+}
+
+.pakten__leer[hidden] {
+  display: none;
+}
+
+.pakten__leer p {
+  margin: 0 0 16px;
+  font-size: 14.5px;
+  color: var(--wood-text-muted);
+}
+
+.akten-monat {
+  margin: 34px 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wood-text-soft);
+}
+
+.akten-monat:first-child {
+  margin-top: 4px;
 }
 
 /* --- Akten-Zeitleiste ---------------------------------------------------- */
@@ -452,6 +626,7 @@ textarea.md-input {
 
 .akten-zeitleiste {
   position: relative;
+  max-width: 980px;
   padding-left: 32px;
 }
 

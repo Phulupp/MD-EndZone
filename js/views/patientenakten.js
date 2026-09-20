@@ -399,7 +399,7 @@
         });
         schliesseModal("modal-patient-anlegen");
         zeigeToast("Patient angelegt.");
-        oeffnePatientSeite(ref.id, { id: ref.id, name });
+        oeffnePatientSeite(ref.id, { id: ref.id, name }, true);
       } catch (fehler) {
         console.error(fehler);
         zeigeFeldFehler(el.patientAnlegenError, "Anlegen fehlgeschlagen. Bitte erneut versuchen.");
@@ -411,14 +411,20 @@
   // "vorabDaten" wird nur direkt nach dem Anlegen übergeben, damit die Seite
   // sofort mit dem gerade eingegebenen Namen öffnet, statt kurz leer zu
   // erscheinen, bis der Firestore-Listener zurückkommt.
-  function oeffnePatientSeite(patientId, vorabDaten) {
+  // "bearbeiten" = direkt im Bearbeiten-Modus öffnen (frisch angelegter Patient:
+  // dort fehlen ja noch alle Angaben).
+  function oeffnePatientSeite(patientId, vorabDaten, bearbeiten) {
     const p = patienten.find((x) => x.id === patientId) || vorabDaten || { id: patientId, name: "" };
     offenerPatientId = patientId;
     offenerPatientGesehen = patienten.some((x) => x.id === patientId);
+    patientAktenSuchbegriff = "";
+    if (el.patientAktenSuche) el.patientAktenSuche.value = "";
     zeigeAnsicht("patient-detail");
     fuellePatientDetailFelder(p);
+    setzeProfilBearbeiten(!!bearbeiten);
     renderPatientDetailAkten(patientId);
     aktualisiereAdminSteuerung();
+    if (bearbeiten && el.patientGeburtsdatum) el.patientGeburtsdatum.focus();
   }
 
   // Löschen von Patienten ist Admins vorbehalten (siehe firestore.rules) -
@@ -458,15 +464,39 @@
     });
   }
 
-  // Kopfbereich (Seitentitel, Avatar, "zuletzt bearbeitet") - unkritisch,
-  // darf jederzeit live aktualisiert werden, im Gegensatz zu den
-  // Eingabefeldern (siehe fuellePatientDetailFelder).
-  function aktualisiereProfilKopf(p) {
-    if (aktuelleAnsicht === "patient-detail") {
-      el.viewTitle.textContent = p.name || "Patient";
-      el.viewSubtitle.textContent = "Patientenakte";
+  // Lese-Ansicht des Patienten (Kopf mit Stammdaten, Hinweise, "zuletzt
+  // bearbeitet") - reine Anzeige, wird bei jedem Snapshot live nachgezogen. Die
+  // Eingabefelder des Bearbeiten-Formulars sind davon getrennt (siehe
+  // fuellePatientDetailFelder und den Kollisionsschutz weiter unten).
+  function kopfDatenHtml(p) {
+    const eintraege = [];
+    const eintrag = (label, wert) =>
+      `<span class="pkopf__eintrag"><span class="pkopf__label">${label}</span><span class="pkopf__wert">${escapeHtml(wert)}</span></span>`;
+    if (p.geburtsdatum) eintraege.push(eintrag("Geburtsdatum", p.geburtsdatum));
+    if (p.telefonnummer) eintraege.push(eintrag("Telefon", p.telefonnummer));
+    const notfall = [p.notfallkontakt, p.notfallkontaktTelefon].filter(Boolean).join(", ");
+    if (notfall) eintraege.push(eintrag("Notfallkontakt", notfall));
+    return eintraege.length ? eintraege.join("") : '<span class="pkopf__leer">Noch keine Stammdaten erfasst.</span>';
+  }
+
+  // Allergien als rote Zeile, Vorerkrankungen/Hinweise als ruhige Zeilen -
+  // jeweils nur, wenn wirklich etwas Relevantes drinsteht (siehe hatEintrag).
+  function hinweiseHtml(p) {
+    const zeile = (label, wert) => `<p class="phinweise__zeile"><span class="phinweise__label">${label}</span>${escapeHtml(wert)}</p>`;
+    let html = "";
+    if (hatEintrag(p.allergien)) {
+      html += `<div class="akte-hinweis"><p class="akte-hinweis__zeile"><span class="akte-hinweis__label">Allergien</span>${escapeHtml(p.allergien)}</p></div>`;
     }
+    if (hatEintrag(p.vorerkrankungen)) html += zeile("Vorerkrankungen", p.vorerkrankungen);
+    if (hatEintrag(p.besondereHinweise)) html += zeile("Besondere Hinweise", p.besondereHinweise);
+    return html || '<p class="phinweise__leer">Noch keine medizinischen Hinweise erfasst.</p>';
+  }
+
+  function aktualisiereProfilKopf(p) {
     if (el.patientDetailAvatar) el.patientDetailAvatar.textContent = initialenAvatar(p.name);
+    if (el.patientKopfName) el.patientKopfName.textContent = p.name || "Patient";
+    if (el.patientKopfDaten) el.patientKopfDaten.innerHTML = kopfDatenHtml(p);
+    if (el.patientHinweise) el.patientHinweise.innerHTML = hinweiseHtml(p);
     if (el.patientProfilMeta) {
       el.patientProfilMeta.textContent = p.bearbeiter
         ? `Zuletzt bearbeitet von ${p.bearbeiter} · ${formatDatumUhrzeit(p.bearbeitetAm)}`
@@ -474,6 +504,15 @@
         ? `Angelegt von ${p.erstelltVon}`
         : "";
     }
+  }
+
+  // Bearbeiten-Modus: das Formular ersetzt Stammdaten-Zeile und Hinweise (per
+  // CSS-Klasse), die Akten darunter bleiben sichtbar.
+  function setzeProfilBearbeiten(an) {
+    if (!el.patientEdit || !el.viewPatientDetail) return;
+    el.viewPatientDetail.classList.toggle("patient-seite--bearbeiten", an);
+    el.patientEdit.hidden = !an;
+    if (an) passeTextareasAn(el.patientEdit);
   }
 
   // Befüllt die Eingabefelder - nur beim ÖFFNEN der Seite, nie durch einen
@@ -491,7 +530,7 @@
     el.patientNotfallkontaktTelefon.value = p.notfallkontaktTelefon || "";
     versteckeFeldFehler(el.patientProfilError);
     aktualisiereAllergieMarkierung();
-    passeTextareasAn(el.patientDetailName.closest(".pblatt"));
+    passeTextareasAn(el.patientEdit);
     profilBasisStempel = zeitstempelWert(p.bearbeitetAm);
     profilGeaendert = false;
     setzeProfilKonflikt(false);
@@ -532,13 +571,32 @@
     setzeProfilKonflikt(true, `${p.bearbeiter || "Jemand"} hat dieses Profil gerade geändert (${formatDatumUhrzeit(p.bearbeitetAm)}). Wenn du jetzt speicherst, wird das überschrieben.`);
   }
 
-  const profilBlatt = el.patientDetailName ? el.patientDetailName.closest(".pblatt") : null;
-  if (profilBlatt) profilBlatt.addEventListener("input", () => (profilGeaendert = true));
+  if (el.patientEdit) el.patientEdit.addEventListener("input", () => (profilGeaendert = true));
 
   if (el.btnPatientKonfliktLaden) {
     el.btnPatientKonfliktLaden.addEventListener("click", () => {
       const p = patienten.find((x) => x.id === offenerPatientId);
       if (p) fuellePatientDetailFelder(p);
+    });
+  }
+
+  if (el.btnPatientBearbeiten) {
+    el.btnPatientBearbeiten.addEventListener("click", () => {
+      const p = patienten.find((x) => x.id === offenerPatientId);
+      if (!p) return;
+      // Immer mit dem aktuellen Stand starten (setzt auch den Kollisions-
+      // Ausgangspunkt neu).
+      fuellePatientDetailFelder(p);
+      setzeProfilBearbeiten(true);
+      el.patientDetailName.focus();
+    });
+  }
+
+  if (el.btnPatientAbbrechen) {
+    el.btnPatientAbbrechen.addEventListener("click", () => {
+      const p = patienten.find((x) => x.id === offenerPatientId);
+      if (p) fuellePatientDetailFelder(p);
+      setzeProfilBearbeiten(false);
     });
   }
 
@@ -566,6 +624,7 @@
             bearbeitetAm: firebase.firestore.FieldValue.serverTimestamp(),
           });
         profilGeaendert = false;
+        setzeProfilBearbeiten(false);
         zeigeToast("Profil gespeichert.");
       } catch (fehler) {
         console.error(fehler);
@@ -582,19 +641,69 @@
   // Neueste Akte zuerst (wie eine Fallhistorie), die Nummer "Akte N" bleibt
   // aber die chronologische Reihenfolge des Anlegens - Akte 1 ist immer die
   // erste, egal wie herum die Liste sortiert angezeigt wird.
+  // Suche innerhalb der Akten des offenen Patienten (nur ab MIN_AKTEN_FUER_SUCHE
+  // Akten sichtbar) und Monatsüberschriften in der Zeitleiste (ebenfalls erst
+  // ab dieser Anzahl) - bei ein, zwei Akten wäre beides nur Ballast.
+  const MIN_AKTEN_FUER_SUCHE = 4;
+  let patientAktenSuchbegriff = "";
+
+  function aktePasstZurSuche(a, tokens) {
+    const text = falte([a.behandlungsgrund, a.hergang, a.befund, a.behandlung, a.bemerkungen, a.erstelltVon].filter(Boolean).join(" "));
+    return tokens.every((t) => text.includes(t));
+  }
+
+  function monatUeberschrift(datum) {
+    const d = new Date(datum);
+    return isNaN(d.getTime()) ? "Ohne Datum" : d.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+  }
+
   function renderPatientDetailAkten(patientId) {
     if (!el.patientAktenListe) return;
     const chronologisch = patientAkten(patientId);
-    el.patientAktenLeer.hidden = chronologisch.length !== 0;
-    if (el.patientAktenAnzahl) {
-      el.patientAktenAnzahl.textContent = chronologisch.length
-        ? `${chronologisch.length} ${chronologisch.length === 1 ? "Akte" : "Akten"}, neueste zuerst`
-        : "";
+    const gesamt = chronologisch.length;
+    el.patientAktenLeer.hidden = gesamt !== 0;
+
+    const suchbar = gesamt >= MIN_AKTEN_FUER_SUCHE;
+    if (el.patientAktenSuche) {
+      el.patientAktenSuche.hidden = !suchbar;
+      if (!suchbar && patientAktenSuchbegriff) {
+        patientAktenSuchbegriff = "";
+        el.patientAktenSuche.value = "";
+      }
     }
-    el.patientAktenListe.innerHTML = chronologisch
+    const tokens = suchbar ? normalisiere(patientAktenSuchbegriff).split(" ").filter(Boolean) : [];
+
+    // Neueste zuerst; "nummer" ist die feste chronologische Nummer und wird
+    // VOR dem Filtern vergeben, damit Akte 3 auch in der Suche Akte 3 bleibt.
+    const sichtbar = chronologisch
       .map((a, index) => ({ a, nummer: index + 1 }))
       .reverse()
-      .map(({ a, nummer }, position) => {
+      .filter(({ a }) => !tokens.length || aktePasstZurSuche(a, tokens));
+
+    if (el.patientAktenAnzahl) {
+      el.patientAktenAnzahl.textContent = !gesamt
+        ? ""
+        : tokens.length
+        ? `${sichtbar.length} von ${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}`
+        : `${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}, neueste zuerst`;
+    }
+
+    if (gesamt && !sichtbar.length) {
+      el.patientAktenListe.innerHTML = '<p class="empty-state">Keine Akte passt zur Suche.</p>';
+      return;
+    }
+
+    let letzterMonat = "";
+    el.patientAktenListe.innerHTML = sichtbar
+      .map(({ a, nummer }) => {
+        let monat = "";
+        if (suchbar) {
+          const m = monatUeberschrift(a.datum);
+          if (m !== letzterMonat) {
+            letzterMonat = m;
+            monat = `<h4 class="akten-monat">${escapeHtml(m)}</h4>`;
+          }
+        }
         // Beschriftete Kurzfassung: nur ausgefüllte Felder, damit schon in
         // der Liste klar ist, was wo eingetragen wurde.
         const felder = [
@@ -607,7 +716,7 @@
           .filter(([, wert]) => wert)
           .map(([label, wert, haupt]) => `<dt>${label}</dt><dd${haupt ? ' class="akte-eintrag__haupt"' : ""}>${escapeHtml(wert)}</dd>`)
           .join("");
-        return `<article class="akte-eintrag${position === 0 ? " akte-eintrag--neu" : ""}" tabindex="0" data-akte-oeffnen="${a.id}">
+        return `${monat}<article class="akte-eintrag${nummer === gesamt ? " akte-eintrag--neu" : ""}" tabindex="0" data-akte-oeffnen="${a.id}">
             <span class="akte-eintrag__punkt"></span>
             <button type="button" class="akte-eintrag__loeschen" data-akte-loeschen="${a.id}" data-akte-nummer="${nummer}" title="Akte ${nummer} löschen" aria-label="Akte ${nummer} löschen">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -621,6 +730,13 @@
           </article>`;
       })
       .join("");
+  }
+
+  if (el.patientAktenSuche) {
+    el.patientAktenSuche.addEventListener("input", () => {
+      patientAktenSuchbegriff = el.patientAktenSuche.value;
+      if (offenerPatientId) renderPatientDetailAkten(offenerPatientId);
+    });
   }
 
   if (el.patientAktenListe) {
@@ -657,12 +773,13 @@
     });
   }
 
-  if (el.btnAkteNeu) {
-    el.btnAkteNeu.addEventListener("click", () => {
+  [el.btnAkteNeu, el.btnAkteErste].forEach((knopf) => {
+    if (!knopf) return;
+    knopf.addEventListener("click", () => {
       if (!offenerPatientId) return;
       oeffneAkteFormModal(offenerPatientId, null);
     });
-  }
+  });
 
   // --- Akte anlegen/bearbeiten (ein gemeinsames Formular) -------------------
   function fuelleAkteFormFelder(a) {

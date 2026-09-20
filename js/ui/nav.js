@@ -19,6 +19,11 @@
       );
     });
 
+    // Auf der Patientenseite trägt der Patient selbst die Überschrift (großer
+    // Name im Kopf der Seite) - der allgemeine Seitentitel würde ihn doppeln.
+    const seitenKopf = document.getElementById("page-header");
+    if (seitenKopf) seitenKopf.hidden = view === "patient-detail";
+
     const meta = VIEW_META[view] || { title: view, subtitle: "" };
     el.viewTitle.textContent = meta.title;
     el.viewSubtitle.textContent = meta.subtitle;
