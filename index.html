@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=124" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=125" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=124" />
-  <link rel="stylesheet" href="css/base/reset.css?v=124" />
-  <link rel="stylesheet" href="css/base/textures.css?v=124" />
-  <link rel="stylesheet" href="css/views/auth.css?v=124" />
-  <link rel="stylesheet" href="css/components/forms.css?v=124" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=124" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=124" />
-  <link rel="stylesheet" href="css/components/cards.css?v=124" />
-  <link rel="stylesheet" href="css/components/badges.css?v=124" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=124" />
-  <link rel="stylesheet" href="css/components/tables.css?v=124" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=124" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=124" />
-  <link rel="stylesheet" href="css/components/modals.css?v=124" />
-  <link rel="stylesheet" href="css/views/admin.css?v=124" />
-  <link rel="stylesheet" href="css/components/toast.css?v=124" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=124" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=124" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=125" />
+  <link rel="stylesheet" href="css/base/reset.css?v=125" />
+  <link rel="stylesheet" href="css/base/textures.css?v=125" />
+  <link rel="stylesheet" href="css/views/auth.css?v=125" />
+  <link rel="stylesheet" href="css/components/forms.css?v=125" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=125" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=125" />
+  <link rel="stylesheet" href="css/components/cards.css?v=125" />
+  <link rel="stylesheet" href="css/components/badges.css?v=125" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=125" />
+  <link rel="stylesheet" href="css/components/tables.css?v=125" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=125" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=125" />
+  <link rel="stylesheet" href="css/components/modals.css?v=125" />
+  <link rel="stylesheet" href="css/views/admin.css?v=125" />
+  <link rel="stylesheet" href="css/components/toast.css?v=125" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=125" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=125" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -270,7 +270,10 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 4 6.5 3.6 4 4.3v14.3c2.5-.7 6-.3 8 1.2"/><path d="M12 5.5c2-1.5 5.5-1.9 8-1.2v14.3c-2.5-.7-6-.3-8 1.2Z"/><line x1="12" y1="5.5" x2="12" y2="19.8"/></svg>
           <span>Beispiele</span>
         </button>
-        <div class="sidebar__divider"></div>
+        <!-- Einstellungen + Verwaltung stehen unten in der Ecke, über
+             "Abmelden" - bleiben aber INNERHALB von #sidebar-nav, weil der
+             Klick-Handler in js/ui/nav.js an diesem Container hängt. -->
+        <div class="sidebar__nav-unten">
         <button class="sidebar__item" data-view="einstellungen">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.5-2.4.8a7.6 7.6 0 0 0-2.6-1.5L14 2h-4l-.4 2.3a7.6 7.6 0 0 0-2.6 1.5l-2.4-.8-2 3.5 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.5 2.4-.8a7.6 7.6 0 0 0 2.6 1.5L10 22h4l.4-2.3a7.6 7.6 0 0 0 2.6-1.5l2.4.8 2-3.5Z"/></svg>
           <span>Einstellungen</span>
@@ -280,6 +283,7 @@
           <span>Verwaltung</span>
           <span class="sidebar__badge" id="nav-admin-badge" hidden>0</span>
         </button>
+        </div>
       </nav>
 
       <div class="sidebar__footer">
@@ -842,25 +846,25 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=124"></script>
-  <script defer src="js/core/config.js?v=124"></script>
-  <script defer src="js/core/state.js?v=124"></script>
-  <script defer src="js/core/dom.js?v=124"></script>
-  <script defer src="js/core/firebase-init.js?v=124"></script>
-  <script defer src="js/core/utils.js?v=124"></script>
-  <script defer src="js/core/akte-dokument.js?v=124"></script>
-  <script defer src="js/core/akte-pdf.js?v=124"></script>
-  <script defer src="js/ui/modals.js?v=124"></script>
-  <script defer src="js/ui/nav.js?v=124"></script>
-  <script defer src="js/ui/presence.js?v=124"></script>
-  <script defer src="js/views/startseite.js?v=124"></script>
-  <script defer src="js/views/patientenakten.js?v=124"></script>
-  <script defer src="js/views/akte-link.js?v=124"></script>
-  <script defer src="js/views/beispiele.js?v=124"></script>
-  <script defer src="js/views/einstellungen.js?v=124"></script>
-  <script defer src="js/views/admin.js?v=124"></script>
-  <script defer src="js/ui/version-check.js?v=124"></script>
-  <script defer src="js/main.js?v=124"></script>
-  <script type="module" src="js/auth.js?v=124"></script>
+  <script defer src="js/firebase-config.js?v=125"></script>
+  <script defer src="js/core/config.js?v=125"></script>
+  <script defer src="js/core/state.js?v=125"></script>
+  <script defer src="js/core/dom.js?v=125"></script>
+  <script defer src="js/core/firebase-init.js?v=125"></script>
+  <script defer src="js/core/utils.js?v=125"></script>
+  <script defer src="js/core/akte-dokument.js?v=125"></script>
+  <script defer src="js/core/akte-pdf.js?v=125"></script>
+  <script defer src="js/ui/modals.js?v=125"></script>
+  <script defer src="js/ui/nav.js?v=125"></script>
+  <script defer src="js/ui/presence.js?v=125"></script>
+  <script defer src="js/views/startseite.js?v=125"></script>
+  <script defer src="js/views/patientenakten.js?v=125"></script>
+  <script defer src="js/views/akte-link.js?v=125"></script>
+  <script defer src="js/views/beispiele.js?v=125"></script>
+  <script defer src="js/views/einstellungen.js?v=125"></script>
+  <script defer src="js/views/admin.js?v=125"></script>
+  <script defer src="js/ui/version-check.js?v=125"></script>
+  <script defer src="js/main.js?v=125"></script>
+  <script type="module" src="js/auth.js?v=125"></script>
 </body>
 </html>
