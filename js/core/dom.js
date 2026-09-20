@@ -341,6 +341,20 @@
     customSelectRegistry.set(select, { sync, schliessen });
   }
 
-  // Alle noch verbliebenen "normalen" <select>-Felder der Seite auf das
-  // dunkle Custom-Dropdown umstellen (Startseite, Rang bei neuen Benutzern).
-  [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach(erzeugeCustomSelect);
+  // Alle "normalen" <select>-Felder, die schon im HTML stehen, auf das dunkle
+  // Custom-Dropdown umstellen. Bewusst erst NACH dem Laden aller Skripte
+  // (DOMContentLoaded feuert nach dem letzten defer-Skript): erzeugeCustomSelect
+  // nutzt escapeHtml aus js/core/utils.js, das erst NACH dieser Datei geladen
+  // wird - direkt hier aufgerufen bricht es ab (ReferenceError) und die Felder
+  // bleiben als helle Browser-Auswahl stehen. Jedes Feld einzeln abgesichert,
+  // damit ein Fehler nicht die übrigen mitnimmt.
+  function wandleAuswahlfelderUm() {
+    [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
+      try {
+        erzeugeCustomSelect(select);
+      } catch (fehler) {
+        console.error("Auswahlfeld konnte nicht umgestellt werden:", select && select.id, fehler);
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", wandleAuswahlfelderUm);

@@ -39,6 +39,14 @@
     verlauf: "Noch keine erledigten oder abgesagten Termine.",
   };
 
+  // Firestore lehnt ab, solange die Regel für "termine" nicht in der Firebase
+  // Console veröffentlicht ist - das wäre sonst nur ein allgemeines "fehlgeschlagen".
+  function terminFehlerText(fehler, standard) {
+    return fehler && fehler.code === "permission-denied"
+      ? 'Keine Berechtigung: Die Firestore-Regel für "termine" ist noch nicht veröffentlicht (Firebase Console, Firestore, Regeln).'
+      : standard;
+  }
+
   function starteTermineListener() {
     if (!db) return;
     if (unsubTermine) unsubTermine();
@@ -51,7 +59,13 @@
           snap.forEach((docSnap) => termine.push({ id: docSnap.id, ...docSnap.data() }));
           renderTermine();
         },
-        (fehler) => console.error("Termine konnten nicht geladen werden:", fehler)
+        (fehler) => {
+          console.error("Termine konnten nicht geladen werden:", fehler);
+          if (el.termineEmpty) {
+            el.termineEmpty.textContent = terminFehlerText(fehler, "Termine konnten nicht geladen werden. Bitte Seite neu laden.");
+            el.termineEmpty.hidden = false;
+          }
+        }
       );
   }
 
@@ -192,7 +206,7 @@
       zeigeToast(status === "erledigt" ? "Termin als erledigt markiert." : "Termin wieder auf geplant gesetzt.");
     } catch (fehler) {
       console.error(fehler);
-      zeigeToast("Status konnte nicht geändert werden.");
+      zeigeToast(terminFehlerText(fehler, "Status konnte nicht geändert werden."));
     }
   }
 
@@ -379,7 +393,7 @@
         renderTermine();
       } catch (fehler) {
         console.error(fehler);
-        zeigeFeldFehler(el.terminError, "Speichern fehlgeschlagen. Bitte erneut versuchen.");
+        zeigeFeldFehler(el.terminError, terminFehlerText(fehler, "Speichern fehlgeschlagen. Bitte erneut versuchen."));
       }
     });
   }
