@@ -19,7 +19,7 @@ There is no build, lint, or test tooling in this repo (no `package.json`).
   repo root with any static file server.
 - **Deploy**: pushing to `main` auto-publishes to GitHub Pages via
   `.github/workflows/pages.yml` (no build step — the repo root is uploaded
-  as-is). Custom domain is set via `CNAME` (`blackwolfranch.de`).
+  as-is). Custom domain is set via `CNAME` (`md-endzone.de`).
 - **"Tests"**: none exist; verify changes by opening the app in a browser
   and exercising the affected view manually (see "Executing actions with
   care" for browser-testing expectations on UI changes).
