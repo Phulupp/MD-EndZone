@@ -1,0 +1,96 @@
+/* --------------------------------------------------------------------------
+   Öffentliche Akte-Ansicht (akte.html)
+   --------------------------------------------------------------------------
+   Nutzt die Dokument-Klassen aus css/views/patientenakten.css (.akte-blatt,
+   .akte-abschnitt, ...), hier nur der Rahmen der Seite. */
+.akte-oeffentlich {
+  height: auto;
+  min-height: 100%;
+  background: var(--wood-900);
+}
+
+.akte-oeffentlich__rahmen {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+.akte-oeffentlich__kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.akte-oeffentlich__marke {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wood-text);
+}
+
+.akte-oeffentlich__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f4f7f8;
+  border: 2px solid var(--brass-bright);
+  color: var(--brass-bright);
+}
+
+.akte-oeffentlich__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.akte-oeffentlich__zustand {
+  padding: 60px 0;
+  text-align: center;
+  font-size: 15px;
+  color: var(--wood-text-muted);
+}
+
+.akte-oeffentlich__zustand--fehler {
+  color: var(--status-danger-bright);
+}
+
+.akte-oeffentlich__fuss {
+  margin-top: 18px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--wood-text-soft);
+}
+
+/* Das Dokument steht hier frei auf der Seite, nicht in einem Fenster. */
+.akte-blatt--oeffentlich {
+  overflow: visible;
+  background: var(--leather-800);
+  border: 1px solid var(--leather-edge);
+  border-radius: var(--radius-lg);
+}
+
+.akte-blatt--oeffentlich .akte-blatt__seite {
+  padding-top: 48px;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.akte-blatt--oeffentlich .akte-blatt__seite-innen {
+  top: 24px;
+}
+
+@media (max-width: 820px) {
+  .akte-oeffentlich__rahmen {
+    padding: 20px 14px 40px;
+  }
+  .akte-blatt--oeffentlich .akte-blatt__seite {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+}

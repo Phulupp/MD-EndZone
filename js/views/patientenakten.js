@@ -189,9 +189,10 @@
     patientAkten(p.id).forEach((a, index) => {
       [
         ["Behandlungsgrund", a.behandlungsgrund],
+        ["Hergang", a.hergang],
         ["Befund", a.befund],
         ["Behandlung", a.behandlung],
-        ["Bemerkungen", a.bemerkungen],
+        ["Zusätzliche Informationen", a.bemerkungen],
       ].forEach(([feld, text]) => felder.push({ ort: `Akte ${index + 1} · ${feld}`, text: text || "" }));
     });
     return felder;
@@ -450,6 +451,7 @@
           offenerPatientGesehen = true;
           throw fehler;
         }
+        seineAkten.forEach((a) => loescheFreigabenFuerAkte(a.id));
         zeigeAnsicht("patientenakten");
         zeigeToast("Patient gelöscht.");
       });
@@ -597,9 +599,10 @@
         // der Liste klar ist, was wo eingetragen wurde.
         const felder = [
           ["Behandlungsgrund", a.behandlungsgrund || "—", true],
+          ["Hergang", a.hergang],
           ["Befund", a.befund],
           ["Behandlung", a.behandlung],
-          ["Bemerkungen", a.bemerkungen],
+          ["Zusätzliche Infos", a.bemerkungen],
         ]
           .filter(([, wert]) => wert)
           .map(([label, wert, haupt]) => `<dt>${label}</dt><dd${haupt ? ' class="akte-eintrag__haupt"' : ""}>${escapeHtml(wert)}</dd>`)
@@ -647,6 +650,8 @@
     const bezeichnung = nummer ? `Akte ${nummer}` : "diese Akte";
     fordereLoeschungAn("Akte löschen", `Möchtest du ${bezeichnung} wirklich unwiderruflich löschen?`, async () => {
       await db.collection(AKTEN_COLLECTION).doc(akteId).delete();
+      // Zugehörige Zugriffslinks (Kopien) mit entfernen.
+      loescheFreigabenFuerAkte(akteId);
       if (danach) danach();
       zeigeToast("Akte gelöscht.");
     });
@@ -666,10 +671,11 @@
     // stillschweigend verwerfen und leer bleiben.
     el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
     el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
+    el.akteHergang.value = a ? a.hergang || "" : "";
     el.akteBefund.value = a ? a.befund || "" : "";
     el.akteBehandlung.value = a ? a.behandlung || "" : "";
     el.akteBemerkungen.value = a ? a.bemerkungen || "" : "";
-    passeTextareasAn(el.akteBehandlungsgrund.closest(".modal__body"));
+    passeTextareasAn(el.akteBehandlungsgrund.closest(".akte-blatt"));
   }
 
   function oeffneAkteFormModal(patientId, akteId) {
@@ -782,6 +788,7 @@
         patientId,
         datum,
         behandlungsgrund,
+        hergang: el.akteHergang.value.trim(),
         befund: el.akteBefund.value.trim(),
         behandlung: el.akteBehandlung.value.trim(),
         bemerkungen: el.akteBemerkungen.value.trim(),
@@ -809,30 +816,40 @@
     });
   }
 
-  // --- Akte-Detail (feste Vorlage, siehe css/views/patientenakten.css) -----
+  // --- Akte-Detail (Dokument, Darstellung in js/core/akte-dokument.js) -------
+  // Einfaches Datenobjekt mit fertigen Anzeige-Texten: Grundlage für das
+  // Fenster, den Text, das PDF UND die Kopie hinter dem Zugriffslink (siehe
+  // js/views/akte-link.js) - alles zeigt dadurch garantiert dasselbe.
+  function akteDaten(a) {
+    const patient = patienten.find((x) => x.id === a.patientId);
+    return {
+      nummer: patientAkten(a.patientId).findIndex((x) => x.id === a.id) + 1,
+      patientName: patient ? patient.name : "—",
+      geburtsdatum: patient ? patient.geburtsdatum || "" : "",
+      allergien: patient && hatEintrag(patient.allergien) ? patient.allergien : "",
+      vorerkrankungen: patient && hatEintrag(patient.vorerkrankungen) ? patient.vorerkrankungen : "",
+      datum: formatDatumZeit(a.datum),
+      autor: a.erstelltVon || "—",
+      bearbeitetVon: a.bearbeiter || "",
+      bearbeitetAm: a.bearbeiter ? formatDatumUhrzeit(a.bearbeitetAm) : "",
+      behandlungsgrund: a.behandlungsgrund || "",
+      hergang: a.hergang || "",
+      befund: a.befund || "",
+      behandlung: a.behandlung || "",
+      bemerkungen: a.bemerkungen || "",
+    };
+  }
+
   function oeffneAkteDetailModal(akteId) {
     const a = akten.find((x) => x.id === akteId);
     if (!a) return;
     offeneAkteDetailId = akteId;
-    const patient = patienten.find((x) => x.id === a.patientId);
-    const nummer = patientAkten(a.patientId).findIndex((x) => x.id === akteId) + 1;
+    const d = akteDaten(a);
 
-    el.akteDetailTitel.textContent = `Akte ${nummer}`;
-    el.akteDetailPatient.textContent = patient ? patient.name : "—";
-    el.akteDetailDatum.textContent = formatDatumZeit(a.datum);
-    el.akteDetailAutor.textContent = a.bearbeiter && a.bearbeiter !== a.erstelltVon
-      ? `${a.erstelltVon || "—"} (zuletzt bearbeitet: ${a.bearbeiter})`
-      : a.erstelltVon || "—";
-    const abschnitt = (nr, titel, wert) => `
-        <section class="akte-abschnitt">
-          <h4 class="akte-abschnitt__label"><span class="akte-abschnitt__nr">${nr}</span>${titel}</h4>
-          ${wert ? `<p>${escapeHtml(wert)}</p>` : '<p class="akte-abschnitt__leer">Keine Angaben</p>'}
-        </section>`;
-    el.akteDetailInhalt.innerHTML =
-      abschnitt("01", "Behandlungsgrund", a.behandlungsgrund) +
-      abschnitt("02", "Befund", a.befund) +
-      abschnitt("03", "Behandlung", a.behandlung) +
-      abschnitt("04", "Bemerkungen", a.bemerkungen);
+    el.akteDetailKicker.textContent = `Behandlungsakte · Akte ${d.nummer}`;
+    el.akteDetailTitel.textContent = d.behandlungsgrund || `Akte ${d.nummer}`;
+    el.akteDetailInhalt.innerHTML = akteInhaltHtml(d);
+    el.akteDetailSeite.innerHTML = akteSeiteHtml(d);
     oeffneModal("modal-akte-detail");
   }
 
@@ -846,24 +863,9 @@
     });
   }
 
-  // --- Akte kopieren / drucken ---------------------------------------------
-  // Kopieren liefert reinen Text (für Discord, Notizen); Drucken nutzt die
-  // Browser-Druckfunktion, der @media-print-Block in css/views/
-  // patientenakten.css blendet dafür alles außer dem Akte-Fenster aus.
-  function akteAlsText(a) {
-    const patient = patienten.find((x) => x.id === a.patientId);
-    const nummer = patientAkten(a.patientId).findIndex((x) => x.id === a.id) + 1;
-    const autor = a.bearbeiter && a.bearbeiter !== a.erstelltVon ? `${a.erstelltVon || "—"} (zuletzt bearbeitet: ${a.bearbeiter})` : a.erstelltVon || "—";
-    const zeilen = [`Behandlungsakte - Akte ${nummer}`, `Patient: ${patient ? patient.name : "—"}`, `Datum: ${formatDatumZeit(a.datum)}`, `Verfasst von: ${autor}`, ""];
-    [
-      ["Behandlungsgrund", a.behandlungsgrund],
-      ["Befund", a.befund],
-      ["Behandlung", a.behandlung],
-      ["Bemerkungen", a.bemerkungen],
-    ].forEach(([titel, wert]) => zeilen.push(`${titel}:`, wert || "Keine Angaben", ""));
-    return zeilen.join("\n").trim();
-  }
-
+  // --- Akte als Text kopieren / als PDF speichern ---------------------------
+  // Text: für Chat/Notizen. PDF: direkt im Browser erzeugt (js/core/akte-pdf.js),
+  // z. B. zum Verschicken über TeamSpeak.
   async function kopiereText(text) {
     try {
       await navigator.clipboard.writeText(text);
@@ -891,12 +893,21 @@
     el.btnAkteKopieren.addEventListener("click", async () => {
       const a = akten.find((x) => x.id === offeneAkteDetailId);
       if (!a) return;
-      zeigeToast((await kopiereText(akteAlsText(a))) ? "Akte in die Zwischenablage kopiert." : "Kopieren nicht möglich.");
+      zeigeToast((await kopiereText(akteAlsText(akteDaten(a)))) ? "Akte in die Zwischenablage kopiert." : "Kopieren nicht möglich.");
     });
   }
 
-  if (el.btnAkteDrucken) {
-    el.btnAkteDrucken.addEventListener("click", () => window.print());
+  if (el.btnAktePdf) {
+    el.btnAktePdf.addEventListener("click", () => {
+      const a = akten.find((x) => x.id === offeneAkteDetailId);
+      if (!a) return;
+      try {
+        speichereAktePdf(akteDaten(a));
+      } catch (fehler) {
+        console.error(fehler);
+        zeigeToast("PDF konnte nicht erstellt werden (Bibliothek nicht geladen?).");
+      }
+    });
   }
 
   if (el.btnAkteLoeschen) {

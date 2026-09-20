@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 120;
+  const VERSION_AKTUELL = 121;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -44,6 +44,12 @@
 
   const PATIENTEN_COLLECTION = "patienten";
   const AKTEN_COLLECTION = "akten";
+
+  // Zugriffslinks: schreibgeschützte Kopie einer Akte, die jeder mit dem Link
+  // (auch ohne Konto) ansehen kann - siehe js/views/akte-link.js und akte.html.
+  // Die Kopie ist nur begrenzt gültig.
+  const FREIGABEN_COLLECTION = "freigaben";
+  const ZUGRIFFSLINK_TAGE = 7;
 
   const PRESENCE_COLLECTION = "presence";
   const ONLINE_SCHWELLE_MS = 45 * 1000;

@@ -203,6 +203,20 @@ service cloud.firestore {
       allow read, write: if istFreigegeben();
     }
 
+    // Zugriffslinks: eine schreibgeschützte KOPIE einer Akte (nicht die Akte
+    // selbst), die per Link auch ohne Konto lesbar ist. Die Dokument-ID ist ein
+    // zufälliger, nicht erratbarer Schlüssel (>= 32 Zeichen). Einzelabruf
+    // ("get") ist öffentlich, aber nur solange "laeuftAb" nicht überschritten
+    // ist; Auflisten ("list", auch Abfragen) sowie alles Schreibende bleibt
+    // freigegebenen Nutzern vorbehalten - ohne Link kann niemand diese
+    // Dokumente finden.
+    match /freigaben/{token} {
+      allow get: if resource.data.laeuftAb > request.time;
+      allow list: if istFreigegeben();
+      allow create: if istFreigegeben() && token.size() >= 32;
+      allow update, delete: if istFreigegeben();
+    }
+
     // Verwaltete Kataloge (z. B. kataloge/leitfaeden, die admin-gepflegten
     // Behandlungsleitfäden): lesen dürfen alle freigegebenen Nutzer, ändern
     // nur Verwalter.

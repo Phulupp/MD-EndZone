@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=120" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=121" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=120" />
-  <link rel="stylesheet" href="css/base/reset.css?v=120" />
-  <link rel="stylesheet" href="css/base/textures.css?v=120" />
-  <link rel="stylesheet" href="css/views/auth.css?v=120" />
-  <link rel="stylesheet" href="css/components/forms.css?v=120" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=120" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=120" />
-  <link rel="stylesheet" href="css/components/cards.css?v=120" />
-  <link rel="stylesheet" href="css/components/badges.css?v=120" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=120" />
-  <link rel="stylesheet" href="css/components/tables.css?v=120" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=120" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=120" />
-  <link rel="stylesheet" href="css/components/modals.css?v=120" />
-  <link rel="stylesheet" href="css/views/admin.css?v=120" />
-  <link rel="stylesheet" href="css/components/toast.css?v=120" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=120" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=120" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=121" />
+  <link rel="stylesheet" href="css/base/reset.css?v=121" />
+  <link rel="stylesheet" href="css/base/textures.css?v=121" />
+  <link rel="stylesheet" href="css/views/auth.css?v=121" />
+  <link rel="stylesheet" href="css/components/forms.css?v=121" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=121" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=121" />
+  <link rel="stylesheet" href="css/components/cards.css?v=121" />
+  <link rel="stylesheet" href="css/components/badges.css?v=121" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=121" />
+  <link rel="stylesheet" href="css/components/tables.css?v=121" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=121" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=121" />
+  <link rel="stylesheet" href="css/components/modals.css?v=121" />
+  <link rel="stylesheet" href="css/views/admin.css?v=121" />
+  <link rel="stylesheet" href="css/components/toast.css?v=121" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=121" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=121" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -59,6 +59,7 @@
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
   <!-- ============================ -->
@@ -596,50 +597,58 @@
   <!-- ============================ -->
   <div class="modal-overlay" id="modal-akte-form">
     <div class="modal modal--akte">
-      <div class="akte-blatt__kopf">
-        <div>
+      <button type="button" class="modal__close akte-blatt__schliessen" data-close-modal="modal-akte-form" aria-label="Schließen">✕</button>
+      <div class="akte-blatt">
+        <div class="akte-blatt__haupt">
           <span class="akte-blatt__kicker">Behandlungsakte</span>
           <h3 id="akte-form-titel">Neue Akte</h3>
-          <p class="akte-blatt__sub">Patient: <strong id="akte-form-patient-name">—</strong></p>
-        </div>
-        <button class="modal__close" data-close-modal="modal-akte-form">✕</button>
-      </div>
-      <div class="modal__body">
-        <input type="hidden" id="akte-editing-id" value="" />
-        <input type="hidden" id="akte-form-patient-id" value="" />
 
-        <p class="anwesenheit" id="akte-anwesend" hidden><span class="anwesenheit__punkt"></span><span id="akte-anwesend-text"></span></p>
-        <div class="konflikt-hinweis" id="akte-konflikt" hidden>
-          <span id="akte-konflikt-text"></span>
-          <button type="button" class="konflikt-hinweis__aktion" id="btn-akte-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
-        </div>
+          <input type="hidden" id="akte-editing-id" value="" />
+          <input type="hidden" id="akte-form-patient-id" value="" />
 
-        <div class="akte-feldzeile">
-          <label for="akte-datum">Datum &amp; Uhrzeit</label>
-          <input type="datetime-local" id="akte-datum" class="md-input" />
-        </div>
+          <p class="anwesenheit" id="akte-anwesend" hidden><span class="anwesenheit__punkt"></span><span id="akte-anwesend-text"></span></p>
+          <div class="konflikt-hinweis" id="akte-konflikt" hidden>
+            <span id="akte-konflikt-text"></span>
+            <button type="button" class="konflikt-hinweis__aktion" id="btn-akte-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
+          </div>
 
-        <div class="akte-feldzeile">
-          <label for="akte-behandlungsgrund"><span class="akte-abschnitt__nr">01</span>Behandlungsgrund<span class="akte-abschnitt__hinweis">Kurz und knapp</span></label>
-          <textarea id="akte-behandlungsgrund" class="md-input" rows="2"></textarea>
-        </div>
+          <div class="md-feld akte-titelfeld">
+            <label for="akte-behandlungsgrund">Behandlungsgrund</label>
+            <input type="text" id="akte-behandlungsgrund" class="md-input md-input--gross" placeholder="Worum geht es? z. B. Schussverletzung am Oberarm" autocomplete="off" />
+          </div>
 
-        <div class="akte-feldzeile">
-          <label for="akte-befund"><span class="akte-abschnitt__nr">02</span>Befund<span class="akte-abschnitt__hinweis">Verletzungen, Beschwerden</span></label>
-          <textarea id="akte-befund" class="md-input" rows="3"></textarea>
-        </div>
+          <div class="md-feld">
+            <label for="akte-hergang">Hergang</label>
+            <textarea id="akte-hergang" class="md-input" rows="3" placeholder="Was ist passiert?"></textarea>
+          </div>
+          <div class="md-feld">
+            <label for="akte-befund">Befund</label>
+            <textarea id="akte-befund" class="md-input" rows="3" placeholder="Was haben wir vor Ort festgestellt?"></textarea>
+          </div>
+          <div class="md-feld">
+            <label for="akte-behandlung">Behandlung</label>
+            <textarea id="akte-behandlung" class="md-input" rows="3" placeholder="Was haben wir gemacht? z. B. Verband angelegt"></textarea>
+          </div>
+          <div class="md-feld">
+            <label for="akte-bemerkungen">Zusätzliche Informationen</label>
+            <textarea id="akte-bemerkungen" class="md-input" rows="2" placeholder="Abschluss, Hinweise, Sonstiges"></textarea>
+          </div>
 
-        <div class="akte-feldzeile">
-          <label for="akte-behandlung"><span class="akte-abschnitt__nr">03</span>Behandlung<span class="akte-abschnitt__hinweis">Durchgeführte Maßnahmen</span></label>
-          <textarea id="akte-behandlung" class="md-input" rows="3"></textarea>
-        </div>
-
-        <div class="akte-feldzeile">
-          <label for="akte-bemerkungen"><span class="akte-abschnitt__nr">04</span>Bemerkungen</label>
-          <textarea id="akte-bemerkungen" class="md-input" rows="2"></textarea>
+          <p class="field-error" id="akte-error" hidden></p>
         </div>
 
-        <p class="field-error" id="akte-error" hidden></p>
+        <aside class="akte-blatt__seite">
+          <div class="akte-blatt__seite-innen">
+            <dl class="akte-seite">
+              <div><dt>Patient</dt><dd id="akte-form-patient-name">—</dd></div>
+            </dl>
+            <div class="md-feld">
+              <label for="akte-datum">Datum &amp; Uhrzeit</label>
+              <input type="datetime-local" id="akte-datum" class="md-input" />
+            </div>
+            <p class="akte-seite__hinweis">Pflicht sind nur Behandlungsgrund und Datum. Alles andere ist optional.</p>
+          </div>
+        </aside>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-close-modal="modal-akte-form">Abbrechen</button>
@@ -649,31 +658,60 @@
   </div>
 
   <!-- ============================ -->
-  <!-- MODAL: Akte-Detail (feste Vorlage) -->
+  <!-- MODAL: Akte-Detail (Dokument) -->
   <!-- ============================ -->
   <div class="modal-overlay" id="modal-akte-detail">
     <div class="modal modal--akte">
-      <div class="akte-blatt__kopf">
-        <div>
-          <span class="akte-blatt__kicker">Behandlungsakte</span>
+      <button type="button" class="modal__close akte-blatt__schliessen" data-close-modal="modal-akte-detail" aria-label="Schließen">✕</button>
+      <div class="akte-blatt">
+        <div class="akte-blatt__haupt">
+          <span class="akte-blatt__kicker" id="akte-detail-kicker">Behandlungsakte</span>
           <h3 id="akte-detail-titel">Akte</h3>
+          <div id="akte-detail-inhalt"></div>
         </div>
-        <button class="modal__close" data-close-modal="modal-akte-detail">✕</button>
-      </div>
-      <dl class="akte-blatt__meta">
-        <div><dt>Patient</dt><dd id="akte-detail-patient">—</dd></div>
-        <div><dt>Datum</dt><dd id="akte-detail-datum">—</dd></div>
-        <div><dt>Verfasst von</dt><dd id="akte-detail-autor">—</dd></div>
-      </dl>
-      <div class="modal__body">
-        <div id="akte-detail-inhalt"></div>
+        <aside class="akte-blatt__seite">
+          <dl class="akte-blatt__seite-innen akte-seite" id="akte-detail-seite"></dl>
+        </aside>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--danger" id="btn-akte-loeschen" style="margin-right: auto;">Löschen</button>
-        <button class="btn btn--ghost" id="btn-akte-kopieren">Kopieren</button>
-        <button class="btn btn--ghost" id="btn-akte-drucken">Drucken</button>
-        <button class="btn btn--ghost" id="btn-akte-bearbeiten">Bearbeiten</button>
-        <button class="btn btn--ghost" data-close-modal="modal-akte-detail">Schließen</button>
+        <button type="button" class="akte-fuss__loeschen" id="btn-akte-loeschen">Löschen</button>
+        <button type="button" class="akte-fuss__link" id="btn-akte-kopieren">Text kopieren</button>
+        <button type="button" class="akte-fuss__link" id="btn-akte-pdf">Als PDF speichern</button>
+        <button type="button" class="akte-fuss__link" id="btn-akte-link">Zugriffslink</button>
+        <button class="btn btn--primary" id="btn-akte-bearbeiten">Bearbeiten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- MODAL: Zugriffslink für eine Akte -->
+  <!-- ============================ -->
+  <div class="modal-overlay" id="modal-akte-link">
+    <div class="modal modal--akte modal--schmal">
+      <div class="akte-blatt__kopf">
+        <div>
+          <span class="akte-blatt__kicker">Zugriffslink</span>
+          <h3 id="akte-link-titel">Akte</h3>
+          <p class="akte-blatt__sub">Schreibgeschützte Kopie zum Weitergeben, z. B. an das PD.</p>
+        </div>
+        <button class="modal__close" data-close-modal="modal-akte-link" aria-label="Schließen">✕</button>
+      </div>
+      <div class="modal__body">
+        <p class="akte-link__erklaerung" id="akte-link-leer" hidden>Es gibt noch keinen Link. Mit dem Link kann jeder, der ihn kennt, diese Akte ansehen und als PDF speichern, auch ohne Konto. Die Kopie ist <strong id="akte-link-tage">7</strong> Tage gültig, danach funktioniert der Link nicht mehr. Du kannst ihn jederzeit vorher löschen.</p>
+        <div id="akte-link-aktiv" hidden>
+          <div class="md-feld">
+            <label for="akte-link-feld">Link</label>
+            <input type="text" id="akte-link-feld" class="md-input" readonly />
+          </div>
+          <p class="akte-link__info" id="akte-link-info"></p>
+        </div>
+        <p class="field-error" id="akte-link-error" hidden></p>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="akte-fuss__loeschen" id="btn-akte-link-loeschen" hidden>Link löschen</button>
+        <button type="button" class="btn btn--ghost" id="btn-akte-link-aktualisieren" hidden>Kopie aktualisieren</button>
+        <button type="button" class="btn btn--primary" id="btn-akte-link-kopieren" hidden>Link kopieren</button>
+        <button type="button" class="btn btn--primary" id="btn-akte-link-erstellen" hidden>Link erstellen</button>
       </div>
     </div>
   </div>
@@ -801,22 +839,25 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=120"></script>
-  <script defer src="js/core/config.js?v=120"></script>
-  <script defer src="js/core/state.js?v=120"></script>
-  <script defer src="js/core/dom.js?v=120"></script>
-  <script defer src="js/core/firebase-init.js?v=120"></script>
-  <script defer src="js/core/utils.js?v=120"></script>
-  <script defer src="js/ui/modals.js?v=120"></script>
-  <script defer src="js/ui/nav.js?v=120"></script>
-  <script defer src="js/ui/presence.js?v=120"></script>
-  <script defer src="js/views/startseite.js?v=120"></script>
-  <script defer src="js/views/patientenakten.js?v=120"></script>
-  <script defer src="js/views/beispiele.js?v=120"></script>
-  <script defer src="js/views/einstellungen.js?v=120"></script>
-  <script defer src="js/views/admin.js?v=120"></script>
-  <script defer src="js/ui/version-check.js?v=120"></script>
-  <script defer src="js/main.js?v=120"></script>
-  <script type="module" src="js/auth.js?v=120"></script>
+  <script defer src="js/firebase-config.js?v=121"></script>
+  <script defer src="js/core/config.js?v=121"></script>
+  <script defer src="js/core/state.js?v=121"></script>
+  <script defer src="js/core/dom.js?v=121"></script>
+  <script defer src="js/core/firebase-init.js?v=121"></script>
+  <script defer src="js/core/utils.js?v=121"></script>
+  <script defer src="js/core/akte-dokument.js?v=121"></script>
+  <script defer src="js/core/akte-pdf.js?v=121"></script>
+  <script defer src="js/ui/modals.js?v=121"></script>
+  <script defer src="js/ui/nav.js?v=121"></script>
+  <script defer src="js/ui/presence.js?v=121"></script>
+  <script defer src="js/views/startseite.js?v=121"></script>
+  <script defer src="js/views/patientenakten.js?v=121"></script>
+  <script defer src="js/views/akte-link.js?v=121"></script>
+  <script defer src="js/views/beispiele.js?v=121"></script>
+  <script defer src="js/views/einstellungen.js?v=121"></script>
+  <script defer src="js/views/admin.js?v=121"></script>
+  <script defer src="js/ui/version-check.js?v=121"></script>
+  <script defer src="js/main.js?v=121"></script>
+  <script type="module" src="js/auth.js?v=121"></script>
 </body>
 </html>

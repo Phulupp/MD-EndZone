@@ -574,7 +574,7 @@ textarea.md-input {
    da). */
 .akte-eintrag__felder {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: 160px minmax(0, 1fr);
   gap: 12px 24px;
   margin: 0;
 }
@@ -613,16 +613,19 @@ textarea.md-input {
 }
 
 /* --------------------------------------------------------------------------
-   18c. Akte als Dokument (Ansicht + Formular teilen sich das Raster)
+   18c. Akte als Dokument
    --------------------------------------------------------------------------
+   Links die Geschichte des Falls (Überschrift = Behandlungsgrund), rechts eine
+   schmale Spalte mit den Eckdaten. Ansicht und Formular haben dasselbe Raster,
+   die öffentliche Zugriffslink-Seite (akte.html) nutzt es ebenfalls.
    Selektor bewusst ".modal.modal--akte" (Spezifität 2): modals.css wird NACH
    dieser Datei geladen und setzt für ".modal" Breite/Padding/Hintergrund -
-   mit nur einer Klasse würde das hier überschrieben (Fenster blieb dadurch
-   schmal und gequetscht). */
+   mit nur einer Klasse würde das hier überschrieben. */
 .modal.modal--akte {
-  width: 980px;
+  position: relative;
+  width: 1040px;
   max-width: 94vw;
-  min-height: min(620px, 90vh);
+  min-height: min(600px, 90vh);
   max-height: 92vh;
   padding: 0;
   display: flex;
@@ -636,6 +639,7 @@ textarea.md-input {
   min-height: 0;
 }
 
+/* Kopf der schmalen Dialoge (Patient anlegen, Zugriffslink) */
 .akte-blatt__kopf {
   display: flex;
   align-items: flex-start;
@@ -644,20 +648,12 @@ textarea.md-input {
   padding: 34px 40px 26px;
 }
 
-.akte-blatt__kicker {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--brass-bright);
-}
-
 .akte-blatt__kopf h3 {
   margin: 0;
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 700;
   letter-spacing: -0.025em;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .akte-blatt__sub {
@@ -666,38 +662,18 @@ textarea.md-input {
   color: var(--wood-text-muted);
 }
 
-.akte-blatt__sub strong {
-  font-weight: 600;
-  color: var(--wood-text);
-}
-
 .akte-blatt__kopf .modal__close {
   width: 36px;
   height: 36px;
   font-size: 16px;
 }
 
-.akte-blatt__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 64px;
-  margin: 0;
-  padding: 20px 40px;
-  background: rgba(0, 0, 0, 0.18);
-  border-top: 1px solid var(--leather-edge-soft);
-  border-bottom: 1px solid var(--leather-edge-soft);
-}
-
-.akte-blatt__meta dt {
-  font-size: 12.5px;
-  color: var(--wood-text-soft);
-}
-
-.akte-blatt__meta dd {
-  margin: 3px 0 0;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--wood-text);
+.akte-blatt__kicker {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--brass-bright);
 }
 
 .modal--akte .modal__body {
@@ -709,77 +685,187 @@ textarea.md-input {
 
 .modal--akte .modal__footer {
   flex: 0 0 auto;
+  align-items: center;
+  gap: 22px;
   margin-top: 0;
-  padding: 20px 40px;
+  padding: 18px 40px;
   background: rgba(0, 0, 0, 0.18);
   border-top: 1px solid var(--leather-edge-soft);
 }
 
 .modal--akte .modal__footer .btn {
-  padding: 13px 26px;
+  padding: 12px 26px;
   font-size: 13.5px;
 }
 
-.akte-abschnitt,
-.akte-feldzeile {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 32px;
-  padding: 26px 0;
-  border-bottom: 1px solid var(--leather-edge-soft);
-}
-
-.akte-abschnitt:last-child,
-.akte-feldzeile:last-of-type {
-  border-bottom: none;
-}
-
-.akte-abschnitt__label,
-.akte-feldzeile > label {
-  margin: 0;
-  font-size: 15px;
+/* Fußzeilen-Aktionen als schlichter Text statt Buttons */
+.akte-fuss__link,
+.akte-fuss__loeschen {
+  font-size: 13.5px;
   font-weight: 600;
-  line-height: 1.55;
+  color: var(--wood-text-muted);
+  transition: color 0.12s ease;
+}
+
+.akte-fuss__link:hover {
   color: var(--wood-text);
 }
 
-/* Nummer steht vor dem Titel in derselben Zeile, damit der Inhalt rechts auf
-   gleicher Höhe wie die Überschrift beginnt. */
-.akte-abschnitt__nr {
-  display: inline-block;
-  min-width: 28px;
-  margin-right: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--brass-bright);
-  font-variant-numeric: tabular-nums;
+.akte-fuss__loeschen {
+  margin-right: auto;
+  color: var(--wood-text-soft);
 }
 
-.akte-abschnitt__hinweis {
-  display: block;
-  margin: 3px 0 0 36px;
+.akte-fuss__loeschen:hover {
+  color: var(--status-danger-bright);
+}
+
+.akte-fuss__link[hidden],
+.akte-fuss__loeschen[hidden] {
+  display: none;
+}
+
+/* --- Dokument: zwei Spalten -------------------------------------------- */
+.akte-blatt__schliessen {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  font-size: 16px;
+}
+
+.akte-blatt {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  overflow-y: auto;
+}
+
+.akte-blatt__haupt {
+  min-width: 0;
+  padding: 44px 52px 48px;
+}
+
+.akte-blatt__haupt h3 {
+  max-width: 640px;
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.akte-blatt__seite {
+  padding: 84px 32px 40px;
+  background: rgba(0, 0, 0, 0.18);
+  border-left: 1px solid var(--leather-edge-soft);
+}
+
+.akte-blatt__seite-innen {
+  position: sticky;
+  top: 84px;
+  margin: 0;
+}
+
+.akte-seite > div {
+  margin-bottom: 26px;
+}
+
+.akte-seite dt {
+  margin-bottom: 3px;
   font-size: 12.5px;
-  font-weight: 400;
+  color: var(--wood-text-soft);
+}
+
+.akte-seite dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
   line-height: 1.4;
+  color: var(--wood-text);
+  overflow-wrap: anywhere;
+}
+
+.akte-seite__hinweis {
+  margin-top: 22px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--wood-text-soft);
+}
+
+/* --- Inhalt der Ansicht -------------------------------------------------- */
+.akte-hinweis {
+  margin-top: 28px;
+  padding: 4px 0 4px 16px;
+  border-left: 3px solid var(--status-danger-bright);
+}
+
+.akte-hinweis__zeile {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--wood-text);
+}
+
+.akte-hinweis__zeile + .akte-hinweis__zeile {
+  margin-top: 4px;
+}
+
+.akte-hinweis__label {
+  margin-right: 10px;
+  font-weight: 700;
+  color: var(--status-danger-bright);
+}
+
+.akte-abschnitt {
+  margin-top: 30px;
+}
+
+.akte-abschnitt__label {
+  margin: 0 0 7px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--wood-text-soft);
 }
 
 .akte-abschnitt p {
+  max-width: 66ch;
   margin: 0;
   white-space: pre-wrap;
   font-size: 16px;
   line-height: 1.7;
   color: var(--wood-text);
+  overflow-wrap: anywhere;
 }
 
-.akte-abschnitt p.akte-abschnitt__leer {
+.akte-leer {
+  margin-top: 30px;
   color: var(--wood-text-placeholder);
 }
 
-/* Im Formular zum Schreiben längerer Texte bleibt eine sichtbare
-   Schreibfläche - hier ist ein Feld mit Grund sinnvoll. */
-.akte-feldzeile textarea.md-input {
-  min-height: 96px;
+/* --- Formular -------------------------------------------------------------- */
+.akte-titelfeld {
+  margin-top: 30px;
+}
+
+.akte-blatt__haupt .md-feld {
+  margin-top: 26px;
+}
+
+.md-input--gross {
+  padding: 10px 0;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Zum Schreiben längerer Texte bleibt eine sichtbare Schreibfläche. */
+.akte-blatt__haupt textarea.md-input {
+  min-height: 92px;
   padding: 12px 14px;
   font-size: 15.5px;
   overflow: hidden;
@@ -788,39 +874,66 @@ textarea.md-input {
   border-radius: 6px;
 }
 
-.akte-feldzeile textarea.md-input:hover {
+.akte-blatt__haupt textarea.md-input:hover {
   border-color: rgba(130, 170, 190, 0.34);
 }
 
-.akte-feldzeile textarea.md-input:focus {
+.akte-blatt__haupt textarea.md-input:focus {
   border-color: var(--brass-bright);
   box-shadow: none;
 }
 
-.akte-feldzeile input.md-input {
-  max-width: 280px;
+.akte-blatt__seite .md-feld {
+  margin-top: 0;
 }
 
-@media (max-width: 720px) {
-  .akte-abschnitt,
-  .akte-feldzeile {
+@media (max-width: 820px) {
+  .akte-blatt {
     grid-template-columns: 1fr;
-    gap: 8px;
+  }
+  .akte-blatt__haupt {
+    padding: 34px 24px 28px;
+  }
+  .akte-blatt__seite {
+    padding: 28px 24px;
+    border-left: none;
+    border-top: 1px solid var(--leather-edge-soft);
+  }
+  .akte-blatt__seite-innen {
+    position: static;
   }
   .akte-blatt__kopf,
-  .akte-blatt__meta,
   .modal--akte .modal__body,
   .modal--akte .modal__footer {
     padding-left: 22px;
     padding-right: 22px;
   }
-  .akte-blatt__kopf h3 {
-    font-size: 28px;
+  .modal--akte .modal__footer {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+  }
+  .akte-blatt__haupt h3 {
+    font-size: 26px;
   }
 }
 
+/* --- Zugriffslink-Dialog -------------------------------------------------- */
+.akte-link__erklaerung,
+.akte-link__info {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--wood-text-muted);
+}
+
+.akte-link__info {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--wood-text-soft);
+}
+
 /* --------------------------------------------------------------------------
-   18d. Kollisionsschutz, Ähnlichkeitsliste, Druck
+   18d. Kollisionsschutz, Ähnlichkeitsliste
    -------------------------------------------------------------------------- */
 .anwesenheit {
   display: flex;
@@ -930,48 +1043,3 @@ textarea.md-input {
   color: var(--wood-text-soft);
 }
 
-/* Drucken: nur das geöffnete Akte-Fenster, hell und ohne Bedienelemente. */
-@media print {
-  body > *:not(#modal-akte-detail) {
-    display: none !important;
-  }
-
-  #modal-akte-detail,
-  #modal-akte-detail .modal.modal--akte {
-    position: static !important;
-    display: block !important;
-    width: auto !important;
-    max-width: none !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    transform: none !important;
-    opacity: 1 !important;
-    background: #ffffff !important;
-    border: none !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-  }
-
-  #modal-akte-detail * {
-    color: #000000 !important;
-    background: transparent !important;
-    border-color: #999999 !important;
-    box-shadow: none !important;
-  }
-
-  #modal-akte-detail .modal__footer,
-  #modal-akte-detail .modal__close {
-    display: none !important;
-  }
-
-  #modal-akte-detail .modal__body {
-    overflow: visible !important;
-    padding-left: 40px !important;
-    padding-right: 40px !important;
-  }
-
-  #modal-akte-detail .akte-abschnitt {
-    break-inside: avoid;
-  }
-}

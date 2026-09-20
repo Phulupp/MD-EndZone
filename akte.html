@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Öffentliche Ansicht einer per Zugriffslink geteilten Akte (siehe
+       js/views/akte-link.js in der App). Bewusst nicht für Suchmaschinen und
+       ohne Referrer: der Schlüssel steht im Adress-Anhang (#...) und wird nie
+       an einen Server gesendet. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>Behandlungsakte — Medical Department</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=121" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/base/tokens.css?v=121" />
+  <link rel="stylesheet" href="css/base/reset.css?v=121" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=121" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=121" />
+  <link rel="stylesheet" href="css/views/akte-ansicht.css?v=121" />
+
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body class="akte-oeffentlich">
+  <main class="akte-oeffentlich__rahmen">
+    <header class="akte-oeffentlich__kopf">
+      <span class="akte-oeffentlich__marke">
+        <span class="akte-oeffentlich__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h3.2l2-5.5L11.5 19l2.7-12 2 6H22" /></svg>
+        </span>
+        Medical Department
+      </span>
+      <button type="button" class="btn btn--primary" id="btn-pdf" hidden>Als PDF speichern</button>
+    </header>
+
+    <p class="akte-oeffentlich__zustand" id="akte-zustand">Akte wird geladen ...</p>
+
+    <article class="akte-blatt akte-blatt--oeffentlich" id="akte-dokument" hidden>
+      <div class="akte-blatt__haupt">
+        <span class="akte-blatt__kicker" id="akte-kicker"></span>
+        <h3 id="akte-titel"></h3>
+        <div id="akte-inhalt"></div>
+      </div>
+      <aside class="akte-blatt__seite">
+        <dl class="akte-blatt__seite-innen akte-seite" id="akte-seite"></dl>
+      </aside>
+    </article>
+
+    <p class="akte-oeffentlich__fuss" id="akte-fuss" hidden></p>
+  </main>
+
+  <script defer src="js/firebase-config.js?v=121"></script>
+  <script defer src="js/core/akte-dokument.js?v=121"></script>
+  <script defer src="js/core/akte-pdf.js?v=121"></script>
+  <script defer src="js/akte-ansicht.js?v=121"></script>
+</body>
+</html>
