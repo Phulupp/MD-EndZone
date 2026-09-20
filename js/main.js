@@ -78,6 +78,9 @@
     patienten = [];
     akten = [];
     leitfaeden = [];
+    leitfadenKategorien = [];
+    beispieleKategorieId = null;
+    beispieleBeispielId = null;
     bearbeiteteAkteId = null;
     offenerPatientId = null;
     offeneAkteDetailId = null;

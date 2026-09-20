@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=126" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=127" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=126" />
-  <link rel="stylesheet" href="css/base/reset.css?v=126" />
-  <link rel="stylesheet" href="css/base/textures.css?v=126" />
-  <link rel="stylesheet" href="css/views/auth.css?v=126" />
-  <link rel="stylesheet" href="css/components/forms.css?v=126" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=126" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=126" />
-  <link rel="stylesheet" href="css/components/cards.css?v=126" />
-  <link rel="stylesheet" href="css/components/badges.css?v=126" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=126" />
-  <link rel="stylesheet" href="css/components/tables.css?v=126" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=126" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=126" />
-  <link rel="stylesheet" href="css/components/modals.css?v=126" />
-  <link rel="stylesheet" href="css/views/admin.css?v=126" />
-  <link rel="stylesheet" href="css/components/toast.css?v=126" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=126" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=126" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=127" />
+  <link rel="stylesheet" href="css/base/reset.css?v=127" />
+  <link rel="stylesheet" href="css/base/textures.css?v=127" />
+  <link rel="stylesheet" href="css/views/auth.css?v=127" />
+  <link rel="stylesheet" href="css/components/forms.css?v=127" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=127" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=127" />
+  <link rel="stylesheet" href="css/components/cards.css?v=127" />
+  <link rel="stylesheet" href="css/components/badges.css?v=127" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=127" />
+  <link rel="stylesheet" href="css/components/tables.css?v=127" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=127" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=127" />
+  <link rel="stylesheet" href="css/components/modals.css?v=127" />
+  <link rel="stylesheet" href="css/views/admin.css?v=127" />
+  <link rel="stylesheet" href="css/components/toast.css?v=127" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=127" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=127" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -505,9 +505,20 @@
           <!-- VIEW: BEISPIELE               -->
           <!-- ============================ -->
           <section class="view" id="view-beispiele">
-            <div class="toolbar">
-              <div class="toolbar__buttons">
-                <button class="btn btn--primary" id="btn-beispiel-hinzufuegen" hidden>＋ Beispiel hinzufügen</button>
+            <!-- Drei Ebenen: Hauptkategorien -> Beispiele -> Schritt-für-Schritt.
+                 Die Brotkrumen-Leiste springt jederzeit zurück (siehe
+                 js/views/beispiele.js). Anlegen/Bearbeiten nur für Admins. -->
+            <div class="beispiele-kopf">
+              <nav class="brotkrumen" id="beispiele-krumen" aria-label="Pfad"></nav>
+              <div class="beispiele-kopf__aktionen">
+                <button class="btn btn--primary" id="btn-beispiel-kategorie-hinzufuegen" hidden>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neue Hauptkategorie</span>
+                </button>
+                <button class="btn btn--primary" id="btn-beispiel-hinzufuegen" hidden>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neues Beispiel</span>
+                </button>
               </div>
             </div>
             <div id="beispiele-liste"></div>
@@ -760,17 +771,42 @@
       </div>
       <div class="modal__body">
         <input type="hidden" id="beispiel-editing-id" value="" />
+        <label class="field-label" for="beispiel-kategorie-select">Hauptkategorie</label>
+        <select id="beispiel-kategorie-select" class="field-input"></select>
+
         <label class="field-label" for="beispiel-titel-input">Titel</label>
         <input type="text" id="beispiel-titel-input" class="field-input" placeholder="z. B. Schürfwunde" />
 
-        <label class="field-label" for="beispiel-text-input">Schritt für Schritt</label>
-        <textarea id="beispiel-text-input" class="field-input field-textarea" rows="8" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+        <label class="field-label" for="beispiel-text-input">Schritte (ein Schritt pro Zeile)</label>
+        <textarea id="beispiel-text-input" class="field-input field-textarea" rows="9" placeholder="Wunde anschauen&#10;Schmerzen erfragen&#10;Desinfizieren&#10;Verband anlegen"></textarea>
 
         <p class="field-error" id="beispiel-error" hidden></p>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-close-modal="modal-beispiel-bearbeiten">Abbrechen</button>
         <button class="btn btn--primary" id="btn-confirm-beispiel">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- MODAL: Hauptkategorie der Beispiele anlegen/umbenennen -->
+  <!-- ============================ -->
+  <div class="modal-overlay" id="modal-beispiel-kategorie">
+    <div class="modal modal--small">
+      <div class="modal__header">
+        <h3 id="beispiel-kategorie-modal-titel">Neue Hauptkategorie</h3>
+        <button class="modal__close" data-close-modal="modal-beispiel-kategorie">✕</button>
+      </div>
+      <div class="modal__body">
+        <input type="hidden" id="beispiel-kategorie-editing-id" value="" />
+        <label class="field-label" for="beispiel-kategorie-titel-input">Name</label>
+        <input type="text" id="beispiel-kategorie-titel-input" class="field-input" placeholder="z. B. Verkehrsunfall" autocomplete="off" />
+        <p class="field-error" id="beispiel-kategorie-error" hidden></p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" data-close-modal="modal-beispiel-kategorie">Abbrechen</button>
+        <button class="btn btn--primary" id="btn-confirm-beispiel-kategorie">Speichern</button>
       </div>
     </div>
   </div>
@@ -872,25 +908,25 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=126"></script>
-  <script defer src="js/core/config.js?v=126"></script>
-  <script defer src="js/core/state.js?v=126"></script>
-  <script defer src="js/core/dom.js?v=126"></script>
-  <script defer src="js/core/firebase-init.js?v=126"></script>
-  <script defer src="js/core/utils.js?v=126"></script>
-  <script defer src="js/core/akte-dokument.js?v=126"></script>
-  <script defer src="js/core/akte-pdf.js?v=126"></script>
-  <script defer src="js/ui/modals.js?v=126"></script>
-  <script defer src="js/ui/nav.js?v=126"></script>
-  <script defer src="js/ui/presence.js?v=126"></script>
-  <script defer src="js/views/startseite.js?v=126"></script>
-  <script defer src="js/views/patientenakten.js?v=126"></script>
-  <script defer src="js/views/akte-link.js?v=126"></script>
-  <script defer src="js/views/beispiele.js?v=126"></script>
-  <script defer src="js/views/einstellungen.js?v=126"></script>
-  <script defer src="js/views/admin.js?v=126"></script>
-  <script defer src="js/ui/version-check.js?v=126"></script>
-  <script defer src="js/main.js?v=126"></script>
-  <script type="module" src="js/auth.js?v=126"></script>
+  <script defer src="js/firebase-config.js?v=127"></script>
+  <script defer src="js/core/config.js?v=127"></script>
+  <script defer src="js/core/state.js?v=127"></script>
+  <script defer src="js/core/dom.js?v=127"></script>
+  <script defer src="js/core/firebase-init.js?v=127"></script>
+  <script defer src="js/core/utils.js?v=127"></script>
+  <script defer src="js/core/akte-dokument.js?v=127"></script>
+  <script defer src="js/core/akte-pdf.js?v=127"></script>
+  <script defer src="js/ui/modals.js?v=127"></script>
+  <script defer src="js/ui/nav.js?v=127"></script>
+  <script defer src="js/ui/presence.js?v=127"></script>
+  <script defer src="js/views/startseite.js?v=127"></script>
+  <script defer src="js/views/patientenakten.js?v=127"></script>
+  <script defer src="js/views/akte-link.js?v=127"></script>
+  <script defer src="js/views/beispiele.js?v=127"></script>
+  <script defer src="js/views/einstellungen.js?v=127"></script>
+  <script defer src="js/views/admin.js?v=127"></script>
+  <script defer src="js/ui/version-check.js?v=127"></script>
+  <script defer src="js/main.js?v=127"></script>
+  <script type="module" src="js/auth.js?v=127"></script>
 </body>
 </html>

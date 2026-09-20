@@ -1,53 +1,214 @@
 /* --------------------------------------------------------------------------
    19. Beispiele (Behandlungsleitfäden)
    --------------------------------------------------------------------------
-   Lesbare Artikel statt Karten: Titel, Text, Haarlinie dazwischen. */
-.beispiel-karte {
-  margin-bottom: 0;
-  padding: 36px 0;
-  border-bottom: 1px solid var(--leather-edge-soft);
+   Drei Ebenen ohne Kästen: Hauptkategorien -> Beispiele -> nummerierte
+   Schritt-für-Schritt-Anleitung. Oben eine Brotkrumen-Leiste zum Zurückspringen,
+   rechts die Admin-Knöpfe zum Anlegen. */
+.beispiele-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  min-height: 42px;
+  margin-bottom: 30px;
 }
 
-.beispiel-karte:first-child {
-  padding-top: 8px;
-}
-
-.beispiel-karte:last-child {
-  border-bottom: none;
-}
-
-.beispiel-karte__kopf {
+.beispiele-kopf__aktionen {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
 }
 
-.beispiel-karte__kopf h3 {
-  flex: 1;
-  margin: 0;
-  font-size: 22px;
+.brotkrumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  font-size: 14px;
+}
+
+.brotkrumen__link {
+  font-weight: 600;
+  color: var(--wood-text-muted);
+  transition: color 0.15s ease;
+}
+
+.brotkrumen__link:hover {
+  color: var(--brass-bright);
+}
+
+.brotkrumen__trenner {
+  color: var(--wood-text-placeholder);
+}
+
+.brotkrumen__aktuell {
+  font-weight: 600;
+  color: var(--wood-text);
+}
+
+.bsp-kicker {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--brass-bright);
+}
+
+.bsp-titel {
+  margin: 0 0 26px;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--wood-text);
+  overflow-wrap: anywhere;
 }
 
-.beispiel-karte__pfeile {
+/* --- Zeilenlisten (Ebene 1 und 2) ------------------------------------------ */
+.bsp-liste {
+  border-top: 1px solid var(--leather-edge);
+}
+
+.bsp-zeile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 14px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.bsp-zeile:hover,
+.bsp-zeile:focus-visible {
+  outline: none;
+  background: rgba(130, 170, 190, 0.06);
+}
+
+.bsp-zeile__titel {
+  flex: 1;
+  min-width: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--wood-text);
+  overflow-wrap: anywhere;
+}
+
+.bsp-zeile__meta {
+  flex-shrink: 0;
+  font-size: 13.5px;
+  color: var(--wood-text-soft);
+  white-space: nowrap;
+}
+
+.bsp-zeile__steuerung {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.bsp-zeile__pfeile {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  flex-shrink: 0;
 }
 
-.beispiel-karte__pfeile .icon-btn {
-  width: 22px;
+.bsp-zeile__pfeile .icon-btn {
+  width: 26px;
   height: 15px;
   font-size: 8px;
 }
 
-.beispiel-karte__text {
+.bsp-zeile__pfeil {
+  flex-shrink: 0;
+  color: var(--wood-text-placeholder);
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.bsp-zeile:hover .bsp-zeile__pfeil {
+  color: var(--brass-bright);
+  transform: translateX(3px);
+}
+
+/* --- Anleitung (Ebene 3) -------------------------------------------------- */
+.bsp-anleitung__kopf {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 8px;
+}
+
+.bsp-anleitung__aktionen {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 22px;
+  padding-top: 6px;
+}
+
+.bsp-schritte {
   max-width: 780px;
-  white-space: pre-wrap;
-  font-size: 15.5px;
-  line-height: 1.7;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: schritt;
+}
+
+.bsp-schritte li {
+  position: relative;
+  padding: 20px 0 20px 66px;
+  border-bottom: 1px solid var(--leather-edge-soft);
+  counter-increment: schritt;
+  font-size: 18px;
+  line-height: 1.55;
   color: var(--wood-text);
+  overflow-wrap: anywhere;
+}
+
+.bsp-schritte li:first-child {
+  border-top: 1px solid var(--leather-edge);
+}
+
+.bsp-schritte li::before {
+  content: counter(schritt);
+  position: absolute;
+  left: 0;
+  top: 17px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--brass);
+  border-radius: var(--radius-lg);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brass-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.bsp-schritte__leer {
+  margin-top: 24px;
+  color: var(--wood-text-placeholder);
+}
+
+@media (max-width: 720px) {
+  .bsp-zeile {
+    padding: 18px 8px;
+    gap: 12px;
+  }
+  .bsp-zeile__meta {
+    display: none;
+  }
+  .bsp-titel {
+    font-size: 26px;
+  }
+  .bsp-schritte li {
+    padding-left: 56px;
+    font-size: 16.5px;
+  }
 }

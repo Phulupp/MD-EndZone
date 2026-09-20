@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 126;
+  const VERSION_AKTUELL = 127;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -88,6 +88,16 @@
   // medizinischen Standardwerte gibt, die sich einfach erfinden ließen.
   const LEITFAEDEN_DOC = "kataloge/leitfaeden";
   const DEFAULT_LEITFAEDEN = [];
+  // Hauptkategorien, die beim ersten Start automatisch angelegt werden (feste
+  // IDs, damit ein doppeltes Anlegen durch zwei gleichzeitig startende Admins
+  // dasselbe Ergebnis liefert). Admins können weitere anlegen, umbenennen und
+  // löschen. Die medizinischen Inhalte (Beispiele/Schritte) tragen sie selbst ein.
+  const DEFAULT_LEITFADEN_KATEGORIEN = [
+    { id: "verkehrsunfall", titel: "Verkehrsunfall", reihenfolge: 1 },
+    { id: "schussverletzung", titel: "Schussverletzung", reihenfolge: 2 },
+    { id: "stichwunde", titel: "Stichwunde", reihenfolge: 3 },
+    { id: "schlaegerei", titel: "Schlägerei", reihenfolge: 4 },
+  ];
 
   const VIEW_META = {
     startseite: { title: "Startseite", subtitle: "" },

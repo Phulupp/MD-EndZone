@@ -126,9 +126,17 @@
     btnAkteLoeschen: document.getElementById("btn-akte-loeschen"),
 
     // Beispiele (Behandlungsleitfäden)
+    beispieleKrumen: document.getElementById("beispiele-krumen"),
     beispieleListe: document.getElementById("beispiele-liste"),
     beispieleEmpty: document.getElementById("beispiele-empty"),
     btnBeispielHinzufuegen: document.getElementById("btn-beispiel-hinzufuegen"),
+    btnBeispielKategorieHinzufuegen: document.getElementById("btn-beispiel-kategorie-hinzufuegen"),
+    beispielKategorieSelect: document.getElementById("beispiel-kategorie-select"),
+    beispielKategorieModalTitel: document.getElementById("beispiel-kategorie-modal-titel"),
+    beispielKategorieEditingId: document.getElementById("beispiel-kategorie-editing-id"),
+    beispielKategorieTitelInput: document.getElementById("beispiel-kategorie-titel-input"),
+    beispielKategorieError: document.getElementById("beispiel-kategorie-error"),
+    btnConfirmBeispielKategorie: document.getElementById("btn-confirm-beispiel-kategorie"),
     modalBeispielBearbeiten: document.getElementById("modal-beispiel-bearbeiten"),
     beispielBearbeitenTitel: document.getElementById("beispiel-bearbeiten-titel"),
     beispielEditingId: document.getElementById("beispiel-editing-id"),
@@ -314,4 +322,4 @@
 
   // Alle noch verbliebenen "normalen" <select>-Felder der Seite auf das
   // dunkle Custom-Dropdown umstellen (Startseite, Rang bei neuen Benutzern).
-  [el.startseiteSelect, el.neuerBenutzerRolleInput].forEach(erzeugeCustomSelect);
+  [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect].forEach(erzeugeCustomSelect);
