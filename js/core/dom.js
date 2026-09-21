@@ -19,6 +19,8 @@
     onlinePanel: document.getElementById("online-panel"),
     onlinePanelList: document.getElementById("online-panel-list"),
 
+    sidebarUserBtn: document.getElementById("sidebar-user-btn"),
+    sidebarUserMenu: document.getElementById("sidebar-user-menu"),
     sidebarUserAvatar: document.getElementById("sidebar-user-avatar"),
     sidebarUserName: document.getElementById("sidebar-user-name"),
     sidebarUserRole: document.getElementById("sidebar-user-role"),

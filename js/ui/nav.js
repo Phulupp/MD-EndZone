@@ -54,13 +54,34 @@
     btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-admin-subview")));
   });
 
-  document.addEventListener("click", () => {
+  // Kleine Popover (Online-Liste, Konto-Menü): immer nur eines offen, Klick
+  // irgendwo sonst schließt sie.
+  function schliesseSidebarPopover() {
     el.onlinePanel && el.onlinePanel.classList.remove("online-panel--visible");
+    if (el.sidebarUserMenu) el.sidebarUserMenu.classList.remove("sidebar__user-menu--visible");
+    if (el.sidebarUserBtn) el.sidebarUserBtn.setAttribute("aria-expanded", "false");
+  }
+
+  document.addEventListener("click", schliesseSidebarPopover);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") schliesseSidebarPopover();
   });
+
   if (el.onlineWidgetBtn) {
     el.onlineWidgetBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      el.onlinePanel.classList.toggle("online-panel--visible");
+      const warOffen = el.onlinePanel.classList.contains("online-panel--visible");
+      schliesseSidebarPopover();
+      el.onlinePanel.classList.toggle("online-panel--visible", !warOffen);
     });
   }
 
+  if (el.sidebarUserBtn) {
+    el.sidebarUserBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const warOffen = el.sidebarUserMenu.classList.contains("sidebar__user-menu--visible");
+      schliesseSidebarPopover();
+      el.sidebarUserMenu.classList.toggle("sidebar__user-menu--visible", !warOffen);
+      el.sidebarUserBtn.setAttribute("aria-expanded", String(!warOffen));
+    });
+  }

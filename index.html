@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=133" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=134" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=133" />
-  <link rel="stylesheet" href="css/base/reset.css?v=133" />
-  <link rel="stylesheet" href="css/base/background.css?v=133" />
-  <link rel="stylesheet" href="css/views/auth.css?v=133" />
-  <link rel="stylesheet" href="css/components/forms.css?v=133" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=133" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=133" />
-  <link rel="stylesheet" href="css/components/cards.css?v=133" />
-  <link rel="stylesheet" href="css/components/badges.css?v=133" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=133" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=133" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=133" />
-  <link rel="stylesheet" href="css/views/termine.css?v=133" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=133" />
-  <link rel="stylesheet" href="css/components/modals.css?v=133" />
-  <link rel="stylesheet" href="css/views/admin.css?v=133" />
-  <link rel="stylesheet" href="css/components/toast.css?v=133" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=133" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=133" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=134" />
+  <link rel="stylesheet" href="css/base/reset.css?v=134" />
+  <link rel="stylesheet" href="css/base/background.css?v=134" />
+  <link rel="stylesheet" href="css/views/auth.css?v=134" />
+  <link rel="stylesheet" href="css/components/forms.css?v=134" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=134" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=134" />
+  <link rel="stylesheet" href="css/components/cards.css?v=134" />
+  <link rel="stylesheet" href="css/components/badges.css?v=134" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=134" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=134" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=134" />
+  <link rel="stylesheet" href="css/views/termine.css?v=134" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=134" />
+  <link rel="stylesheet" href="css/components/modals.css?v=134" />
+  <link rel="stylesheet" href="css/views/admin.css?v=134" />
+  <link rel="stylesheet" href="css/components/toast.css?v=134" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=134" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=134" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -239,19 +239,6 @@
           </div>
           <p class="sidebar__brand-name">Medical<br />Department</p>
         </div>
-
-        <!-- Dienstausweis-artige Identität statt eines separaten
-             Konto-Menüs unten in der Sidebar - Name, Rang und ein
-             Rang-Stufen-Balken (siehe aktualisiereSidebarRang in
-             js/main.js) direkt unter der Marke, wie ein Namensschild. -->
-        <div class="sidebar__identity">
-          <div class="sidebar__user-avatar" id="sidebar-user-avatar">?</div>
-          <div class="sidebar__user-info">
-            <span class="sidebar__user-name" id="sidebar-user-name">Lädt...</span>
-            <span class="sidebar__user-role" id="sidebar-user-role">—</span>
-            <div class="sidebar__rang-stufen" id="sidebar-rang-stufen" aria-hidden="true"></div>
-          </div>
-        </div>
       </div>
 
       <nav class="sidebar__nav" id="sidebar-nav">
@@ -291,11 +278,25 @@
         </div>
       </nav>
 
+      <!-- Konto unten links: Avatar, Name, Rang und Rang-Stufen-Balken (siehe
+           aktualisiereSidebarRang in js/main.js). Ein Klick öffnet das kleine
+           Menü mit "Abmelden" (js/ui/nav.js). -->
       <div class="sidebar__footer">
-        <button class="sidebar__logout" id="btn-logout">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          <span>Abmelden</span>
+        <button type="button" class="sidebar__user" id="sidebar-user-btn" aria-haspopup="true" aria-expanded="false">
+          <span class="sidebar__user-avatar" id="sidebar-user-avatar">?</span>
+          <span class="sidebar__user-info">
+            <span class="sidebar__user-name" id="sidebar-user-name">Lädt...</span>
+            <span class="sidebar__user-role" id="sidebar-user-role">—</span>
+            <span class="sidebar__rang-stufen" id="sidebar-rang-stufen" aria-hidden="true"></span>
+          </span>
+          <span class="sidebar__user-chevron" aria-hidden="true">›</span>
         </button>
+        <div class="sidebar__user-menu" id="sidebar-user-menu">
+          <button type="button" class="sidebar__user-menu-item" id="btn-logout">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Abmelden</span>
+          </button>
+        </div>
       </div>
     </aside>
 
@@ -1030,26 +1031,26 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=133"></script>
-  <script defer src="js/core/config.js?v=133"></script>
-  <script defer src="js/core/state.js?v=133"></script>
-  <script defer src="js/core/dom.js?v=133"></script>
-  <script defer src="js/core/utils.js?v=133"></script>
-  <script defer src="js/core/akte-dokument.js?v=133"></script>
-  <script defer src="js/core/akte-pdf.js?v=133"></script>
-  <script defer src="js/ui/modals.js?v=133"></script>
-  <script defer src="js/ui/nav.js?v=133"></script>
-  <script defer src="js/ui/presence.js?v=133"></script>
-  <script defer src="js/views/startseite.js?v=133"></script>
-  <script defer src="js/views/patientenakten.js?v=133"></script>
-  <script defer src="js/views/akte-link.js?v=133"></script>
-  <script defer src="js/views/termine.js?v=133"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=133"></script>
-  <script defer src="js/views/beispiele.js?v=133"></script>
-  <script defer src="js/views/einstellungen.js?v=133"></script>
-  <script defer src="js/views/admin.js?v=133"></script>
-  <script defer src="js/ui/version-check.js?v=133"></script>
-  <script defer src="js/main.js?v=133"></script>
-  <script type="module" src="js/auth.js?v=133"></script>
+  <script defer src="js/firebase-config.js?v=134"></script>
+  <script defer src="js/core/config.js?v=134"></script>
+  <script defer src="js/core/state.js?v=134"></script>
+  <script defer src="js/core/dom.js?v=134"></script>
+  <script defer src="js/core/utils.js?v=134"></script>
+  <script defer src="js/core/akte-dokument.js?v=134"></script>
+  <script defer src="js/core/akte-pdf.js?v=134"></script>
+  <script defer src="js/ui/modals.js?v=134"></script>
+  <script defer src="js/ui/nav.js?v=134"></script>
+  <script defer src="js/ui/presence.js?v=134"></script>
+  <script defer src="js/views/startseite.js?v=134"></script>
+  <script defer src="js/views/patientenakten.js?v=134"></script>
+  <script defer src="js/views/akte-link.js?v=134"></script>
+  <script defer src="js/views/termine.js?v=134"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=134"></script>
+  <script defer src="js/views/beispiele.js?v=134"></script>
+  <script defer src="js/views/einstellungen.js?v=134"></script>
+  <script defer src="js/views/admin.js?v=134"></script>
+  <script defer src="js/ui/version-check.js?v=134"></script>
+  <script defer src="js/main.js?v=134"></script>
+  <script type="module" src="js/auth.js?v=134"></script>
 </body>
 </html>

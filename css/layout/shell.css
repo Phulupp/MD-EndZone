@@ -21,9 +21,8 @@
   background: linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
 }
 
-/* Sidebar-Kopf: Marke oben, direkt darunter die eigene Identität (Avatar +
-   Name + Rang-Stufen-Balken) wie ein Dienstausweis - ersetzt das frühere
-   separate Konto-Menü unten in der Sidebar komplett. */
+/* Sidebar-Kopf: nur die Marke. Das Konto (Avatar, Name, Rang) sitzt unten
+   links im .sidebar__footer. */
 .sidebar__brand {
   padding: 22px 20px 20px;
   border-bottom: 1px solid rgba(130, 170, 190, 0.16);
@@ -65,15 +64,6 @@
   text-transform: uppercase;
   line-height: 1.4;
   color: var(--text);
-}
-
-.sidebar__identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(130, 170, 190, 0.14);
 }
 
 /* Rang-Stufen-Balken: ein Segment pro Rang in BENUTZER_RAENGE, gefüllt bis
@@ -174,34 +164,27 @@
   font-weight: 700;
 }
 
-/* Nur noch "Abmelden" - die Identität (Avatar/Name/Rang) lebt jetzt oben in
-   .sidebar__brand, kein separates Konto-Menü mehr nötig. */
+/* Konto unten links: Klick auf den Benutzer öffnet das kleine Menü darüber
+   (js/ui/nav.js), aktuell nur mit "Abmelden". */
 .sidebar__footer {
+  position: relative;
   border-top: 1px solid rgba(130, 170, 190, 0.16);
   padding: 14px;
 }
 
-.sidebar__logout {
+.sidebar__user {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px;
   border-radius: var(--radius-md);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease;
 }
 
-.sidebar__logout svg {
-  flex-shrink: 0;
-  opacity: 0.85;
-}
-
-.sidebar__logout:hover {
-  background: var(--status-danger-soft);
-  color: var(--status-danger-bright);
+.sidebar__user:hover,
+.sidebar__user[aria-expanded="true"] {
+  background: var(--accent-soft);
 }
 
 /* Hintergrund kommt jetzt aus der individuellen Rang-Farbe (--rang-farbe,
@@ -264,6 +247,58 @@
    Auszeichnung wirklich als "besonders" auffällt. */
 .sidebar__user-avatar--akzent {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.12), 0 0 12px 1px var(--rang-farbe);
+}
+
+.sidebar__user-chevron {
+  flex-shrink: 0;
+  font-size: 15px;
+  color: var(--text-soft);
+  transition: transform 0.15s ease;
+}
+
+.sidebar__user[aria-expanded="true"] .sidebar__user-chevron {
+  transform: rotate(-90deg);
+}
+
+.sidebar__user-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 14px;
+  right: 14px;
+  padding: 6px;
+  background: var(--panel-800);
+  border: 1.5px solid var(--panel-edge);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+  z-index: 50;
+}
+
+.sidebar__user-menu--visible {
+  display: block;
+}
+
+.sidebar__user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+}
+
+.sidebar__user-menu-item svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.sidebar__user-menu-item:hover {
+  background: var(--status-danger-soft);
+  color: var(--status-danger-bright);
 }
 
 /* --------------------------------------------------------------------------
