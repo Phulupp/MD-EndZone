@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 132;
+  const VERSION_AKTUELL = 133;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -79,6 +79,13 @@
   const TERMIN_ARTEN = ["MRT", "CT / CCT", "Psychologisches Gespräch", "Sonstiges"];
   const TERMIN_ART_SONSTIGES = "Sonstiges";
 
+  // Mitarbeiterliste: ein einzelnes Doc mit dem Array "zeilen" (siehe
+  // js/views/mitarbeiterliste.js). Lesen alle Freigegebenen, ändern nur
+  // Admins (firestore.rules, kataloge/{dokument}).
+  const MITARBEITER_DOC = "kataloge/mitarbeiterliste";
+  const MITARBEITER_MIN_ZEILEN = 10;
+  const MITARBEITER_MAX_ZEILEN = 100;
+
   // Zugriffslinks: schreibgeschützte Kopie einer Akte, die jeder mit dem Link
   // (auch ohne Konto) ansehen kann - siehe js/views/akte-link.js und akte.html.
   // Die Kopie ist nur begrenzt gültig.
@@ -113,6 +120,7 @@
     // patientenakten.js) geöffnet, Titel dort auf den Patientennamen gesetzt.
     "patient-detail": { title: "Patient", subtitle: "Patientenakte" },
     termine: { title: "Termine", subtitle: "Anstehende MRT-, CT- und weitere Termine der Patienten." },
+    mitarbeiterliste: { title: "Mitarbeiterliste", subtitle: "Alle Mitarbeiter des Medical Department." },
     beispiele: { title: "Beispiele", subtitle: "Behandlungsleitfäden für häufige Fälle." },
     einstellungen: { title: "Einstellungen", subtitle: "Persönliche Einstellungen." },
     admin: { title: "Verwaltung", subtitle: "Benutzerverwaltung — nur für Verwalter sichtbar." },

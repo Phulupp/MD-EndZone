@@ -44,6 +44,7 @@
     starteAktenListener();
     starteLeitfaedenListener();
     starteTermineListener();
+    starteMitarbeiterListener();
     if (istAdmin()) starteBenutzerverwaltung();
 
     zeigeAnsicht(ladeStartseite());
@@ -66,13 +67,14 @@
       if (aktuelleAnsicht === "admin" || aktuelleAnsicht === "admin-log") zeigeAnsicht("startseite");
     }
     renderBeispiele();
+    renderMitarbeiter();
     aktualisiereAdminSteuerung();
   }
 
   function stoppeApp() {
     aktuellerNutzer = null;
-    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine].forEach((unsub) => unsub && unsub());
-    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = null;
+    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter].forEach((unsub) => unsub && unsub());
+    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = null;
     stoppeBenutzerverwaltung();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
@@ -81,6 +83,12 @@
     leitfaeden = [];
     leitfadenKategorien = [];
     termine = [];
+    mitarbeiter = [];
+    mitarbeiterMeta = { von: "", am: null };
+    mitarbeiterBearbeiten = false;
+    mitarbeiterEntwurf = [];
+    maBasisStempel = 0;
+    maSpeichertGerade = false;
     beispieleKategorieId = null;
     beispieleBeispielId = null;
     bearbeiteteAkteId = null;

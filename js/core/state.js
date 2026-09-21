@@ -26,6 +26,17 @@
   let termine = [];
   let unsubTermine = null;
 
+  let mitarbeiter = [];
+  let unsubMitarbeiter = null;
+  let mitarbeiterMeta = { von: "", am: null };
+  // Bearbeitungsmodus der Mitarbeiterliste (nur Admins, siehe
+  // js/views/mitarbeiterliste.js): Entwurf = Arbeitskopie der Zeilen,
+  // maBasisStempel = Änderungszeitpunkt der Fassung, auf der der Entwurf beruht.
+  let mitarbeiterBearbeiten = false;
+  let mitarbeiterEntwurf = [];
+  let maBasisStempel = 0;
+  let maSpeichertGerade = false;
+
   let unsubPresence = null;
 
   let unsubBenutzerliste = null;

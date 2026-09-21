@@ -6,7 +6,6 @@
   const el = {
     authScreen: document.getElementById("auth-screen"),
     appRoot: document.getElementById("app-root"),
-    authConfigHint: document.getElementById("auth-config-hint"),
 
     sidebarNav: document.getElementById("sidebar-nav"),
     navAdminToggle: document.getElementById("nav-admin-toggle"),
@@ -128,6 +127,21 @@
     termineListe: document.getElementById("termine-liste"),
     termineEmpty: document.getElementById("termine-empty"),
     btnTerminNeu: document.getElementById("btn-termin-neu"),
+
+    // Mitarbeiterliste (siehe js/views/mitarbeiterliste.js)
+    maAktionen: document.getElementById("ma-aktionen"),
+    btnMaBearbeiten: document.getElementById("btn-ma-bearbeiten"),
+    btnMaZeile: document.getElementById("btn-ma-zeile"),
+    btnMaAbbrechen: document.getElementById("btn-ma-abbrechen"),
+    btnMaSpeichern: document.getElementById("btn-ma-speichern"),
+    maKonflikt: document.getElementById("ma-konflikt"),
+    maKonfliktText: document.getElementById("ma-konflikt-text"),
+    btnMaKonfliktLaden: document.getElementById("btn-ma-konflikt-laden"),
+    maTabelle: document.getElementById("ma-tabelle"),
+    maBody: document.getElementById("ma-body"),
+    maError: document.getElementById("ma-error"),
+    maFuss: document.getElementById("ma-fuss"),
+
     terminModalTitel: document.getElementById("termin-modal-titel"),
     terminEditingId: document.getElementById("termin-editing-id"),
     terminPatientInput: document.getElementById("termin-patient-input"),

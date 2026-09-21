@@ -35,6 +35,9 @@ Live: <https://md-endzone.de/>
 - **Termine** – MRT, CT / CCT, Psychologisches Gespräch oder „Sonstiges" mit eigener Bezeichnung,
   verknüpft mit einem Patienten oder frei eingetragenem Namen. Reiter *Anstehend*, *Heute*,
   *Diese Woche* und *Verlauf*; Status `geplant` / `erledigt` / `abgesagt`.
+- **Mitarbeiterliste** – Tabelle aller Mitarbeiter mit Name, Rang, Funknummer, Telefonnummer und
+  Bereichen | Aufgaben, alles Freitext. Mindestens 10 Zeilen sichtbar; Verwalter tragen die Daten
+  direkt in der Tabelle ein („Bearbeiten“, „+ Zeile“). Am Handy wird jede Zeile zur Karte.
 - **Beispiele** – von Verwaltern gepflegte Behandlungsleitfäden, gegliedert in Kategorien
   (z. B. Verkehrsunfall, Schussverletzung, Stichwunde, Schlägerei). Alle können nachschlagen,
   Verwalter bearbeiten.
@@ -59,15 +62,15 @@ Grafik ist das Favicon (`assets/logo/favicon.svg`).
 │   ├── base/                # tokens (Farben), reset, background, responsive
 │   ├── layout/              # shell (Sidebar/Kopf), footer
 │   ├── components/          # buttons, forms, cards, badges, modals, toast
-│   └── views/               # auth, startseite, patientenakten, termine, beispiele, admin, akte-ansicht
+│   └── views/               # auth, startseite, patientenakten, termine, mitarbeiterliste, beispiele, admin, akte-ansicht
 ├── js/
 │   ├── firebase-config.js   # Firebase-Projektdaten + Initialisierung (Compat-SDK)
 │   ├── auth.js              # Login/Registrierung/Benutzerverwaltung (Modular-SDK, ES-Modul)
 │   ├── main.js              # Start/Stop der App nach Login/Logout
 │   ├── akte-ansicht.js      # Einstiegsskript für akte.html
-│   ├── core/                # config, state, dom, utils, akte-dokument, akte-pdf, firebase-init
+│   ├── core/                # config, state, dom, utils, akte-dokument, akte-pdf
 │   ├── ui/                  # nav, modals, presence, version-check
-│   └── views/               # startseite, patientenakten, akte-link, termine, beispiele,
+│   └── views/               # startseite, patientenakten, akte-link, termine, mitarbeiterliste, beispiele,
 │                            # einstellungen, admin
 ├── assets/logo/favicon.svg  # Browser-Tab-Icon
 ├── firestore.rules          # Sicherheitsregeln (Firestore) – Archivkopie, siehe unten
@@ -90,7 +93,7 @@ in fester Reihenfolge (siehe `index.html`), nur `auth.js` ist ein ES-Modul.
 | `akten`            | Behandlungsakten, verknüpft über `patientId`                                   |
 | `termine`          | Termine (MRT, CT, …), verknüpft über `patientId` oder freien Namen             |
 | `freigaben`        | Zugriffslinks: schreibgeschützte, zeitlich begrenzte Kopien von Akten          |
-| `kataloge`         | Verwaltete Listen (`kataloge/leitfaeden` = Behandlungsleitfäden)               |
+| `kataloge`         | Verwaltete Dokumente: `kataloge/leitfaeden` (Behandlungsleitfäden), `kataloge/mitarbeiterliste` |
 
 Die aktuellen, gültigen Regeln werden ausschließlich über die Firebase-Konsole
 (Firestore Database → Regeln) gepflegt – `firestore.rules` in diesem Repo ist nur eine

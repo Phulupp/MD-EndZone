@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=132" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=133" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,24 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=132" />
-  <link rel="stylesheet" href="css/base/reset.css?v=132" />
-  <link rel="stylesheet" href="css/base/background.css?v=132" />
-  <link rel="stylesheet" href="css/views/auth.css?v=132" />
-  <link rel="stylesheet" href="css/components/forms.css?v=132" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=132" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=132" />
-  <link rel="stylesheet" href="css/components/cards.css?v=132" />
-  <link rel="stylesheet" href="css/components/badges.css?v=132" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=132" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=132" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=132" />
-  <link rel="stylesheet" href="css/views/termine.css?v=132" />
-  <link rel="stylesheet" href="css/components/modals.css?v=132" />
-  <link rel="stylesheet" href="css/views/admin.css?v=132" />
-  <link rel="stylesheet" href="css/components/toast.css?v=132" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=132" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=132" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=133" />
+  <link rel="stylesheet" href="css/base/reset.css?v=133" />
+  <link rel="stylesheet" href="css/base/background.css?v=133" />
+  <link rel="stylesheet" href="css/views/auth.css?v=133" />
+  <link rel="stylesheet" href="css/components/forms.css?v=133" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=133" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=133" />
+  <link rel="stylesheet" href="css/components/cards.css?v=133" />
+  <link rel="stylesheet" href="css/components/badges.css?v=133" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=133" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=133" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=133" />
+  <link rel="stylesheet" href="css/views/termine.css?v=133" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=133" />
+  <link rel="stylesheet" href="css/components/modals.css?v=133" />
+  <link rel="stylesheet" href="css/views/admin.css?v=133" />
+  <link rel="stylesheet" href="css/components/toast.css?v=133" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=133" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=133" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -205,10 +206,6 @@
           <button type="button" class="btn btn--ghost auth-submit" id="btn-locked-logout">Abmelden</button>
         </div>
 
-        <p class="auth-hint" id="auth-config-hint" hidden>
-          Firebase ist noch nicht konfiguriert. Trage deine Projektdaten in
-          <code>js/firebase-config.js</code> ein, damit die Seite funktioniert.
-        </p>
       </div>
 
       <footer class="page-footer" style="position: relative; text-align: center; border-top: none;">
@@ -269,6 +266,10 @@
         <button class="sidebar__item" data-view="termine">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
           <span>Termine</span>
+        </button>
+        <button class="sidebar__item" data-view="mitarbeiterliste">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.2c2.6.3 4.5 2.4 4.5 5.3"/></svg>
+          <span>Mitarbeiterliste</span>
         </button>
         <button class="sidebar__item" data-view="beispiele">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 4 6.5 3.6 4 4.3v14.3c2.5-.7 6-.3 8 1.2"/><path d="M12 5.5c2-1.5 5.5-1.9 8-1.2v14.3c-2.5-.7-6-.3-8 1.2Z"/><line x1="12" y1="5.5" x2="12" y2="19.8"/></svg>
@@ -501,8 +502,6 @@
           </section>
 
           <!-- ============================ -->
-          <!-- VIEW: BEISPIELE               -->
-          <!-- ============================ -->
           <!-- VIEW: TERMINE                 -->
           <!-- ============================ -->
           <section class="view" id="view-termine">
@@ -517,6 +516,51 @@
             <p class="empty-state" id="termine-empty" hidden></p>
           </section>
 
+          <!-- ============================ -->
+          <!-- VIEW: MITARBEITERLISTE        -->
+          <!-- ============================ -->
+          <section class="view" id="view-mitarbeiterliste">
+            <div class="ma-kopf">
+              <div class="ma-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h3.2l2-5.5L11.5 19l2.7-12 2 6H22" /></svg>
+              </div>
+              <h2 class="ma-titel">Mitarbeiterliste</h2>
+              <p class="ma-untertitel">Medical Department</p>
+            </div>
+
+            <div class="ma-aktionen" id="ma-aktionen" hidden>
+              <button type="button" class="btn btn--ghost" id="btn-ma-bearbeiten">Bearbeiten</button>
+              <button type="button" class="btn btn--ghost" id="btn-ma-zeile" hidden>+ Zeile</button>
+              <button type="button" class="btn btn--ghost" id="btn-ma-abbrechen" hidden>Abbrechen</button>
+              <button type="button" class="btn btn--primary" id="btn-ma-speichern" hidden>Speichern</button>
+            </div>
+
+            <div class="konflikt-hinweis" id="ma-konflikt" hidden>
+              <span id="ma-konflikt-text"></span>
+              <button type="button" class="konflikt-hinweis__aktion" id="btn-ma-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
+            </div>
+
+            <div class="ma-tabelle-wrap">
+              <table class="ma-tabelle" id="ma-tabelle">
+                <thead>
+                  <tr>
+                    <th class="ma-zelle--name">Mitarbeiter</th>
+                    <th class="ma-zelle--rang">Rang</th>
+                    <th class="ma-zelle--funk">Funknummer</th>
+                    <th class="ma-zelle--telefon">Telefonnummer</th>
+                    <th class="ma-zelle--bereiche">Bereiche | Aufgaben</th>
+                    <th class="ma-zelle--aktion" aria-label="Aktionen"></th>
+                  </tr>
+                </thead>
+                <tbody id="ma-body"></tbody>
+              </table>
+            </div>
+            <p class="field-error" id="ma-error" hidden></p>
+            <p class="ma-fuss" id="ma-fuss">Interne Übersicht · Nur für Mitarbeiter</p>
+          </section>
+
+          <!-- ============================ -->
+          <!-- VIEW: BEISPIELE               -->
           <!-- ============================ -->
           <section class="view" id="view-beispiele">
             <!-- Drei Ebenen: Hauptkategorien -> Beispiele -> Schritt-für-Schritt.
@@ -550,6 +594,7 @@
                 <option value="startseite">Startseite</option>
                 <option value="patientenakten">Patientenakten</option>
                 <option value="termine">Termine</option>
+                <option value="mitarbeiterliste">Mitarbeiterliste</option>
                 <option value="beispiele">Beispiele</option>
               </select>
             </div>
@@ -985,26 +1030,26 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=132"></script>
-  <script defer src="js/core/config.js?v=132"></script>
-  <script defer src="js/core/state.js?v=132"></script>
-  <script defer src="js/core/dom.js?v=132"></script>
-  <script defer src="js/core/firebase-init.js?v=132"></script>
-  <script defer src="js/core/utils.js?v=132"></script>
-  <script defer src="js/core/akte-dokument.js?v=132"></script>
-  <script defer src="js/core/akte-pdf.js?v=132"></script>
-  <script defer src="js/ui/modals.js?v=132"></script>
-  <script defer src="js/ui/nav.js?v=132"></script>
-  <script defer src="js/ui/presence.js?v=132"></script>
-  <script defer src="js/views/startseite.js?v=132"></script>
-  <script defer src="js/views/patientenakten.js?v=132"></script>
-  <script defer src="js/views/akte-link.js?v=132"></script>
-  <script defer src="js/views/termine.js?v=132"></script>
-  <script defer src="js/views/beispiele.js?v=132"></script>
-  <script defer src="js/views/einstellungen.js?v=132"></script>
-  <script defer src="js/views/admin.js?v=132"></script>
-  <script defer src="js/ui/version-check.js?v=132"></script>
-  <script defer src="js/main.js?v=132"></script>
-  <script type="module" src="js/auth.js?v=132"></script>
+  <script defer src="js/firebase-config.js?v=133"></script>
+  <script defer src="js/core/config.js?v=133"></script>
+  <script defer src="js/core/state.js?v=133"></script>
+  <script defer src="js/core/dom.js?v=133"></script>
+  <script defer src="js/core/utils.js?v=133"></script>
+  <script defer src="js/core/akte-dokument.js?v=133"></script>
+  <script defer src="js/core/akte-pdf.js?v=133"></script>
+  <script defer src="js/ui/modals.js?v=133"></script>
+  <script defer src="js/ui/nav.js?v=133"></script>
+  <script defer src="js/ui/presence.js?v=133"></script>
+  <script defer src="js/views/startseite.js?v=133"></script>
+  <script defer src="js/views/patientenakten.js?v=133"></script>
+  <script defer src="js/views/akte-link.js?v=133"></script>
+  <script defer src="js/views/termine.js?v=133"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=133"></script>
+  <script defer src="js/views/beispiele.js?v=133"></script>
+  <script defer src="js/views/einstellungen.js?v=133"></script>
+  <script defer src="js/views/admin.js?v=133"></script>
+  <script defer src="js/ui/version-check.js?v=133"></script>
+  <script defer src="js/main.js?v=133"></script>
+  <script type="module" src="js/auth.js?v=133"></script>
 </body>
 </html>

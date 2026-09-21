@@ -77,7 +77,7 @@ without conflict. Because ES modules can't implicitly touch `window`,
 
 `main.js` `starteApp` starts one Firestore listener per data set
 (`startePatientenListener`, `starteAktenListener`, `starteLeitfaedenListener`,
-`starteTermineListener`, plus `starteBenutzerverwaltung` for admins) and
+`starteTermineListener`, `starteMitarbeiterListener`, plus `starteBenutzerverwaltung` for admins) and
 `stoppeApp` unsubscribes them and **resets the matching state variables** —
 when adding a new listener or view state, add it to both.
 
@@ -88,8 +88,7 @@ when adding a new listener or view state, add it to both.
   mutable app state + Firestore listener unsubscribe handles, e.g.
   `patienten`, `akten`, `termine`, `aktuellerNutzer`), `dom.js` (single `el`
   object caching every DOM reference by id, plus the custom `<select>`
-  reskinning widget), `firebase-init.js` (Compat SDK init/config check),
-  `utils.js` (formatting/escaping helpers, `istAdmin()`),
+  reskinning widget), `utils.js` (formatting/escaping helpers, `istAdmin()`),
   `akte-dokument.js` + `akte-pdf.js` (rendering and jsPDF export of a
   treatment file — see "Akten & Zugriffslinks").
 - `js/ui/` — cross-cutting UI behavior not tied to one data view:
@@ -97,7 +96,7 @@ when adding a new listener or view state, add it to both.
   ("who's online" heartbeat), `version-check.js`.
 - `js/views/*.js` — one file per sidebar view: `startseite`,
   `patientenakten` (by far the largest), `akte-link`, `termine`,
-  `beispiele`, `einstellungen`, `admin`. Each owns its own Firestore
+  `mitarbeiterliste`, `beispiele`, `einstellungen`, `admin`. Each owns its own Firestore
   `onSnapshot` listener, render function, and form/modal handlers.
 - `js/akte-ansicht.js` — entry script for the public `akte.html` only; it is
   **not** loaded by `index.html`.
@@ -107,7 +106,7 @@ when adding a new listener or view state, add it to both.
   `view--active`; modals are `.modal-overlay`, toggled via
   `data-open-modal`/`data-close-modal` attributes handled in `js/ui/modals.js`).
   Views: `startseite`, `patientenakten`, `patient-detail` (no sidebar
-  button — opened via `oeffnePatientSeite`), `termine`, `beispiele`,
+  button — opened via `oeffnePatientSeite`), `termine`, `mitarbeiterliste`, `beispiele`,
   `einstellungen`, `admin`, `admin-log`. All are declared in `VIEW_META`.
 - `css/` — `base/` (tokens, reset, background, responsive) → `layout/` → `components/` → `views/`; the load order in
   `index.html` is the cascade order and matters (it is not strictly
@@ -137,6 +136,15 @@ when adding a new listener or view state, add it to both.
 - **`termine`** — appointments (MRT, CT / CCT, Psychologisches Gespräch,
   Sonstiges with free-text label — `TERMIN_ARTEN`), linked to a patient via
   `patientId` or to a free-typed name.
+- **`kataloge/mitarbeiterliste`** — the staff list: one doc with a `zeilen` array
+  of free-text rows `{ name, rang, funk, telefon, bereiche }` plus
+  `bearbeitetVon`/`bearbeitetAm`. No groups, all fields free text (the `rang`
+  is not tied to `BENUTZER_RAENGE`, but known ranks get their colour). The view
+  always shows at least `MITARBEITER_MIN_ZEILEN` (10) rows; admins edit inline
+  ("Bearbeiten" → Speichern/Abbrechen/+ Zeile). It has its own header with the
+  red/white ECG logo, so `nav.js` hides the generic `#page-header` for it.
+  Covered by the existing `kataloge` rule (read: approved, write: admin), so no
+  rules change was needed.
 - **`kataloge/leitfaeden`** — a single doc holding the admin-managed
   "Beispiele" (Behandlungsleitfäden): array fields `kategorien` and
   `eintraege`. Default categories are auto-created on first start
