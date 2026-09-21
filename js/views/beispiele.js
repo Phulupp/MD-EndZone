@@ -231,9 +231,9 @@
     renderBeispiele();
   }
 
-  // Ein Klick auf "Beispiele" in der Seitenleiste bzw. auf der Startseite
+  // Ein Klick auf "Beispiele" in der Seitenleiste
   // beginnt immer wieder oben bei den Hauptkategorien.
-  document.querySelectorAll('[data-view="beispiele"], [data-quicklink="beispiele"]').forEach((knopf) => {
+  document.querySelectorAll('[data-view="beispiele"]').forEach((knopf) => {
     knopf.addEventListener("click", beispieleZuruecksetzen);
   });
 

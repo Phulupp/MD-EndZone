@@ -77,7 +77,7 @@ without conflict. Because ES modules can't implicitly touch `window`,
 
 `main.js` `starteApp` starts one Firestore listener per data set
 (`startePatientenListener`, `starteAktenListener`, `starteLeitfaedenListener`,
-`starteTermineListener`, `starteMitarbeiterListener`, plus `starteBenutzerverwaltung` for admins) and
+`starteTermineListener`, `starteMitarbeiterListener`, `starteDienstListener`, plus `starteBenutzerverwaltung` for admins) and
 `stoppeApp` unsubscribes them and **resets the matching state variables** —
 when adding a new listener or view state, add it to both.
 
@@ -94,7 +94,7 @@ when adding a new listener or view state, add it to both.
 - `js/ui/` — cross-cutting UI behavior not tied to one data view:
   `nav.js` (sidebar view switching, tabs), `modals.js`, `presence.js`
   ("who's online" heartbeat), `version-check.js`.
-- `js/views/*.js` — one file per sidebar view: `startseite`,
+- `js/views/*.js` — one file per sidebar view: `startseite` (= the Leitstelle),
   `patientenakten` (by far the largest), `akte-link`, `termine`,
   `mitarbeiterliste`, `beispiele`, `einstellungen`, `admin`. Each owns its own Firestore
   `onSnapshot` listener, render function, and form/modal handlers.
@@ -105,7 +105,7 @@ when adding a new listener or view state, add it to both.
   one document (views are `<section class="view">`, toggled via
   `view--active`; modals are `.modal-overlay`, toggled via
   `data-open-modal`/`data-close-modal` attributes handled in `js/ui/modals.js`).
-  Views: `startseite`, `patientenakten`, `patient-detail` (no sidebar
+  Views: `startseite` (labelled "Leitstelle" in the UI), `patientenakten`, `patient-detail` (no sidebar
   button — opened via `oeffnePatientSeite`), `termine`, `mitarbeiterliste`, `beispiele`,
   `einstellungen`, `admin`, `admin-log`. All are declared in `VIEW_META`.
 - `css/` — `base/` (tokens, reset, background, responsive) → `layout/` → `components/` → `views/`; the load order in
@@ -136,6 +136,13 @@ when adding a new listener or view state, add it to both.
 - **`termine`** — appointments (MRT, CT / CCT, Psychologisches Gespräch,
   Sonstiges with free-text label — `TERMIN_ARTEN`), linked to a patient via
   `patientId` or to a free-typed name.
+- **`dienst`** — Leitstelle duty list (the start page): one doc per account
+  (doc id = UID) `{ name, rolle, status: "im-dienst" | "ausser-dienst",
+  aktualisiertAm }`. Everyone edits only their own entry ("Mein Status" select;
+  "Nicht eingetragen" deletes it), admins may remove others. Normal users cannot
+  list `users`, so people only appear once they registered themselves here. The
+  radio number next to a name is looked up in the Mitarbeiterliste by name.
+  `MD_FUNK` (config.js) is the fixed main radio channel shown at the top.
 - **`kataloge/mitarbeiterliste`** — the staff list: one doc with a `zeilen` array
   of free-text rows `{ name, rang, funk, telefon, bereiche }` plus
   `bearbeitetVon`/`bearbeitetAm`. No groups, all fields free text (the `rang`
@@ -175,7 +182,7 @@ when adding a new listener or view state, add it to both.
 ### Firestore
 
 Collections: `users`, `usernames` (reserved-name lookup), `adminLog`
-(append-only), `presence`, `patienten`, `akten`, `termine`, `freigaben`,
+(append-only), `presence`, `patienten`, `akten`, `termine`, `dienst`, `freigaben`,
 `kataloge`.
 
 `firestore.rules` in this repo is an **archive/reference copy only** —

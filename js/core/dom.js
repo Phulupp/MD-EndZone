@@ -30,10 +30,14 @@
     toast: document.getElementById("toast"),
 
     // Startseite
-    startseiteGreeting: document.getElementById("startseite-greeting"),
-    startseiteName: document.getElementById("startseite-name"),
-    startseiteStatPatienten: document.getElementById("startseite-stat-patienten"),
-    startseiteStatAkten: document.getElementById("startseite-stat-akten"),
+    leitstelleFunk: document.getElementById("leitstelle-funk"),
+    dienstStatusSelect: document.getElementById("dienst-status-select"),
+    dienstStatusInfo: document.getElementById("dienst-status-info"),
+    dienstError: document.getElementById("dienst-error"),
+    dienstListeIm: document.getElementById("dienst-liste-im"),
+    dienstListeAusser: document.getElementById("dienst-liste-ausser"),
+    dienstAnzahlIm: document.getElementById("dienst-anzahl-im"),
+    dienstAnzahlAusser: document.getElementById("dienst-anzahl-ausser"),
 
     // Patientenakten
     patientenSearch: document.getElementById("patienten-search"),
@@ -361,7 +365,7 @@
   // bleiben als helle Browser-Auswahl stehen. Jedes Feld einzeln abgesichert,
   // damit ein Fehler nicht die übrigen mitnimmt.
   function wandleAuswahlfelderUm() {
-    [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
+    [el.startseiteSelect, el.dienstStatusSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
       try {
         erzeugeCustomSelect(select);
       } catch (fehler) {

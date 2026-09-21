@@ -37,6 +37,10 @@
   let maBasisStempel = 0;
   let maSpeichertGerade = false;
 
+  // Leitstelle: alle Dienst-Einträge (siehe js/views/startseite.js).
+  let dienstListe = [];
+  let unsubDienst = null;
+
   let unsubPresence = null;
 
   let unsubBenutzerliste = null;

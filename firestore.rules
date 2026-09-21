@@ -11,7 +11,8 @@
 
    Enthält: users/usernames/adminLog/presence (inkl. "unantastbar"-Schutz und
    Selbstheilungs-Mechanismus für befristete Sperren) sowie die Collections
-   des Medical Department (patienten, akten, termine, freigaben, kataloge).
+   des Medical Department (patienten, akten, termine, dienst, freigaben,
+   kataloge).
    Für alles andere gibt es keine Regel - der Zugriff ist dort verweigert.
    ============================================================================ */
 
@@ -203,6 +204,19 @@ service cloud.firestore {
     // freigegebene Nutzer darf Termine anlegen, lesen, bearbeiten und löschen.
     match /termine/{dokument} {
       allow read, write: if istFreigegeben();
+    }
+
+    // Dienstliste der Leitstelle: ein Dokument pro Konto (Dokument-ID = UID)
+    // mit { name, rolle, status, aktualisiertAm }. Lesen dürfen alle
+    // freigegebenen Nutzer; anlegen, ändern und entfernen darf jeder nur den
+    // EIGENEN Eintrag, Verwalter zusätzlich fremde (z. B. Entfernen). Der
+    // Status ist auf die zwei erlaubten Werte begrenzt.
+    match /dienst/{uid} {
+      allow read: if istFreigegeben();
+      allow create, update: if istFreigegeben()
+                            && (request.auth.uid == uid || istAdmin())
+                            && request.resource.data.status in ['im-dienst', 'ausser-dienst'];
+      allow delete: if istFreigegeben() && (request.auth.uid == uid || istAdmin());
     }
 
     // Zugriffslinks: eine schreibgeschützte KOPIE einer Akte (nicht die Akte

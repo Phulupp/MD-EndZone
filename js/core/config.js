@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 134;
+  const VERSION_AKTUELL = 135;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -86,6 +86,14 @@
   const MITARBEITER_MIN_ZEILEN = 10;
   const MITARBEITER_MAX_ZEILEN = 100;
 
+  // Leitstelle (Startseite): der Hauptfunk des MD und der Dienststatus. Ein
+  // Dokument pro Konto in "dienst" (Dokument-ID = UID), siehe
+  // js/views/startseite.js. "" (nicht eingetragen) gibt es nur als Auswahl im
+  // Formular - dann existiert kein Dokument.
+  const MD_FUNK = "2";
+  const DIENST_COLLECTION = "dienst";
+  const DIENST_STATUS = { "im-dienst": "Im Dienst", "ausser-dienst": "Außer Dienst" };
+
   // Zugriffslinks: schreibgeschützte Kopie einer Akte, die jeder mit dem Link
   // (auch ohne Konto) ansehen kann - siehe js/views/akte-link.js und akte.html.
   // Die Kopie ist nur begrenzt gültig.
@@ -114,7 +122,7 @@
   ];
 
   const VIEW_META = {
-    startseite: { title: "Startseite", subtitle: "" },
+    startseite: { title: "Leitstelle", subtitle: "" },
     patientenakten: { title: "Patientenakten", subtitle: "Suche, lege Patienten an und dokumentiere Behandlungen." },
     // Kein Sidebar-Button - wird per oeffnePatientSeite (js/views/
     // patientenakten.js) geöffnet, Titel dort auf den Patientennamen gesetzt.

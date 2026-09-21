@@ -22,8 +22,10 @@ Live: <https://md-endzone.de/>
 - **Verwalterrechte** lassen sich unabhängig vom Rang pro Account vergeben (`isAdmin`), inkl.
   Schutzmechanismus für „unantastbare" Accounts, die nicht versehentlich degradiert oder gesperrt
   werden können.
-- **Startseite** – Begrüßung, Kennzahlen (Patienten, Akten) und Schnellzugriff. Die
-  Standard-Startseite lässt sich in den Einstellungen wählen.
+- **Leitstelle (Startseite)** – oben der **MD-Funk** (Hauptfunk, immer 2), darunter die
+  **Dienstliste**: Wer ist *Im Dienst*, wer *Außer Dienst*. Jeder freigegebene Mitarbeiter trägt
+  sich über „Mein Status" selbst ein oder um; die Funknummer wird aus der Mitarbeiterliste
+  ergänzt. Die Standard-Startseite lässt sich in den Einstellungen wählen.
 - **Patientenakten** – Patienten anlegen und suchen (Volltextsuche über Name, Befund, Allergien …,
   inkl. Warnung bei ähnlichen Namen). Stammdaten mit Geburtsdatum, Allergien, Vorerkrankungen und
   Notfallkontakt; pro Patient beliebig viele Behandlungsakten (Behandlungsgrund, Hergang, Befund,
@@ -62,7 +64,7 @@ Grafik ist das Favicon (`assets/logo/favicon.svg`).
 │   ├── base/                # tokens (Farben), reset, background, responsive
 │   ├── layout/              # shell (Sidebar/Kopf), footer
 │   ├── components/          # buttons, forms, cards, badges, modals, toast
-│   └── views/               # auth, startseite, patientenakten, termine, mitarbeiterliste, beispiele, admin, akte-ansicht
+│   └── views/               # auth, startseite (Leitstelle), patientenakten, termine, mitarbeiterliste, beispiele, admin, akte-ansicht
 ├── js/
 │   ├── firebase-config.js   # Firebase-Projektdaten + Initialisierung (Compat-SDK)
 │   ├── auth.js              # Login/Registrierung/Benutzerverwaltung (Modular-SDK, ES-Modul)
@@ -70,7 +72,7 @@ Grafik ist das Favicon (`assets/logo/favicon.svg`).
 │   ├── akte-ansicht.js      # Einstiegsskript für akte.html
 │   ├── core/                # config, state, dom, utils, akte-dokument, akte-pdf
 │   ├── ui/                  # nav, modals, presence, version-check
-│   └── views/               # startseite, patientenakten, akte-link, termine, mitarbeiterliste, beispiele,
+│   └── views/               # startseite (Leitstelle), patientenakten, akte-link, termine, mitarbeiterliste, beispiele,
 │                            # einstellungen, admin
 ├── assets/logo/favicon.svg  # Browser-Tab-Icon
 ├── firestore.rules          # Sicherheitsregeln (Firestore) – Archivkopie, siehe unten
@@ -92,6 +94,7 @@ in fester Reihenfolge (siehe `index.html`), nur `auth.js` ist ein ES-Modul.
 | `patienten`        | Patientenprofile (Name, Stammdaten)                                            |
 | `akten`            | Behandlungsakten, verknüpft über `patientId`                                   |
 | `termine`          | Termine (MRT, CT, …), verknüpft über `patientId` oder freien Namen             |
+| `dienst`           | Dienstliste der Leitstelle (Im Dienst / Außer Dienst, ein Eintrag pro Konto)   |
 | `freigaben`        | Zugriffslinks: schreibgeschützte, zeitlich begrenzte Kopien von Akten          |
 | `kataloge`         | Verwaltete Dokumente: `kataloge/leitfaeden` (Behandlungsleitfäden), `kataloge/mitarbeiterliste` |
 

@@ -20,10 +20,10 @@
     });
 
     // Auf der Patientenseite trägt der Patient selbst die Überschrift (großer
-    // Name im Kopf der Seite), die Mitarbeiterliste hat einen eigenen Kopf mit
-    // Logo - der allgemeine Seitentitel würde beides doppeln.
+    // Name im Kopf der Seite), Mitarbeiterliste und Leitstelle haben einen
+    // eigenen Kopf - der allgemeine Seitentitel würde ihn doppeln.
     const seitenKopf = document.getElementById("page-header");
-    if (seitenKopf) seitenKopf.hidden = view === "patient-detail" || view === "mitarbeiterliste";
+    if (seitenKopf) seitenKopf.hidden = ["patient-detail", "mitarbeiterliste", "startseite"].includes(view);
 
     const meta = VIEW_META[view] || { title: view, subtitle: "" };
     el.viewTitle.textContent = meta.title;

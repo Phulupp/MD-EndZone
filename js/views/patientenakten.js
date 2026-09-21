@@ -125,7 +125,6 @@
           // wird nie überschrieben, nur auf fremde Änderungen hingewiesen.
           renderPatientenListe();
           if (offenerPatientId) renderPatientDetailAkten(offenerPatientId);
-          renderStartseiteStats();
           pruefeAkteKonflikt();
         },
         (fehler) => console.error("Akten konnten nicht geladen werden:", fehler)
@@ -147,7 +146,6 @@
           // deutscher Reihenfolge, Groß-/Kleinschreibung egal.
           patienten.sort((a, b) => (a.name || "").localeCompare(b.name || "", "de", { sensitivity: "base" }));
           renderPatientenListe();
-          renderStartseiteStats();
           // Termine zeigen den aktuellen Patientennamen (und den Link zur Akte).
           if (typeof renderTermine === "function") renderTermine();
           // Das Profilformular der gerade offenen Patienten-Seite wird nie

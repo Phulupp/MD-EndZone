@@ -34,7 +34,6 @@
     el.sidebarUserAvatar.textContent = initialenAvatar(aktuellerNutzer.name);
     el.sidebarUserName.textContent = aktuellerNutzer.name;
     aktualisiereSidebarRang(aktuellerNutzer.rolle);
-    renderStartseiteGreeting();
 
     el.navAdminToggle.hidden = !istAdmin();
     if (!istAdmin()) el.navAdminBadge.hidden = true;
@@ -45,6 +44,7 @@
     starteLeitfaedenListener();
     starteTermineListener();
     starteMitarbeiterListener();
+    starteDienstListener();
     if (istAdmin()) starteBenutzerverwaltung();
 
     zeigeAnsicht(ladeStartseite());
@@ -68,13 +68,15 @@
     }
     renderBeispiele();
     renderMitarbeiter();
+    pflegeEigenenDienstEintrag();
+    renderLeitstelle();
     aktualisiereAdminSteuerung();
   }
 
   function stoppeApp() {
     aktuellerNutzer = null;
-    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter].forEach((unsub) => unsub && unsub());
-    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = null;
+    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst].forEach((unsub) => unsub && unsub());
+    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = null;
     stoppeBenutzerverwaltung();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
@@ -84,6 +86,7 @@
     leitfadenKategorien = [];
     termine = [];
     mitarbeiter = [];
+    dienstListe = [];
     mitarbeiterMeta = { von: "", am: null };
     mitarbeiterBearbeiten = false;
     mitarbeiterEntwurf = [];

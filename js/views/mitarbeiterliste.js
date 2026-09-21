@@ -60,6 +60,8 @@
         const daten = snap.exists ? snap.data() : {};
         mitarbeiter = (Array.isArray(daten.zeilen) ? daten.zeilen : []).map(normalisiereMaZeile);
         mitarbeiterMeta = { von: daten.bearbeitetVon || "", am: daten.bearbeitetAm || null };
+        // Die Leitstelle zeigt die Funknummern aus dieser Liste.
+        renderLeitstelle();
         if (!mitarbeiterBearbeiten) renderMitarbeiter();
         else if (!maSpeichertGerade) pruefeMaKonflikt();
       },
