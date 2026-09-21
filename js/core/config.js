@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 136;
+  const VERSION_AKTUELL = 137;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -87,9 +87,9 @@
   const MITARBEITER_MAX_ZEILEN = 100;
 
   // Leitstelle (Startseite): der Hauptfunk des MD und der Dienststatus. Ein
-  // Dokument pro Konto in "dienst" (Dokument-ID = UID), siehe
-  // js/views/startseite.js. "" (nicht eingetragen) gibt es nur als Auswahl im
-  // Formular - dann existiert kein Dokument.
+  // Dokument je Person in "dienst" (Dokument-ID = id der Zeile in der
+  // Mitarbeiterliste), siehe js/views/startseite.js. Ohne Dokument gilt
+  // "Außer Dienst".
   const MD_FUNK = "2";
   const DIENST_COLLECTION = "dienst";
   const DIENST_STATUS = { "im-dienst": "Im Dienst", "ausser-dienst": "Außer Dienst" };

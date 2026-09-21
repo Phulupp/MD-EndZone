@@ -37,8 +37,9 @@
   let maBasisStempel = 0;
   let maSpeichertGerade = false;
 
-  // Leitstelle: alle Dienst-Einträge (siehe js/views/startseite.js).
-  let dienstListe = [];
+  // Leitstelle: Dienststatus je Person, { [id der Mitarbeiterliste-Zeile]:
+  // { status, aktualisiertAm, von } } (siehe js/views/startseite.js).
+  let dienstStatus = {};
   let unsubDienst = null;
 
   let unsubPresence = null;

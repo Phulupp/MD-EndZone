@@ -68,7 +68,6 @@
     }
     renderBeispiele();
     renderMitarbeiter();
-    pflegeEigenenDienstEintrag();
     renderLeitstelle();
     aktualisiereAdminSteuerung();
   }
@@ -86,7 +85,7 @@
     leitfadenKategorien = [];
     termine = [];
     mitarbeiter = [];
-    dienstListe = [];
+    dienstStatus = {};
     mitarbeiterMeta = { von: "", am: null };
     mitarbeiterBearbeiten = false;
     mitarbeiterEntwurf = [];

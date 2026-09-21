@@ -206,17 +206,16 @@ service cloud.firestore {
       allow read, write: if istFreigegeben();
     }
 
-    // Dienstliste der Leitstelle: ein Dokument pro Konto (Dokument-ID = UID)
-    // mit { name, rolle, status, aktualisiertAm }. Lesen dürfen alle
-    // freigegebenen Nutzer; anlegen, ändern und entfernen darf jeder nur den
-    // EIGENEN Eintrag, Verwalter zusätzlich fremde (z. B. Entfernen). Der
-    // Status ist auf die zwei erlaubten Werte begrenzt.
-    match /dienst/{uid} {
+    // Dienststatus der Leitstelle: ein Dokument je Person, Dokument-ID = die
+    // feste "id" der Zeile in kataloge/mitarbeiterliste, Inhalt
+    // { status, aktualisiertAm, von }. Jeder freigegebene Nutzer darf jeden
+    // Status lesen und umstellen (Im Dienst / Außer Dienst); der Wert ist auf
+    // die zwei erlaubten Status begrenzt. Löschen (Aufräumen) nur Verwalter.
+    match /dienst/{id} {
       allow read: if istFreigegeben();
       allow create, update: if istFreigegeben()
-                            && (request.auth.uid == uid || istAdmin())
                             && request.resource.data.status in ['im-dienst', 'ausser-dienst'];
-      allow delete: if istFreigegeben() && (request.auth.uid == uid || istAdmin());
+      allow delete: if istAdmin();
     }
 
     // Zugriffslinks: eine schreibgeschützte KOPIE einer Akte (nicht die Akte

@@ -136,15 +136,17 @@ when adding a new listener or view state, add it to both.
 - **`termine`** — appointments (MRT, CT / CCT, Psychologisches Gespräch,
   Sonstiges with free-text label — `TERMIN_ARTEN`), linked to a patient via
   `patientId` or to a free-typed name.
-- **`dienst`** — Leitstelle duty list (the start page): one doc per account
-  (doc id = UID) `{ name, rolle, status: "im-dienst" | "ausser-dienst",
-  aktualisiertAm }`. Everyone edits only their own entry ("Mein Status" select;
-  "Nicht eingetragen" deletes it), admins may remove others. Normal users cannot
-  list `users`, so people only appear once they registered themselves here. The
-  radio number next to a name is looked up in the Mitarbeiterliste by name.
-  `MD_FUNK` (config.js) is the fixed main radio channel shown at the top.
+- **`dienst`** — Leitstelle duty status (the start page): one doc per person,
+  doc id = the stable `id` of that row in the Mitarbeiterliste, `{ status:
+  "im-dienst" | "ausser-dienst", aktualisiertAm, von }`. The Leitstelle lists
+  *every* Mitarbeiterliste row that has a name, each with a dropdown; no doc means
+  Außer Dienst (the default). Any approved user may set any status. Rows saved
+  before ids existed get them via `migriereMaIds` (runs for admins); until then
+  their dropdown is disabled. `MD_FUNK` (config.js) is the fixed main radio
+  channel shown at the top.
 - **`kataloge/mitarbeiterliste`** — the staff list: one doc with a `zeilen` array
-  of free-text rows `{ name, rang, funk, telefon, bereiche }` plus
+  of free-text rows `{ id, name, rang, funk, telefon, bereiche }` (`id` = stable
+  random key, used by the Leitstelle) plus
   `bearbeitetVon`/`bearbeitetAm`. No groups, all fields free text (the `rang`
   is not tied to `BENUTZER_RAENGE`, but known ranks get their colour). The view
   always shows at least `MITARBEITER_MIN_ZEILEN` (10) rows; admins edit inline

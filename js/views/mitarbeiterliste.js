@@ -7,8 +7,12 @@
      Telefonnummer, Bereiche | Aufgaben - alles Freitext, keine Gruppen.
 
      Daten: ein einzelnes Firestore-Doc (MITARBEITER_DOC):
-       zeilen: [{ name, rang, funk, telefon, bereiche }]
+       zeilen: [{ id, name, rang, funk, telefon, bereiche }]
        bearbeitetVon, bearbeitetAm
+     "id" ist eine feste, zufällige Kennung je Person: an ihr hängt der Dienststatus
+     der Leitstelle (siehe js/views/startseite.js), sie bleibt beim Umbenennen
+     oder Umsortieren erhalten. Zeilen aus der Zeit davor bekommen sie beim
+     nächsten Laden durch einen Verwalter (siehe migriereMaIds).
      Die Ansicht zeigt immer mindestens MITARBEITER_MIN_ZEILEN Zeilen (leere
      inklusive); gespeichert werden alle Zeilen bis zur letzten befüllten,
      leere Zeilen dazwischen bleiben also als Lücke erhalten.
@@ -29,15 +33,31 @@
     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
 
   function leereMaZeile() {
-    return { name: "", rang: "", funk: "", telefon: "", bereiche: "" };
+    return { id: erzeugeId(), name: "", rang: "", funk: "", telefon: "", bereiche: "" };
   }
 
+  // Gespeicherte Zeilen ohne id (aus der Zeit davor) behalten ein leeres "id",
+  // damit migriereMaIds sie erkennt.
   function normalisiereMaZeile(zeile) {
     const z = leereMaZeile();
+    z.id = zeile && typeof zeile.id === "string" ? zeile.id : "";
     MA_FELDER.forEach(([feld]) => {
       z[feld] = zeile && zeile[feld] != null ? String(zeile[feld]) : "";
     });
     return z;
+  }
+
+  // Einmalig für bestehende Listen: fehlende ids vergeben (nur Verwalter dürfen
+  // schreiben). Meta (bearbeitetVon/Am) bleibt unangetastet.
+  let maMigriereGerade = false;
+  function migriereMaIds() {
+    if (maMigriereGerade || !db) return;
+    maMigriereGerade = true;
+    const zeilen = mitarbeiter.map((z) => ({ ...z, id: z.id || erzeugeId() }));
+    db.doc(MITARBEITER_DOC)
+      .update({ zeilen })
+      .catch((fehler) => console.error("Mitarbeiter-IDs konnten nicht vergeben werden:", fehler))
+      .finally(() => (maMigriereGerade = false));
   }
 
   function maZeileLeer(zeile) {
@@ -60,8 +80,9 @@
         const daten = snap.exists ? snap.data() : {};
         mitarbeiter = (Array.isArray(daten.zeilen) ? daten.zeilen : []).map(normalisiereMaZeile);
         mitarbeiterMeta = { von: daten.bearbeitetVon || "", am: daten.bearbeitetAm || null };
-        // Die Leitstelle zeigt die Funknummern aus dieser Liste.
+        // Die Leitstelle zeigt die Mitarbeiter aus dieser Liste.
         renderLeitstelle();
+        if (istAdmin() && !mitarbeiterBearbeiten && mitarbeiter.some((z) => !z.id)) migriereMaIds();
         if (!mitarbeiterBearbeiten) renderMitarbeiter();
         else if (!maSpeichertGerade) pruefeMaKonflikt();
       },
@@ -186,6 +207,7 @@
     versteckeFeldFehler(el.maError);
     const zeilen = mitarbeiterEntwurf.map((z) => {
       const bereinigt = leereMaZeile();
+      if (z.id) bereinigt.id = z.id;
       MA_FELDER.forEach(([feld, , maximum]) => (bereinigt[feld] = z[feld].trim().slice(0, maximum)));
       return bereinigt;
     });

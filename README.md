@@ -22,10 +22,10 @@ Live: <https://md-endzone.de/>
 - **Verwalterrechte** lassen sich unabhängig vom Rang pro Account vergeben (`isAdmin`), inkl.
   Schutzmechanismus für „unantastbare" Accounts, die nicht versehentlich degradiert oder gesperrt
   werden können.
-- **Leitstelle (Startseite)** – oben der **MD-Funk** (Hauptfunk, immer 2), darunter die
-  **Dienstliste**: Wer ist *Im Dienst*, wer *Außer Dienst*. Jeder freigegebene Mitarbeiter trägt
-  sich über „Mein Status" selbst ein oder um; die Funknummer wird aus der Mitarbeiterliste
-  ergänzt. Die Standard-Startseite lässt sich in den Einstellungen wählen.
+- **Leitstelle (Startseite)** – oben der **MD-Funk** (Hauptfunk, immer 2), darunter alle
+  Mitarbeiter aus der Mitarbeiterliste als Kacheln. Bei jedem steht ein Dropdown **Im Dienst /
+  Außer Dienst** (Standard: Außer Dienst); jeder freigegebene Mitarbeiter kann es umstellen.
+  Die Standard-Startseite lässt sich in den Einstellungen wählen.
 - **Patientenakten** – Patienten anlegen und suchen (Volltextsuche über Name, Befund, Allergien …,
   inkl. Warnung bei ähnlichen Namen). Stammdaten mit Geburtsdatum, Allergien, Vorerkrankungen und
   Notfallkontakt; pro Patient beliebig viele Behandlungsakten (Behandlungsgrund, Hergang, Befund,
@@ -94,7 +94,7 @@ in fester Reihenfolge (siehe `index.html`), nur `auth.js` ist ein ES-Modul.
 | `patienten`        | Patientenprofile (Name, Stammdaten)                                            |
 | `akten`            | Behandlungsakten, verknüpft über `patientId`                                   |
 | `termine`          | Termine (MRT, CT, …), verknüpft über `patientId` oder freien Namen             |
-| `dienst`           | Dienstliste der Leitstelle (Im Dienst / Außer Dienst, ein Eintrag pro Konto)   |
+| `dienst`           | Dienststatus je Mitarbeiter (Im Dienst / Außer Dienst) der Leitstelle          |
 | `freigaben`        | Zugriffslinks: schreibgeschützte, zeitlich begrenzte Kopien von Akten          |
 | `kataloge`         | Verwaltete Dokumente: `kataloge/leitfaeden` (Behandlungsleitfäden), `kataloge/mitarbeiterliste` |
 
