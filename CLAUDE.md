@@ -13,9 +13,9 @@ served as-is. All data is real-time via Firebase (Authentication +
 Firestore); UI text, variable/function names, and code comments are in
 German.
 
-The repo was converted from an earlier ranch-management app ("Zur Dicken
-Kuh"). See "Legacy leftovers" below — some files still describe or belong to
-that old app and must not be mistaken for the current one.
+The repo was converted from an earlier ranch-management app; all of its
+code, assets and naming have been removed. Do not reintroduce ranch-era
+names or the western/parchment styling.
 
 ## Commands
 
@@ -68,10 +68,9 @@ via `js/firebase-config.js`. Both SDKs talk to the same Firebase project
 without conflict. Because ES modules can't implicitly touch `window`,
 `auth.js` explicitly bridges to the rest of the app via:
 
-- Custom `window` events: `hof:auth-approved`, `hof:auth-profile-updated`,
-  `hof:auth-signed-out` (consumed in [main.js](js/main.js) to start/stop the
-  app and re-render on role/admin changes). The `hof:` prefix is a leftover
-  from the ranch app — keep it, renaming would break both sides.
+- Custom `window` events: `md:auth-approved`, `md:auth-profile-updated`,
+  `md:auth-signed-out` (consumed in [main.js](js/main.js) to start/stop the
+  app and re-render on role/admin changes).
 - `window.BenutzerVerwaltung` — the entire admin/user-management API
   (approve/reject/lock/unlock/set rank/set admin/rename/delete/create user,
   password reset, activity log) exposed for [views/admin.js](js/views/admin.js) to call.
@@ -102,7 +101,7 @@ when adding a new listener or view state, add it to both.
   `onSnapshot` listener, render function, and form/modal handlers.
 - `js/akte-ansicht.js` — entry script for the public `akte.html` only; it is
   **not** loaded by `index.html`.
-- `js/main.js` — wires `hof:auth-*` events to app start/stop; must load last.
+- `js/main.js` — wires `md:auth-*` events to app start/stop; must load last.
 - `index.html` — contains markup for **every** view and **every** modal in
   one document (views are `<section class="view">`, toggled via
   `view--active`; modals are `.modal-overlay`, toggled via
@@ -110,12 +109,14 @@ when adding a new listener or view state, add it to both.
   Views: `startseite`, `patientenakten`, `patient-detail` (no sidebar
   button — opened via `oeffnePatientSeite`), `termine`, `beispiele`,
   `einstellungen`, `admin`, `admin-log`. All are declared in `VIEW_META`.
-- `css/` — `base/` → `layout/` → `components/` → `views/`; the load order in
+- `css/` — `base/` (tokens, reset, background, responsive) → `layout/` → `components/` → `views/`; the load order in
   `index.html` is the cascade order and matters (it is not strictly
   alphabetical — follow the existing `<link>` order when adding a file).
+  Colour tokens live in `css/base/tokens.css` (`--slate-*` dark surfaces,
+  `--panel-*` card layers, `--text-*`, `--accent-*` red, `--status-*`).
 - `akte.html` — public, login-free read-only page for shared treatment files.
-- `assets/` — image set; `assets/logo/favicon.svg` is the current icon. Much
-  of the rest (wood/parchment textures, `logo-dicke-kuh.png`, …) is ranch-era.
+- `assets/logo/favicon.svg` — the only image asset (browser tab icon). The design is
+  pure CSS surfaces/gradients (Inter font), no textures or photos.
 
 ### Domain model
 
@@ -201,16 +202,3 @@ original `<select>` stays in the DOM as the actual source of truth (value,
 options, `change` listeners) but is visually hidden — code that populates
 options via `innerHTML` on the underlying `<select>` continues to work
 unchanged; a `MutationObserver` keeps the visible list in sync.
-
-## Legacy leftovers (ranch app "Zur Dicken Kuh")
-
-Still in the repo but **not part of the Medical Department app** — do not
-extend them, and ask before deleting:
-
-- `preise/` — public ranch price list; reads the `produkte` collection, which
-  the current rules no longer allow, so it is effectively dead.
-- `README.md` — still describes the ranch app (Waren, Bestellungen, Hofbuch…).
-- `download` — stray file containing `{"version": 43}`; unrelated to
-  `version.json`.
-- Ranch artwork in `assets/` (`logo-dicke-kuh.png`, `hornhausen-sign.png`,
-  `farm-outline.png`, parchment/wood textures, …).

@@ -1,106 +1,100 @@
-# Zur Dicken Kuh
+# Medical Department — Verwaltung
 
-Internes Verwaltungsprogramm für den privaten Hof **Zur Dicken Kuh** (RedM Roleplay, Jahr 1899).
-Waren, Preise, Bestellungen, ein Handelsrechner, das Telegramm-Verzeichnis, Verkäufe, das
-Hofbuch und die Benutzerverwaltung des Hofes laufen alle in Echtzeit über **Firebase**
-(Authentication + Firestore) – Änderungen sind sofort bei allen angemeldeten Mitarbeitern sichtbar.
+Internes Dokumentations- und Verwaltungstool des **Medical Department** (Rettungsdienst) eines
+privaten RedM-Roleplay-Projekts. Patientenakten, Termine, Behandlungsleitfäden und die
+Benutzerverwaltung laufen in Echtzeit über **Firebase** (Authentication + Firestore) –
+Änderungen sind sofort bei allen angemeldeten Mitarbeitern sichtbar.
 
-Das gesamte Design ist bewusst rustikal gehalten: dunkles Holz, altes Pergament, Western-Typografie
-und ein durchgängiges Grafik-Set (Hintergründe, Pergament-Texturen, Zierrahmen, Trenner, Siegel)
-statt moderner Dashboard-Optik – im Stil einer hochwertigen internen Hofverwaltung von 1899.
+Live: <https://md-endzone.de/>
+
+> Alle Patienten und Charaktere sind fiktiv. Es handelt sich um ein reines Roleplay-Werkzeug ohne
+> reale medizinische Daten.
 
 ## ✨ Funktionen
 
 - **Firebase Authentication** – Login per E-Mail/Passwort oder Google, inkl. Registrierung und
-  „Passwort vergessen". Neue Accounts starten automatisch im Status „wartet auf Freigabe" und
-  müssen von einem Verwalter freigeschaltet werden.
-- **Rangsystem** (unabhängig von den Verwalterrechten): `Hofherr`, `Hofmeister`, `Stallmeister`,
-  `Hofarbeiter`, `Knecht`, `Tagelöhner`. Neue Accounts erhalten automatisch den Rang „Tagelöhner".
+  „Passwort vergessen". Neue Accounts starten im Status „wartet auf Freigabe" und müssen von einem
+  Verwalter freigeschaltet werden.
+- **Rangsystem** (unabhängig von den Verwalterrechten), aufsteigend: `Azubi`, `Sanitätshelfer`,
+  `Rettungssanitäter`, `Notfallsanitäter`, `Organisatorischer Leiter Rettungsdienst`,
+  `Medizinstudent`, `Notarzt`, `Leitender Notarzt`, `Ärztlicher Leiter Rettungsdienst`. Neue
+  Accounts erhalten automatisch den Rang „Azubi". Jeder Rang hat eine eigene Farbe.
 - **Verwalterrechte** lassen sich unabhängig vom Rang pro Account vergeben (`isAdmin`), inkl.
   Schutzmechanismus für „unantastbare" Accounts, die nicht versehentlich degradiert oder gesperrt
   werden können.
-- **Übersicht (Dashboard)** – Begrüßung mit Foto-Kopfbereich, Kennzahlen (offene Bestellungen,
-  Tagesumsatz, Gesamtgewinn), Schnellzugriff und die letzten Bestellungen/Verkäufe/
-  Kontakte auf einen Blick.
-- **Waren & Preise** – Produktliste mit Verkaufspreis; Anlegen/
-  Bearbeiten/Löschen nur für Verwalter, Ansicht für alle freigegebenen Nutzer.
-- **Bestellungen** – Eine Bestellung kann mehrere Produkte enthalten (Produkt auswählen, Menge
-  eingeben, hinzufügen – beliebig oft, editierbar/entfernbar), mit automatischer Zusammenfassung
-  (Anzahl Produkte, Gesamtmenge) und Status `Offen` / `In Bearbeitung` / `Abgeschlossen`.
-- **Handelsrechner** – berechnet Angebote und führt eine Historie der letzten Angebote; ein
-  Angebot lässt sich direkt als neue Bestellung übernehmen.
-- **Kontakte** – Telegramm-Verzeichnis mit frei wählbaren, bis zu 4-stelligen Nummern und Rollen
-  (Bürger, Hofmeister, Sheriff, Rancher, Schmied, Händler, …), verwaltbare Rollenliste.
-- **Verkäufe** – Verkaufslog mit automatischer Tagesstatistik.
-- **Hofbuch** – die Chronik des Hofes: jeder freigegebene Mitarbeiter kann Einträge (Überschrift +
-  Text) verfassen, die chronologisch in einem aufgeschlagenen Buch dargestellt werden.
-- **Statistiken** – Auswertungen zu Top-Waren, Top-Kunden und Gesamtgewinn.
-- **Verwaltung (Admin)** – Benutzerliste freigeben/ablehnen/sperren/entsperren, Rang & Verwalter-
-  rechte setzen, Notizen, Umbenennen, Passwort-Reset auslösen, Accounts direkt anlegen, sowie ein
-  unveränderliches Aktivitäts-Log aller Verwalter-Aktionen.
+- **Startseite** – Begrüßung, Kennzahlen (Patienten, Akten) und Schnellzugriff. Die
+  Standard-Startseite lässt sich in den Einstellungen wählen.
+- **Patientenakten** – Patienten anlegen und suchen (Volltextsuche über Name, Befund, Allergien …,
+  inkl. Warnung bei ähnlichen Namen). Stammdaten mit Geburtsdatum, Allergien, Vorerkrankungen und
+  Notfallkontakt; pro Patient beliebig viele Behandlungsakten (Behandlungsgrund, Hergang, Befund,
+  Behandlung, Bemerkungen). Löschen von Patienten nur für Verwalter.
+  - **Konflikterkennung** und Anzeige, wer eine Akte gerade ebenfalls bearbeitet.
+  - **Text kopieren** (für Chat/Discord) und **PDF-Export** einer Akte.
+  - **Zugriffslink** – schreibgeschützte Kopie einer Akte, die auch ohne Konto über
+    `akte.html#…` aufrufbar ist; 7 Tage gültig, jederzeit aktualisier- oder löschbar.
+- **Termine** – MRT, CT / CCT, Psychologisches Gespräch oder „Sonstiges" mit eigener Bezeichnung,
+  verknüpft mit einem Patienten oder frei eingetragenem Namen. Reiter *Anstehend*, *Heute*,
+  *Diese Woche* und *Verlauf*; Status `geplant` / `erledigt` / `abgesagt`.
+- **Beispiele** – von Verwaltern gepflegte Behandlungsleitfäden, gegliedert in Kategorien
+  (z. B. Verkehrsunfall, Schussverletzung, Stichwunde, Schlägerei). Alle können nachschlagen,
+  Verwalter bearbeiten.
+- **Verwaltung (Admin)** – Benutzerliste freigeben/ablehnen/sperren (auch befristet)/entsperren,
+  Rang & Verwalterrechte setzen, Notizen, Umbenennen, Passwort-Reset auslösen, Accounts direkt
+  anlegen, sowie ein unveränderliches Aktivitäts-Log aller Verwalter-Aktionen.
 - **„Wer ist online"** – Live-Anzeige der gerade aktiven Mitarbeiter.
 - **Update-Banner** – informiert alle Nutzer automatisch, wenn eine neue Version bereitsteht.
 
 ## 🖥️ Design
 
-- Dunkles Holz, gealtertes Pergament, warme Brauntöne und Goldakzente statt modernem UI –
-  konsequent auf jeder einzelnen Seite der Anwendung, nicht nur auf dem Login-Bildschirm.
-- Der Login-/Registrierungsbildschirm nutzt einen Hof-Hintergrund, ein hängendes Holzschild-Logo
-  und ein Pergament-Foto als Anmelde-Karte; dieselbe Hintergrund-Textur zieht sich als
-  Dashboard-Hintergrund durch die gesamte App.
-- Dasselbe Schild-Logo (in klein) taucht auch im Sidebar-Kopf, als Browser-Tab-Icon (Favicon) und
-  in der Update-Benachrichtigung auf; der Übersicht-Kopfbereich zeigt das große Hof-Foto als
-  Banner mit Zierrahmen.
-- Alle Karten, Panels und Dialoge nutzen dieselbe Pergament-Textur (jeweils eine eigene Variante
-  für Standardseiten, Dialoge und das Hofbuch); Buttons, Trennlinien, Wachssiegel und Zierrahmen
-  stammen ebenfalls aus demselben Grafik-Set, damit die Designsprache auf allen Seiten identisch
-  bleibt.
-- Schriften: „Rye" (Wortmarke/Schild), „Playfair Display" (Überschriften), „Vollkorn" (Fließtext).
+Dunkles, klinisch-technisches Design: kühles Anthrazit/Slate-Blau als Fläche, Medizin-Rot als
+Akzentfarbe, Schrift „Inter". Keine Bild-Texturen – reine Flächen und Verläufe. Die einzige
+Grafik ist das Favicon (`assets/logo/favicon.svg`).
 
 ## 📁 Projektstruktur
 
 ```
-Zur-Dicken-Kuh/
-│
-├── index.html              # Struktur: Login/Registrierung, Sidebar, alle Ansichten, Modale
+├── index.html               # Login/Registrierung, Sidebar, alle Ansichten und Dialoge
+├── akte.html                # Öffentliche Ansicht einer per Zugriffslink geteilten Akte
 ├── css/
-│   └── style.css           # Gesamtes Design (Holz/Pergament-Theme, Design-Tokens)
+│   ├── base/                # tokens (Farben), reset, background, responsive
+│   ├── layout/              # shell (Sidebar/Kopf), footer
+│   ├── components/          # buttons, forms, cards, badges, modals, toast
+│   └── views/               # auth, startseite, patientenakten, termine, beispiele, admin, akte-ansicht
 ├── js/
-│   ├── firebase-config.js  # Firebase-Projektdaten (Compat-SDK)
-│   ├── auth.js              # Login/Registrierung/Benutzerverwaltung (Firebase Modular-SDK)
-│   └── app.js                # Restliche App-Logik: Firestore-Sync, Rendering, Modale
-├── assets/                  # Grafik-Set: Hintergründe, Logo, Pergament-Texturen, Holz- und
-│                             # Papier-Texturen, Buttons, Zierelemente (Rahmen, Trenner, Siegel,
-│                             # Hof-Illustration)
-│   ├── background/          # login-background, dashboard-background
-│   ├── logo/                # hornhausen-sign (Login-Schild, auch im Update-Banner), logo-dicke-kuh (Sidebar-/Preislisten-Logo)
-│   ├── parchment/            # parchment-login, parchment-page, parchment-modal, parchment-book
-│   ├── textures/             # sidebar-background, wood-panel, paper-texture
-│   ├── buttons/               # button-dark, button-hover
-│   └── decorations/            # farm-outline, divider-western, rope-divider, wax-seal, wood-frame
+│   ├── firebase-config.js   # Firebase-Projektdaten + Initialisierung (Compat-SDK)
+│   ├── auth.js              # Login/Registrierung/Benutzerverwaltung (Modular-SDK, ES-Modul)
+│   ├── main.js              # Start/Stop der App nach Login/Logout
+│   ├── akte-ansicht.js      # Einstiegsskript für akte.html
+│   ├── core/                # config, state, dom, utils, akte-dokument, akte-pdf, firebase-init
+│   ├── ui/                  # nav, modals, presence, version-check
+│   └── views/               # startseite, patientenakten, akte-link, termine, beispiele,
+│                            # einstellungen, admin
+├── assets/logo/favicon.svg  # Browser-Tab-Icon
 ├── firestore.rules          # Sicherheitsregeln (Firestore) – Archivkopie, siehe unten
-└── version.json             # Versionsnummer für das automatische Update-Banner
+├── version.json             # Versionsnummer für das automatische Update-Banner
+└── CNAME                    # Eigene Domain für GitHub Pages
 ```
+
+Es gibt keinen Build-Schritt und keinen Paketmanager: Die Skripte sind klassische `defer`-Skripte
+in fester Reihenfolge (siehe `index.html`), nur `auth.js` ist ein ES-Modul.
 
 ## 🔥 Firestore-Collections
 
-| Collection    | Zweck                                                          |
-|---------------|-----------------------------------------------------------------|
-| `users`       | Ein Dokument pro Account (Status, Rang, Verwalterrechte, …)     |
-| `usernames`   | Reservierte Benutzernamen (Verfügbarkeitsprüfung)               |
-| `adminLog`    | Unveränderliches Log aller Verwalter-Aktionen                   |
-| `presence`    | „Wer ist online"-Heartbeat                                      |
-| `kontakte`    | Telegramm-Verzeichnis                                            |
-| `produkte`    | Waren & Preise                                                    |
-| `bestellungen`| Bestellungen (Produkte als Array je Bestellung)                 |
-| `angebote`    | Historie der Handelsrechner-Angebote                             |
-| `verkaeufe`   | Verkaufslog                                                       |
-| `kataloge`    | Verwaltete Listen (z. B. Rollen der Kontakte-Seite)              |
-| `hofbuch`     | Chronik-Einträge des Hofbuchs (Titel, Text, Autor, Zeitpunkt)    |
+| Collection         | Zweck                                                                         |
+|--------------------|--------------------------------------------------------------------------------|
+| `users`            | Ein Dokument pro Account (Status, Rang, Verwalterrechte, …)                    |
+| `usernames`        | Reservierte Benutzernamen (Verfügbarkeitsprüfung)                              |
+| `adminLog`         | Unveränderliches Log aller Verwalter-Aktionen                                  |
+| `presence`         | „Wer ist online"-Heartbeat                                                     |
+| `patienten`        | Patientenprofile (Name, Stammdaten)                                            |
+| `akten`            | Behandlungsakten, verknüpft über `patientId`                                   |
+| `termine`          | Termine (MRT, CT, …), verknüpft über `patientId` oder freien Namen             |
+| `freigaben`        | Zugriffslinks: schreibgeschützte, zeitlich begrenzte Kopien von Akten          |
+| `kataloge`         | Verwaltete Listen (`kataloge/leitfaeden` = Behandlungsleitfäden)               |
 
 Die aktuellen, gültigen Regeln werden ausschließlich über die Firebase-Konsole
 (Firestore Database → Regeln) gepflegt – `firestore.rules` in diesem Repo ist nur eine
-Archiv-/Versionskopie zur Nachverfolgung.
+Archiv-/Versionskopie zur Nachverfolgung und muss nach Änderungen von Hand dort eingefügt werden.
 
 ## ⚙️ Einrichtung
 
@@ -111,12 +105,16 @@ Archiv-/Versionskopie zur Nachverfolgung.
 3. `index.html` lokal öffnen oder über GitHub Pages (siehe `.github/workflows/pages.yml`)
    bereitstellen.
 
-## 🚀 Deployment
+## 🚀 Deployment & Versionen
 
 Der `main`-Branch wird automatisch per GitHub Actions (`.github/workflows/pages.yml`) auf
-GitHub Pages veröffentlicht.
+GitHub Pages veröffentlicht (Domain über `CNAME`).
+
+Bei jedem Release muss die Versionsnummer an allen Stellen gleichzeitig erhöht werden:
+`version.json`, `VERSION_AKTUELL` in `js/core/config.js` und alle `?v=`-Angaben in `index.html`
+und `akte.html`. Nur so funktionieren Cache-Busting und Update-Banner.
 
 ## 🔒 Hinweis
 
 Dies ist ein internes Verwaltungstool für ein privates RedM-Roleplay-Projekt. Zugriff ist nur für
-freigegebene Hof-Mitarbeiter vorgesehen.
+freigegebene Mitarbeiter des Medical Department vorgesehen.
