@@ -4,12 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-"Zur Dicken Kuh" is an internal ranch-management web app for a private RedM
-(Red Dead Redemption 2 roleplay) server, set in the fictional year 1899. It
-is a **static site, no build step, no package manager, no bundler** —
-`index.html` is opened directly or served as-is. All data is real-time via
-Firebase (Authentication + Firestore); UI text, variable/function names, and
-code comments are in German.
+"Medical Department — Verwaltung" is an internal documentation/management web
+app for the medical department (Rettungsdienst) of a private RedM
+(Red Dead Redemption 2 roleplay) server. All patients and characters are
+fictional. Live at `https://md-endzone.de/`. It is a **static site, no build
+step, no package manager, no bundler** — `index.html` is opened directly or
+served as-is. All data is real-time via Firebase (Authentication +
+Firestore); UI text, variable/function names, and code comments are in
+German.
+
+The repo was converted from an earlier ranch-management app ("Zur Dicken
+Kuh"). See "Legacy leftovers" below — some files still describe or belong to
+that old app and must not be mistaken for the current one.
 
 ## Commands
 
@@ -21,12 +27,11 @@ There is no build, lint, or test tooling in this repo (no `package.json`).
   `.github/workflows/pages.yml` (no build step — the repo root is uploaded
   as-is). Custom domain is set via `CNAME` (`md-endzone.de`).
 - **"Tests"**: none exist; verify changes by opening the app in a browser
-  and exercising the affected view manually (see "Executing actions with
-  care" for browser-testing expectations on UI changes).
+  and exercising the affected view manually.
 
 ## Version bump procedure (must be done together, every release)
 
-The cache-busting/update-banner mechanism depends on **three places** being
+The cache-busting/update-banner mechanism depends on these places being
 bumped to the same integer in lockstep, or the update banner and/or cache
 busting will misbehave:
 
@@ -34,9 +39,12 @@ busting will misbehave:
 2. `VERSION_AKTUELL` constant in [config.js](js/core/config.js)
 3. Every `?v=N` query string on every `<link rel="stylesheet">` and
    `<script src="...">` tag in [index.html](index.html)
+4. The same `?v=N` tags (favicon, stylesheets, scripts) in
+   [akte.html](akte.html) — the public share page has its own copy.
 
-`js/ui/version-check.js` polls `version.json` periodically and shows the
-`#update-banner` when it finds a newer version than `VERSION_AKTUELL`.
+`js/ui/version-check.js` polls `version.json` every 5 minutes (started in
+`starteApp`) and shows the `#update-banner` when it finds a newer version
+than `VERSION_AKTUELL`.
 
 ## Architecture
 
@@ -46,11 +54,11 @@ All app logic (other than auth) lives in **non-module, `defer`red classic
 scripts** that share one global scope (no `import`/`export`, no bundler).
 They append variables/functions directly into global scope, so **the
 `<script>` order at the bottom of `index.html` is significant and must not
-be reordered**: `js/core/*` → `js/ui/*` → `js/views/*` → `js/main.js` last
-(it starts the app). Numbered comment banners inside each file (e.g. `/* 9.
-Waren & Preise */`) are left over from when all this code lived in one
-single `js/app.js`; the numbering is still meaningful for finding related
-sections across files.
+be reordered**: `firebase-config.js` → `js/core/*` → `js/ui/*` →
+`js/views/*` → `js/ui/version-check.js` → `js/main.js` last (it starts the
+app). Numbered comment banners inside each file (e.g. `/* 18. Patientenakten */`)
+are left over from when all this code lived in one single `js/app.js`; the
+numbering is still meaningful for finding related sections across files.
 
 `js/auth.js` is intentionally a separate, self-contained **ES module**
 (`type="module"` in `index.html`, loaded last). It uses the modern Firebase
@@ -62,64 +70,127 @@ without conflict. Because ES modules can't implicitly touch `window`,
 
 - Custom `window` events: `hof:auth-approved`, `hof:auth-profile-updated`,
   `hof:auth-signed-out` (consumed in [main.js](js/main.js) to start/stop the
-  app and re-render on role/admin changes).
+  app and re-render on role/admin changes). The `hof:` prefix is a leftover
+  from the ranch app — keep it, renaming would break both sides.
 - `window.BenutzerVerwaltung` — the entire admin/user-management API
   (approve/reject/lock/unlock/set rank/set admin/rename/delete/create user,
   password reset, activity log) exposed for [views/admin.js](js/views/admin.js) to call.
 
+`main.js` `starteApp` starts one Firestore listener per data set
+(`startePatientenListener`, `starteAktenListener`, `starteLeitfaedenListener`,
+`starteTermineListener`, plus `starteBenutzerverwaltung` for admins) and
+`stoppeApp` unsubscribes them and **resets the matching state variables** —
+when adding a new listener or view state, add it to both.
+
 ### Directory roles
 
 - `js/core/` — shared foundation loaded first: `config.js` (constants,
-  default data, `VIEW_META`), `state.js` (all mutable app state + Firestore
-  listener unsubscribe handles, e.g. `produkte`, `bestellungen`,
-  `aktuellerNutzer`), `dom.js` (single `el` object caching every DOM
-  reference by id, plus the custom `<select>` reskinning widget), `firebase-init.js`
-  (Compat SDK init/config check), `utils.js` (formatting/escaping helpers,
-  `istAdmin()`).
+  ranks, collection names, default data, `VIEW_META`), `state.js` (all
+  mutable app state + Firestore listener unsubscribe handles, e.g.
+  `patienten`, `akten`, `termine`, `aktuellerNutzer`), `dom.js` (single `el`
+  object caching every DOM reference by id, plus the custom `<select>`
+  reskinning widget), `firebase-init.js` (Compat SDK init/config check),
+  `utils.js` (formatting/escaping helpers, `istAdmin()`),
+  `akte-dokument.js` + `akte-pdf.js` (rendering and jsPDF export of a
+  treatment file — see "Akten & Zugriffslinks").
 - `js/ui/` — cross-cutting UI behavior not tied to one data view:
   `nav.js` (sidebar view switching, tabs), `modals.js`, `presence.js`
-  ("who's online" heartbeat), `version-check.js`, `autocomplete.js`
-  (generic free-text suggestion dropdown, styled like the app's other
-  custom dropdowns — replaces native `<input list>`/`<datalist>`, which
-  the browser renders as unstyleable native UI).
-- `js/views/*.js` — one file per sidebar view (Waren, Bestellungen,
-  Handelsrechner, Kontakte, Verkäufe, Hofbuch, Statistiken,
-  Einstellungen, Admin). Each owns its own Firestore `onSnapshot` listener,
-  render function, and form/modal handlers for that section.
+  ("who's online" heartbeat), `version-check.js`.
+- `js/views/*.js` — one file per sidebar view: `startseite`,
+  `patientenakten` (by far the largest), `akte-link`, `termine`,
+  `beispiele`, `einstellungen`, `admin`. Each owns its own Firestore
+  `onSnapshot` listener, render function, and form/modal handlers.
+- `js/akte-ansicht.js` — entry script for the public `akte.html` only; it is
+  **not** loaded by `index.html`.
 - `js/main.js` — wires `hof:auth-*` events to app start/stop; must load last.
 - `index.html` — contains markup for **every** view and **every** modal in
   one document (views are `<section class="view">`, toggled via
   `view--active`; modals are `.modal-overlay`, toggled via
   `data-open-modal`/`data-close-modal` attributes handled in `js/ui/modals.js`).
-- `css/` — split by cascade purpose (`base` → `layout` → `components` →
-  `views`); load order in `index.html` mirrors this and matters for the
-  cascade.
-- `assets/` — the wood/parchment western-themed graphic set (backgrounds,
-  logo, parchment textures, buttons, decorations) referenced by the CSS.
+  Views: `startseite`, `patientenakten`, `patient-detail` (no sidebar
+  button — opened via `oeffnePatientSeite`), `termine`, `beispiele`,
+  `einstellungen`, `admin`, `admin-log`. All are declared in `VIEW_META`.
+- `css/` — `base/` → `layout/` → `components/` → `views/`; the load order in
+  `index.html` is the cascade order and matters (it is not strictly
+  alphabetical — follow the existing `<link>` order when adding a file).
+- `akte.html` — public, login-free read-only page for shared treatment files.
+- `assets/` — image set; `assets/logo/favicon.svg` is the current icon. Much
+  of the rest (wood/parchment textures, `logo-dicke-kuh.png`, …) is ranch-era.
 
-### Central data model rule
+### Domain model
 
-There is no separate "sales" collection. A `bestellungen` (order) document
-with `status: "Abgeschlossen"` **is** the sale. Stock levels, stock value,
-revenue, profit, dashboard stats, and the Statistiken view are all derived
-by filtering/aggregating completed orders — never write a parallel
-sales/verkauf record when completing an order.
+- **Ranks** (`BENUTZER_RAENGE` in `config.js`, ascending): Azubi,
+  Sanitätshelfer, Rettungssanitäter, Notfallsanitäter, Organisatorischer
+  Leiter Rettungsdienst, Medizinstudent, Notarzt, Leitender Notarzt,
+  Ärztlicher Leiter Rettungsdienst. New accounts start as `Azubi`. Old rank
+  names are mapped for display only via `RANG_ALIAS`/`normalisiereRang`
+  (the DB keeps the old value until an admin reassigns). Each rank has a
+  colour in `RANG_AKZENTE`; the top three also get an avatar ring
+  (`RANG_AKZENTRING`). **Rank is organisational only** — admin rights are a
+  separate per-user `isAdmin` flag.
+- **`patienten`** — patient profile (name + Stammdaten: Geburtsdatum,
+  Allergien, Vorerkrankungen, …). Any approved user may create/read/edit;
+  only admins may delete.
+- **`akten`** — one treatment file per doc, linked to its patient via
+  `patientId`. Any approved user may create/read/edit/delete.
+- **`termine`** — appointments (MRT, CT / CCT, Psychologisches Gespräch,
+  Sonstiges with free-text label — `TERMIN_ARTEN`), linked to a patient via
+  `patientId` or to a free-typed name.
+- **`kataloge/leitfaeden`** — a single doc holding the admin-managed
+  "Beispiele" (Behandlungsleitfäden): array fields `kategorien` and
+  `eintraege`. Default categories are auto-created on first start
+  (`DEFAULT_LEITFADEN_KATEGORIEN`, fixed IDs). Readable by approved users,
+  writable by admins only.
+
+### Akten & Zugriffslinks
+
+- `akteDaten(a)` in `patientenakten.js` flattens an Akte + patient into the
+  plain display object that both the in-app dialog and the public page render
+  through `akte-dokument.js`. Keep that field list in sync between
+  `akteDaten`, `akte-dokument.js` and `akte-pdf.js`.
+- A **Zugriffslink** (`akte-link.js`) writes a read-only **copy** of an Akte
+  to `freigaben/{token}` (token = 48 hex chars from `crypto.getRandomValues`,
+  ≥ 32 required by the rules), valid `ZUGRIFFSLINK_TAGE` (7) days. The token
+  lives in the URL fragment (`akte.html#token`) so it is never sent to a
+  server. The copy is deliberately **not** kept in sync with the Akte; users
+  refresh it explicitly ("Kopie aktualisieren"). Deleting an Akte/Patient must
+  also delete its links (`loescheFreigabenFuerAkte`).
+- `freigaben` rules: `get` is public but only while `laeuftAb > request.time`;
+  `list`/write need an approved user.
+- `patientenakten.js` has optimistic-concurrency style **conflict detection**
+  for two people editing the same Patient/Akte (`profilBasisStempel`,
+  `akteBasisStempel`, compared against `bearbeitetAm`) and an editing
+  presence indicator (`aktualisiereAnwesenheit`). Preserve `bearbeitetAm`/
+  `bearbeitetVon` on every write to those docs.
 
 ### Firestore
 
 Collections: `users`, `usernames` (reserved-name lookup), `adminLog`
-(append-only), `presence`, `kontakte`, `produkte`, `bestellungen`,
-`angebote`, `verkaeufe` (legacy/unused, see below), `kataloge`, `hofbuch`.
+(append-only), `presence`, `patienten`, `akten`, `termine`, `freigaben`,
+`kataloge`.
 
 `firestore.rules` in this repo is an **archive/reference copy only** —
 Firebase does **not** read it automatically. The actual live rules are
 maintained by hand in the Firebase Console (Firestore Database → Regeln)
-and must be manually copy-pasted there after editing this file. Rank
-(`Hofherr`/`Hofmeister`/`Stallmeister`/`Hofarbeiter`/`Knecht`/`Tagelöhner`)
-and admin rights (`isAdmin`) are independent axes — a user doc's `isAdmin`
-flag controls admin capability regardless of rank; `geschuetzt: true` marks
-an account whose admin rights/approved status can never be revoked (see
-`istUnantastbar()`/`verletztUnantastbarkeit()` in `firestore.rules`).
+and must be manually copy-pasted there after editing this file — remind the
+user whenever you change it. Admin rights (`isAdmin`) and rank are
+independent axes; `geschuetzt: true` marks an account whose admin
+rights/approved status can never be revoked (see
+`istUnantastbar()`/`verletztUnantastbarkeit()` in `firestore.rules`). A user
+doc's `status` is `pending` / `approved` / `locked` (timed locks expire via
+`gesperrtBis`, self-healing in the rules).
+
+Ranch-era collections (`produkte`, `bestellungen`, `kontakte`, `hofbuch`, …)
+no longer have rules and are unreachable; leftover data is simply unused.
+
+### Other conventions
+
+- Start page choice is stored per browser in `localStorage`
+  (`einstellungen.js`, `ladeStartseite()`); everything else is in Firestore.
+- Compat SDK is configured with `ignoreUndefinedProperties: true`
+  (`firebase-config.js`), so `undefined` fields are silently dropped on write.
+- `firebase-config.js` guards `firebase.auth` with `typeof … === "function"`
+  because some pages (`akte.html`) load only the Firestore SDK.
 
 ### Custom `<select>` widget
 
@@ -130,3 +201,16 @@ original `<select>` stays in the DOM as the actual source of truth (value,
 options, `change` listeners) but is visually hidden — code that populates
 options via `innerHTML` on the underlying `<select>` continues to work
 unchanged; a `MutationObserver` keeps the visible list in sync.
+
+## Legacy leftovers (ranch app "Zur Dicken Kuh")
+
+Still in the repo but **not part of the Medical Department app** — do not
+extend them, and ask before deleting:
+
+- `preise/` — public ranch price list; reads the `produkte` collection, which
+  the current rules no longer allow, so it is effectively dead.
+- `README.md` — still describes the ranch app (Waren, Bestellungen, Hofbuch…).
+- `download` — stray file containing `{"version": 43}`; unrelated to
+  `version.json`.
+- Ranch artwork in `assets/` (`logo-dicke-kuh.png`, `hornhausen-sign.png`,
+  `farm-outline.png`, parchment/wood textures, …).
