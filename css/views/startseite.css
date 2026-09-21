@@ -9,7 +9,7 @@
 
 .startseite-hero__eyebrow {
   font-size: 15px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .startseite-hero__name {
@@ -40,19 +40,19 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
-  color: var(--wood-text);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
 .startseite-stat__label {
   font-size: 13.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .startseite-kacheln {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--leather-edge);
+  border-top: 1px solid var(--panel-edge);
 }
 
 .startseite-kachel {
@@ -64,7 +64,7 @@
   text-align: left;
   padding: 28px 14px;
   background: none;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
@@ -77,12 +77,12 @@
   grid-column: 1;
   grid-row: 1 / span 2;
   display: flex;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   transition: color 0.12s ease;
 }
 
 .startseite-kachel:hover .startseite-kachel__icon {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .startseite-kachel h3 {
@@ -98,7 +98,7 @@
   grid-column: 2;
   grid-row: 2;
   font-size: 14.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
@@ -107,11 +107,11 @@
   grid-column: 3;
   grid-row: 1 / span 2;
   font-size: 20px;
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
 .startseite-kachel:hover::after {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   transform: translateX(4px);
 }

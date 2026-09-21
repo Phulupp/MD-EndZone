@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--wood-950);
+  background: var(--slate-950);
 }
 
 /* Kein Foto mehr - dieselbe ruhige, technische Rasterfläche wie im
@@ -27,7 +27,7 @@
     radial-gradient(circle at 50% 0%, rgba(53, 181, 189, 0.07) 0%, transparent 50%),
     repeating-linear-gradient(0deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
     repeating-linear-gradient(90deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
-    linear-gradient(180deg, var(--wood-950) 0%, var(--wood-900) 100%);
+    linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
 }
 
 .auth-screen__vignette {
@@ -48,17 +48,17 @@
   animation: auth-fade-in 0.7s ease both;
 }
 
-.auth-gate__sign-wrap {
+.auth-gate__brand {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
 }
 
-/* Icon-Badge statt Hänge-Schild-Foto - derselbe Puls-/EKG-Strich wie in der
+/* Icon-Badge - derselbe Puls-/EKG-Strich wie in der
    Sidebar (siehe .sidebar__brand-icon in css/layout/shell.css), hier nur
    größer für die Login-Seite. */
-.auth-gate__sign-icon {
+.auth-gate__icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,31 +66,31 @@
   height: 84px;
   border-radius: 50%;
   background: #f4f7f8;
-  border: 2px solid var(--brass-bright);
-  color: var(--brass-bright);
-  box-shadow: var(--shadow-modal), 0 0 0 8px var(--brass-soft);
+  border: 2px solid var(--accent-bright);
+  color: var(--accent-bright);
+  box-shadow: var(--shadow-modal), 0 0 0 8px var(--accent-soft);
 }
 
-.auth-gate__sign-icon svg {
+.auth-gate__icon svg {
   width: 40px;
   height: 40px;
 }
 
-.auth-gate__sign-name {
+.auth-gate__brand-name {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--wood-text);
+  color: var(--text);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Schlichte, hochwertige Anmelde-Karte: dunkles Leder mit Messing-Kante,
+/* Schlichte, hochwertige Anmelde-Karte: dunkle Fläche mit feiner Kante,
    damit Login und Anwendung optisch aus einem Guss wirken. */
 .auth-card {
   width: 420px;
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge);
+  background: var(--panel-800);
+  border: 1px solid var(--panel-edge);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   padding: 40px 40px 36px;
@@ -110,7 +110,7 @@
   font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .auth-card__heading {
@@ -119,7 +119,7 @@
   font-family: var(--font-brand);
   font-size: 30px;
   letter-spacing: 0.03em;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .auth-form {
@@ -165,7 +165,7 @@
   border: none;
   padding: 0;
   font-size: 12px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -174,11 +174,11 @@
 }
 
 .auth-link:hover {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 /* Fußzeile ("Datenschutz"/"Informationen") liegt hier direkt auf dem
-   Seitenhintergrund statt auf der Leder-Karte wie die übrigen
+   Seitenhintergrund statt auf der Anmelde-Karte wie die übrigen
    .auth-link-Vorkommen - ein leichter Schlagschatten hält den Text auch auf
    der dunklen Fläche lesbar. */
 .auth-screen .page-footer .auth-link {
@@ -198,7 +198,7 @@
 
 .auth-status__text {
   font-size: 13.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   line-height: 1.65;
 }
 
@@ -207,7 +207,7 @@
   align-items: center;
   gap: 12px;
   margin: 10px 0;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -219,7 +219,7 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--leather-edge);
+  background: var(--panel-edge);
 }
 
 /* Eingabefelder mit Icon (nur im Login-Bereich, keine Änderung an den
@@ -236,7 +236,7 @@
   left: 12px;
   width: 15px;
   height: 15px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   pointer-events: none;
   transition: color 0.15s ease;
 }
@@ -246,7 +246,7 @@
 }
 
 #auth-screen .field-icon-wrap:focus-within .field-icon {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 #auth-screen .field-checkbox-row {
@@ -260,19 +260,19 @@
 }
 
 /* Auf niedrigeren Bildschirmen (kleine Laptop-Fenster) etwas kompakter, damit
-   Schild + Pergament-Karte + Footer nicht durch die feste Bildschirmhöhe
+   Logo + Anmelde-Karte + Footer nicht durch die feste Bildschirmhöhe
    abgeschnitten werden. */
 @media (max-height: 800px) {
   .auth-gate {
     gap: 14px;
   }
 
-  .auth-gate__sign-icon {
+  .auth-gate__icon {
     width: 66px;
     height: 66px;
   }
 
-  .auth-gate__sign-icon svg {
+  .auth-gate__icon svg {
     width: 32px;
     height: 32px;
   }
@@ -287,12 +287,12 @@
 }
 
 @media (max-height: 700px) {
-  .auth-gate__sign-icon {
+  .auth-gate__icon {
     width: 52px;
     height: 52px;
   }
 
-  .auth-gate__sign-icon svg {
+  .auth-gate__icon svg {
     width: 26px;
     height: 26px;
   }

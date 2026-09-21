@@ -4,7 +4,7 @@
 .field-label {
   font-size: 13px;
   font-weight: 500;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   margin: 16px 0 6px;
   display: block;
 }
@@ -13,52 +13,20 @@
   margin-top: 0;
 }
 
-/* Zeile aus Feld-Label + kleiner Inline-Aktion daneben (z. B. "+ Als
-   Kontakt anlegen" neben "Ansprechpartner" im Bestellungs-Fenster) - das
-   .field-label darin verliert seinen eigenen Außenabstand, die Zeile
-   übernimmt ihn stattdessen einmalig. */
-.field-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 12px 0 6px;
-}
-
-.field-label-row:first-child {
-  margin-top: 0;
-}
-
-.field-label-row .field-label {
-  margin: 0;
-}
-
-.field-inline-action {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--brass-bright);
-  white-space: nowrap;
-}
-
-.field-inline-action:hover {
-  color: var(--copper-hover);
-  text-decoration: underline;
-}
-
 .field-input {
   width: 100%;
-  border: 1px solid var(--leather-edge-soft);
+  border: 1px solid var(--panel-edge-soft);
   background: rgba(130, 170, 190, 0.05);
   border-radius: 6px;
   padding: 11px 14px;
   font-size: 14px;
   font-family: var(--font-body);
-  color: var(--wood-text);
+  color: var(--text);
   transition: border-color 0.15s ease;
 }
 
 .field-input::placeholder {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .field-input:hover {
@@ -67,7 +35,7 @@
 
 .field-input:focus {
   outline: none;
-  border-color: var(--brass-bright);
+  border-color: var(--accent-bright);
 }
 
 .field-textarea {
@@ -113,9 +81,9 @@ select.field-input {
   padding: 11px 14px;
   font-size: 14px;
   font-family: inherit;
-  color: var(--wood-text);
+  color: var(--text);
   background: rgba(130, 170, 190, 0.05);
-  border: 1px solid var(--leather-edge-soft);
+  border: 1px solid var(--panel-edge-soft);
   border-radius: 6px;
   text-align: left;
   transition: border-color 0.15s ease;
@@ -126,7 +94,7 @@ select.field-input {
 }
 
 .custom-select__trigger--offen {
-  border-color: var(--brass-bright);
+  border-color: var(--accent-bright);
 }
 
 /* Lange Einträge (z. B. Rangnamen) werden im Feld mit "..." gekürzt statt es
@@ -140,14 +108,14 @@ select.field-input {
 
 .custom-select__chevron {
   flex-shrink: 0;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   font-size: 12px;
   transition: transform 0.15s ease;
 }
 
 .custom-select__trigger--offen .custom-select__chevron {
   transform: rotate(180deg);
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .custom-select__trigger--disabled {
@@ -162,12 +130,12 @@ select.field-input {
   overflow-x: hidden;
   overflow-y: auto;
   padding: 6px;
-  background: var(--leather-900);
-  border: 1px solid var(--leather-edge);
+  background: var(--panel-900);
+  border: 1px solid var(--panel-edge);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   scrollbar-width: thin;
-  scrollbar-color: var(--leather-edge) transparent;
+  scrollbar-color: var(--panel-edge) transparent;
 }
 
 .custom-select__panel[hidden] {
@@ -181,7 +149,7 @@ select.field-input {
   padding: 10px 12px;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--wood-text);
+  color: var(--text);
   white-space: normal;
   overflow-wrap: anywhere;
   border-radius: var(--radius-md);
@@ -193,14 +161,14 @@ select.field-input {
 }
 
 .custom-select__option--aktiv {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   font-weight: 700;
 }
 
 .custom-select__leer {
   padding: 10px 12px;
   font-size: 13px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .field-error {
@@ -214,13 +182,13 @@ select.field-input {
   align-items: center;
   gap: 7px;
   font-size: 12.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   margin-top: 12px;
 }
 
 .field-checkbox-row input {
   width: 14px;
   height: 14px;
-  accent-color: var(--brass);
+  accent-color: var(--accent);
 }
 

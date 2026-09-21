@@ -7,16 +7,16 @@
        einem zwischengeschalteten Cache/CDN zwischengespeichert wird. Ohne
        das kann es passieren, dass nach einem Update weiterhin eine alte,
        gecachte Version dieser Seite ausgeliefert wird - die dann auch
-       weiterhin auf eine alte app.js/style.css-Version (altes "?v=") zeigt,
+       weiterhin auf alte Skript-/Stylesheet-Versionen (altes "?v=") zeigt,
        obwohl längst neue Dateien hochgeladen wurden. Der Update-Banner würde
        dann fälschlich dauerhaft anzeigen, dass eine neue Version verfügbar
-       ist, weil das eigentlich schon geladene app.js selbst noch die alte
+       ist, weil die eigentlich schon geladenen Skripte selbst noch die alte
        Versionsnummer enthält. -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=131" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=132" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,24 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=131" />
-  <link rel="stylesheet" href="css/base/reset.css?v=131" />
-  <link rel="stylesheet" href="css/base/textures.css?v=131" />
-  <link rel="stylesheet" href="css/views/auth.css?v=131" />
-  <link rel="stylesheet" href="css/components/forms.css?v=131" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=131" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=131" />
-  <link rel="stylesheet" href="css/components/cards.css?v=131" />
-  <link rel="stylesheet" href="css/components/badges.css?v=131" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=131" />
-  <link rel="stylesheet" href="css/components/tables.css?v=131" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=131" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=131" />
-  <link rel="stylesheet" href="css/views/termine.css?v=131" />
-  <link rel="stylesheet" href="css/components/modals.css?v=131" />
-  <link rel="stylesheet" href="css/views/admin.css?v=131" />
-  <link rel="stylesheet" href="css/components/toast.css?v=131" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=131" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=131" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=132" />
+  <link rel="stylesheet" href="css/base/reset.css?v=132" />
+  <link rel="stylesheet" href="css/base/background.css?v=132" />
+  <link rel="stylesheet" href="css/views/auth.css?v=132" />
+  <link rel="stylesheet" href="css/components/forms.css?v=132" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=132" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=132" />
+  <link rel="stylesheet" href="css/components/cards.css?v=132" />
+  <link rel="stylesheet" href="css/components/badges.css?v=132" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=132" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=132" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=132" />
+  <link rel="stylesheet" href="css/views/termine.css?v=132" />
+  <link rel="stylesheet" href="css/components/modals.css?v=132" />
+  <link rel="stylesheet" href="css/views/admin.css?v=132" />
+  <link rel="stylesheet" href="css/components/toast.css?v=132" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=132" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=132" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -87,13 +86,13 @@
     <div class="auth-screen__vignette"></div>
 
     <div class="auth-gate">
-      <div class="auth-gate__sign-wrap">
-        <div class="auth-gate__sign-icon" aria-hidden="true">
+      <div class="auth-gate__brand">
+        <div class="auth-gate__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 13h3.2l2-5.5L11.5 19l2.7-12 2 6H22" />
           </svg>
         </div>
-        <p class="auth-gate__sign-name">Medical Department</p>
+        <p class="auth-gate__brand-name">Medical Department</p>
       </div>
 
       <div class="auth-card">
@@ -124,10 +123,10 @@
 
           <p class="field-error" id="login-error" hidden></p>
 
-          <button type="submit" class="btn btn--wood-plank auth-submit">Anmelden</button>
+          <button type="submit" class="btn btn--auth auth-submit">Anmelden</button>
 
           <div class="auth-divider">Oder</div>
-          <button type="button" class="btn btn--google-rustic auth-submit" id="btn-google-login">
+          <button type="button" class="btn btn--google auth-submit" id="btn-google-login">
             <svg class="btn__google-icon" viewBox="0 0 48 48" aria-hidden="true">
               <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h11.9c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.9 6.5-9.6 6.5-16.7z" />
               <path fill="#34A853" d="M24 46c6 0 11-2 14.6-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.5 2.1-5.8 0-10.7-3.9-12.4-9.1H4.3v5.7C7.9 41 15.3 46 24 46z" />
@@ -168,7 +167,7 @@
 
           <p class="field-error" id="register-error" hidden></p>
 
-          <button type="submit" class="btn btn--wood-plank auth-submit">Account erstellen</button>
+          <button type="submit" class="btn btn--auth auth-submit">Account erstellen</button>
 
           <div class="auth-links">
             <button type="button" class="auth-link" id="link-show-login">Schon einen Account? Anmelden</button>
@@ -185,7 +184,7 @@
 
           <p class="field-error" id="google-username-error" hidden></p>
 
-          <button type="submit" class="btn btn--wood-plank auth-submit">Weiter</button>
+          <button type="submit" class="btn btn--auth auth-submit">Weiter</button>
         </form>
 
         <!-- Status: Account wartet auf Freigabe -->
@@ -231,7 +230,7 @@
 
   <div class="app" id="app-root" hidden>
     <!-- ============================ -->
-    <!-- SIDEBAR (dunkles Holz)        -->
+    <!-- SIDEBAR                       -->
     <!-- ============================ -->
     <aside class="sidebar">
       <div class="sidebar__brand">
@@ -300,7 +299,7 @@
     </aside>
 
     <!-- ============================ -->
-    <!-- HAUPTBEREICH (Pergament)     -->
+    <!-- HAUPTBEREICH                  -->
     <!-- ============================ -->
     <div class="main-area">
       <div class="topbar">
@@ -544,9 +543,9 @@
           <!-- VIEW: EINSTELLUNGEN            -->
           <!-- ============================ -->
           <section class="view" id="view-einstellungen">
-            <div class="parch-card">
+            <div class="abschnitt">
               <h3>Standard-Startseite</h3>
-              <p class="parch-card__hint">Diese Seite öffnet sich automatisch, sobald du dich anmeldest — nur in deinem eigenen Browser gespeichert.</p>
+              <p class="abschnitt__hint">Diese Seite öffnet sich automatisch, sobald du dich anmeldest — nur in deinem eigenen Browser gespeichert.</p>
               <select id="startseite-select" class="field-input" style="max-width: 320px;">
                 <option value="startseite">Startseite</option>
                 <option value="patientenakten">Patientenakten</option>
@@ -565,9 +564,9 @@
               <button class="tabs__tab" data-admin-subview="admin-log">Aktivitäts-Log</button>
             </div>
 
-            <div class="parch-card">
+            <div class="abschnitt">
               <h3>Benutzerverwaltung</h3>
-              <p class="parch-card__hint">Hier verwaltest du alle Accounts: Registrierungsanfragen freigeben oder ablehnen, Rang und Verwalterrechte vergeben, Benutzer sperren/entsperren/löschen/umbenennen und interne Notizen hinterlegen. <strong>Verwalterrechte</strong> sind unabhängig vom Rang und werden separat je Benutzer vergeben.</p>
+              <p class="abschnitt__hint">Hier verwaltest du alle Accounts: Registrierungsanfragen freigeben oder ablehnen, Rang und Verwalterrechte vergeben, Benutzer sperren/entsperren/löschen/umbenennen und interne Notizen hinterlegen. <strong>Verwalterrechte</strong> sind unabhängig vom Rang und werden separat je Benutzer vergeben.</p>
 
               <form class="settings-form" id="form-add-benutzer">
                 <input type="text" id="neuer-benutzer-name-input" class="field-input" placeholder="Benutzername, z. B. Max Mustermann" required style="flex: 1 1 200px;" />
@@ -585,11 +584,11 @@
                 </select>
                 <button type="submit" class="btn btn--primary">Benutzer erstellen</button>
               </form>
-              <p class="parch-card__hint">Neu erstellte Benutzer sind sofort freigegeben und bekommen automatisch eine E-Mail von Firebase, um ihr eigenes Passwort festzulegen.</p>
+              <p class="abschnitt__hint">Neu erstellte Benutzer sind sofort freigegeben und bekommen automatisch eine E-Mail von Firebase, um ihr eigenes Passwort festzulegen.</p>
 
               <input type="text" id="benutzerverwaltung-search-input" class="field-input" placeholder="Benutzer suchen..." style="margin-top: 4px;" />
               <div class="tabs" id="benutzerverwaltung-status-filter" style="margin-top: 10px;"></div>
-              <p class="parch-card__hint">Klicke auf einen Benutzer, um alle Infos und Aktionen zu öffnen.</p>
+              <p class="abschnitt__hint">Klicke auf einen Benutzer, um alle Infos und Aktionen zu öffnen.</p>
 
               <div class="settings-list" id="benutzerverwaltung-liste"></div>
             </div>
@@ -604,9 +603,9 @@
               <button class="tabs__tab tabs__tab--active" data-admin-subview="admin-log">Aktivitäts-Log</button>
             </div>
 
-            <div class="parch-card">
+            <div class="abschnitt">
               <h3>Aktivitäts-Log</h3>
-              <p class="parch-card__hint">Zeigt die letzten Verwaltungsaktionen (Freigaben, Sperren, Rollenänderungen, Löschungen, ...) — wer hat wann was gemacht.</p>
+              <p class="abschnitt__hint">Zeigt die letzten Verwaltungsaktionen (Freigaben, Sperren, Rollenänderungen, Löschungen, ...) — wer hat wann was gemacht.</p>
               <div class="settings-list" id="admin-log-liste"></div>
             </div>
           </section>
@@ -986,26 +985,26 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=131"></script>
-  <script defer src="js/core/config.js?v=131"></script>
-  <script defer src="js/core/state.js?v=131"></script>
-  <script defer src="js/core/dom.js?v=131"></script>
-  <script defer src="js/core/firebase-init.js?v=131"></script>
-  <script defer src="js/core/utils.js?v=131"></script>
-  <script defer src="js/core/akte-dokument.js?v=131"></script>
-  <script defer src="js/core/akte-pdf.js?v=131"></script>
-  <script defer src="js/ui/modals.js?v=131"></script>
-  <script defer src="js/ui/nav.js?v=131"></script>
-  <script defer src="js/ui/presence.js?v=131"></script>
-  <script defer src="js/views/startseite.js?v=131"></script>
-  <script defer src="js/views/patientenakten.js?v=131"></script>
-  <script defer src="js/views/akte-link.js?v=131"></script>
-  <script defer src="js/views/termine.js?v=131"></script>
-  <script defer src="js/views/beispiele.js?v=131"></script>
-  <script defer src="js/views/einstellungen.js?v=131"></script>
-  <script defer src="js/views/admin.js?v=131"></script>
-  <script defer src="js/ui/version-check.js?v=131"></script>
-  <script defer src="js/main.js?v=131"></script>
-  <script type="module" src="js/auth.js?v=131"></script>
+  <script defer src="js/firebase-config.js?v=132"></script>
+  <script defer src="js/core/config.js?v=132"></script>
+  <script defer src="js/core/state.js?v=132"></script>
+  <script defer src="js/core/dom.js?v=132"></script>
+  <script defer src="js/core/firebase-init.js?v=132"></script>
+  <script defer src="js/core/utils.js?v=132"></script>
+  <script defer src="js/core/akte-dokument.js?v=132"></script>
+  <script defer src="js/core/akte-pdf.js?v=132"></script>
+  <script defer src="js/ui/modals.js?v=132"></script>
+  <script defer src="js/ui/nav.js?v=132"></script>
+  <script defer src="js/ui/presence.js?v=132"></script>
+  <script defer src="js/views/startseite.js?v=132"></script>
+  <script defer src="js/views/patientenakten.js?v=132"></script>
+  <script defer src="js/views/akte-link.js?v=132"></script>
+  <script defer src="js/views/termine.js?v=132"></script>
+  <script defer src="js/views/beispiele.js?v=132"></script>
+  <script defer src="js/views/einstellungen.js?v=132"></script>
+  <script defer src="js/views/admin.js?v=132"></script>
+  <script defer src="js/ui/version-check.js?v=132"></script>
+  <script defer src="js/main.js?v=132"></script>
+  <script type="module" src="js/auth.js?v=132"></script>
 </body>
 </html>

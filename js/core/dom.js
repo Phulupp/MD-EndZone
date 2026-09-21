@@ -41,7 +41,6 @@
     patientenNoResults: document.getElementById("patienten-no-results"),
     btnPatientAnlegen: document.getElementById("btn-patient-anlegen"),
 
-    modalPatientAnlegen: document.getElementById("modal-patient-anlegen"),
     patientAnlegenName: document.getElementById("patient-anlegen-name"),
     patientAnlegenError: document.getElementById("patient-anlegen-error"),
     btnConfirmPatientAnlegen: document.getElementById("btn-confirm-patient-anlegen"),
@@ -158,7 +157,6 @@
     beispielKategorieTitelInput: document.getElementById("beispiel-kategorie-titel-input"),
     beispielKategorieError: document.getElementById("beispiel-kategorie-error"),
     btnConfirmBeispielKategorie: document.getElementById("btn-confirm-beispiel-kategorie"),
-    modalBeispielBearbeiten: document.getElementById("modal-beispiel-bearbeiten"),
     beispielBearbeitenTitel: document.getElementById("beispiel-bearbeiten-titel"),
     beispielEditingId: document.getElementById("beispiel-editing-id"),
     beispielTitelInput: document.getElementById("beispiel-titel-input"),
@@ -177,13 +175,11 @@
     benutzerverwaltungSearchInput: document.getElementById("benutzerverwaltung-search-input"),
     benutzerverwaltungStatusFilter: document.getElementById("benutzerverwaltung-status-filter"),
     benutzerverwaltungListe: document.getElementById("benutzerverwaltung-liste"),
-    modalBenutzerDetails: document.getElementById("modal-benutzer-details"),
     benutzerDetailsName: document.getElementById("benutzer-details-name"),
     benutzerDetailsBody: document.getElementById("benutzer-details-body"),
     adminLogListe: document.getElementById("admin-log-liste"),
 
     // Modals allgemein
-    modalDelete: document.getElementById("modal-delete"),
     deleteTitle: document.getElementById("delete-title"),
     deleteText: document.getElementById("delete-text"),
     btnConfirmDelete: document.getElementById("btn-confirm-delete"),

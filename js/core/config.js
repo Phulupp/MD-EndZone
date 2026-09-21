@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 131;
+  const VERSION_AKTUELL = 132;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -90,7 +90,7 @@
   const HEARTBEAT_INTERVALL_MS = 20 * 1000;
 
   // Admin-verwaltete Behandlungsleitfäden ("Beispiele") - ein einzelnes Doc
-  // mit einem Array-Feld, analog zum früheren Produkt-Kategorien-Muster
+  // mit den Array-Feldern "kategorien" und "eintraege"
   // (siehe js/views/beispiele.js). Startet leer, da es keine sinnvollen
   // medizinischen Standardwerte gibt, die sich einfach erfinden ließen.
   const LEITFAEDEN_DOC = "kataloge/leitfaeden";

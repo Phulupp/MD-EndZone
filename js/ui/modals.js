@@ -5,8 +5,8 @@
      ------------------------------------------------------------------------ */
   // Merkt sich die Reihenfolge, in der Dialoge geöffnet wurden, damit die
   // ESC-Taste gezielt den ZULETZT geöffneten (obersten) Dialog schließt -
-  // wichtig, wenn z. B. der Löschen/Archivieren-Bestätigungsdialog über
-  // einem bereits offenen Bestellungs-Modal liegt.
+  // wichtig, wenn z. B. der Löschen-Bestätigungsdialog über einem bereits
+  // offenen Akte- oder Termin-Fenster liegt.
   let offeneModalStapel = [];
 
   function oeffneModal(id) {

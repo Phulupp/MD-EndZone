@@ -13,8 +13,8 @@ body {
 }
 
 body {
-  background: var(--wood-900);
-  color: var(--wood-text-muted);
+  background: var(--slate-900);
+  color: var(--text-muted);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.55;
@@ -46,8 +46,8 @@ a {
 }
 
 ::selection {
-  background: var(--brass-bright);
-  color: var(--wood-950);
+  background: var(--accent-bright);
+  color: var(--slate-950);
 }
 
 ::-webkit-scrollbar {
@@ -60,13 +60,13 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--leather-600);
+  background: var(--panel-600);
   border-radius: 999px;
-  border: 3px solid var(--wood-900);
+  border: 3px solid var(--slate-900);
 }
 
 :focus-visible {
-  outline: 2px solid var(--brass-bright);
+  outline: 2px solid var(--accent-bright);
   outline-offset: 2px;
 }
 
@@ -75,7 +75,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--wood-text);
+  color: var(--text);
   margin: 0;
 }
 
@@ -90,7 +90,7 @@ p {
   width: 56px;
   height: 2px;
   margin: 14px auto;
-  background: var(--brass);
+  background: var(--accent);
   opacity: 0.55;
   border-radius: 999px;
 }

@@ -9,15 +9,10 @@
      "Regeln" -> kompletten bisherigen Inhalt löschen -> den Inhalt dieser
      Datei hier hineinkopieren -> "Veröffentlichen" klicken.
 
-   users/usernames/adminLog/presence bleiben unverändert (inkl.
-   "unantastbar"-Schutz, Selbstheilungs-Mechanismus für befristete Sperren,
-   ...) - ergänzt um die Collections des Medical Department (patienten,
-   akten, kataloge) und bereinigt um alle Ranch-spezifischen Collections aus
-   der früheren Hofverwaltung (produkte, lagerStatus, bestellungen, angebote,
-   kontakte, kunden, rezepte, einstellungen, hofbuch), die es in der neuen
-   App nicht mehr gibt. Falls dort noch alte Daten liegen, bleiben sie
-   einfach ungenutzt in der Datenbank liegen - das schadet nichts, sie sind
-   über die neue Seite nur nicht mehr erreichbar.
+   Enthält: users/usernames/adminLog/presence (inkl. "unantastbar"-Schutz und
+   Selbstheilungs-Mechanismus für befristete Sperren) sowie die Collections
+   des Medical Department (patienten, akten, termine, freigaben, kataloge).
+   Für alles andere gibt es keine Regel - der Zugriff ist dort verweigert.
    ============================================================================ */
 
 rules_version = '2';

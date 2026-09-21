@@ -30,21 +30,21 @@
 
 .brotkrumen__link {
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   transition: color 0.15s ease;
 }
 
 .brotkrumen__link:hover {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .brotkrumen__trenner {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .brotkrumen__aktuell {
   font-weight: 600;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .bsp-kicker {
@@ -52,7 +52,7 @@
   margin-bottom: 7px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .bsp-titel {
@@ -61,13 +61,13 @@
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.15;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 /* --- Zeilenlisten (Ebene 1 und 2) ------------------------------------------ */
 .bsp-liste {
-  border-top: 1px solid var(--leather-edge);
+  border-top: 1px solid var(--panel-edge);
 }
 
 .bsp-zeile {
@@ -75,7 +75,7 @@
   align-items: center;
   gap: 20px;
   padding: 24px 14px;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
@@ -92,14 +92,14 @@
   font-size: 19px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .bsp-zeile__meta {
   flex-shrink: 0;
   font-size: 13.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   white-space: nowrap;
 }
 
@@ -124,12 +124,12 @@
 
 .bsp-zeile__pfeil {
   flex-shrink: 0;
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
 .bsp-zeile:hover .bsp-zeile__pfeil {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   transform: translateX(3px);
 }
 
@@ -161,16 +161,16 @@
 .bsp-schritte li {
   position: relative;
   padding: 20px 0 20px 66px;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
   counter-increment: schritt;
   font-size: 18px;
   line-height: 1.55;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .bsp-schritte li:first-child {
-  border-top: 1px solid var(--leather-edge);
+  border-top: 1px solid var(--panel-edge);
 }
 
 .bsp-schritte li::before {
@@ -183,17 +183,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--brass);
+  border: 1px solid var(--accent);
   border-radius: var(--radius-lg);
   font-size: 15px;
   font-weight: 700;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   font-variant-numeric: tabular-nums;
 }
 
 .bsp-schritte__leer {
   margin-top: 24px;
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 @media (max-width: 720px) {

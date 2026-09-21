@@ -6,8 +6,8 @@
   bottom: 28px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: var(--wood-850);
-  color: var(--brass-bright);
+  background: var(--slate-850);
+  color: var(--accent-bright);
   padding: 13px 22px;
   border-radius: var(--radius-sm);
   font-size: 13px;
@@ -17,7 +17,7 @@
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
   z-index: 200;
-  border: 1px solid var(--brass-deep);
+  border: 1px solid var(--accent-deep);
 }
 
 .toast--visible {
@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: var(--brass-bright);
+  background: var(--accent-bright);
   color: #ffffff;
   padding: 10px 20px;
   font-size: 13px;
@@ -41,7 +41,7 @@
 }
 
 .update-banner .btn {
-  background: var(--wood-900);
-  color: var(--brass-bright);
+  background: var(--slate-900);
+  color: var(--accent-bright);
 }
 

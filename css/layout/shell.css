@@ -18,7 +18,7 @@
   border-right: 1px solid rgba(0, 0, 0, 0.5);
   box-shadow: 6px 0 18px rgba(0, 0, 0, 0.35), -1px 0 0 rgba(130, 170, 190, 0.08) inset;
   z-index: 20;
-  background: linear-gradient(180deg, var(--wood-950) 0%, var(--wood-900) 100%);
+  background: linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
 }
 
 /* Sidebar-Kopf: Marke oben, direkt darunter die eigene Identität (Avatar +
@@ -49,8 +49,8 @@
   flex-shrink: 0;
   border-radius: 50%;
   background: #f4f7f8;
-  border: 2px solid var(--brass-bright);
-  color: var(--brass-bright);
+  border: 2px solid var(--accent-bright);
+  color: var(--accent-bright);
 }
 
 .sidebar__brand-icon svg {
@@ -64,7 +64,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1.4;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .sidebar__identity {
@@ -141,7 +141,7 @@
 }
 
 .sidebar__item:hover {
-  color: var(--wood-text);
+  color: var(--text);
   background: rgba(130, 170, 190, 0.08);
 }
 
@@ -152,7 +152,7 @@
 .sidebar__item--active {
   color: #ffffff;
   background: rgba(217, 68, 82, 0.1);
-  border-left-color: var(--brass-bright);
+  border-left-color: var(--accent-bright);
 }
 
 .sidebar__item--active svg {
@@ -174,12 +174,6 @@
   font-weight: 700;
 }
 
-.sidebar__divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(130, 170, 190, 0.2) 50%, transparent);
-  margin: 10px 6px;
-}
-
 /* Nur noch "Abmelden" - die Identität (Avatar/Name/Rang) lebt jetzt oben in
    .sidebar__brand, kein separates Konto-Menü mehr nötig. */
 .sidebar__footer {
@@ -196,7 +190,7 @@
   border-radius: var(--radius-md);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   transition: background 0.15s ease, color 0.15s ease;
 }
 
@@ -218,7 +212,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--rang-farbe, var(--brass-bright));
+  background: var(--rang-farbe, var(--accent-bright));
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   color: #ffffff;
   font-family: var(--font-display);
@@ -228,7 +222,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 2px solid var(--wood-line);
+  border: 2px solid var(--slate-line);
   transition: background 0.15s ease;
 }
 
@@ -244,7 +238,7 @@
 .sidebar__user-name {
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--wood-text);
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -303,21 +297,21 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   padding: 9px 16px;
   border-radius: 999px;
   background: transparent;
-  border: 1px solid var(--leather-edge);
+  border: 1px solid var(--panel-edge);
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .online-widget__btn:hover {
-  color: var(--wood-text);
+  color: var(--text);
   border-color: rgba(130, 170, 190, 0.45);
 }
 
 .online-widget__btn #online-count {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   font-size: 12px;
 }
 
@@ -347,8 +341,8 @@
   top: calc(100% + 8px);
   right: 0;
   width: 210px;
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge);
+  background: var(--panel-800);
+  border: 1px solid var(--panel-edge);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-raised);
   padding: 14px;
@@ -364,7 +358,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   margin-bottom: 8px;
 }
 
@@ -373,13 +367,13 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--wood-text);
+  color: var(--text);
   padding: 4px 0;
 }
 
 .online-panel__empty {
   font-size: 12px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   font-style: italic;
 }
 
@@ -418,13 +412,13 @@
   height: 3px;
   margin-top: 12px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--brass-bright) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--accent-bright) 0%, transparent 100%);
 }
 
 .page-header__text p {
   margin-top: 8px;
   font-size: 13.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   max-width: 560px;
   line-height: 1.6;
 }
@@ -461,7 +455,7 @@
   gap: 28px;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
 }
 
 /* Reiter als Textzeile mit Unterstreichung statt Pillen. */
@@ -470,7 +464,7 @@
   margin-bottom: -1px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
@@ -478,10 +472,10 @@
 }
 
 .tabs__tab:hover {
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .tabs__tab--active {
-  color: var(--wood-text);
-  border-bottom-color: var(--brass-bright);
+  color: var(--text);
+  border-bottom-color: var(--accent-bright);
 }

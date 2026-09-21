@@ -9,12 +9,6 @@
    Allergiehinweis. */
 
 /* --- Gemeinsame Bausteine ------------------------------------------------ */
-/* Kein Kasten: Bereiche werden nur durch Abstand, Trennlinien und
-   Schrifthierarchie gegliedert. */
-.md-panel {
-  padding: 0;
-}
-
 .md-feld {
   margin-top: 18px;
 }
@@ -28,7 +22,7 @@
   margin-bottom: 5px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .md-input {
@@ -37,17 +31,17 @@
   padding: 8px 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--leather-edge);
+  border-bottom: 1px solid var(--panel-edge);
   border-radius: 0;
   font-family: var(--font-body);
   font-size: 15px;
-  color: var(--wood-text);
+  color: var(--text);
   color-scheme: dark;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .md-input::placeholder {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .md-input:hover {
@@ -56,8 +50,8 @@
 
 .md-input:focus {
   outline: none;
-  border-bottom-color: var(--brass-bright);
-  box-shadow: 0 1px 0 var(--brass-bright);
+  border-bottom-color: var(--accent-bright);
+  box-shadow: 0 1px 0 var(--accent-bright);
 }
 
 /* Mehrzeilige Felder wie einzeilige: nur eine Unterkante, wachsen mit dem
@@ -75,25 +69,6 @@ textarea.md-input {
   padding-left: 12px;
   border-left: 3px solid var(--status-danger-bright);
   border-bottom-color: transparent;
-}
-
-.md-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 24px;
-}
-
-/* Beide Spalten gleich hoch beginnen lassen (sonst rutscht die zweite durch
-   die :first-child-Regel oben nach unten). */
-.md-grid-2 > .md-feld,
-.md-grid-2 > .md-feld:first-child {
-  margin-top: 20px;
-}
-
-@media (max-width: 560px) {
-  .md-grid-2 {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -117,24 +92,24 @@ textarea.md-input {
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   pointer-events: none;
 }
 
 .pat-suche input {
   width: 100%;
   padding: 12px 14px 12px 43px;
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge-soft);
+  background: var(--panel-800);
+  border: 1px solid var(--panel-edge-soft);
   border-radius: var(--radius-lg);
   font-family: var(--font-body);
   font-size: 14px;
-  color: var(--wood-text);
+  color: var(--text);
   transition: border-color 0.15s ease;
 }
 
 .pat-suche input::placeholder {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .pat-suche input:hover {
@@ -143,7 +118,7 @@ textarea.md-input {
 
 .pat-suche input:focus {
   outline: none;
-  border-color: var(--brass-bright);
+  border-color: var(--accent-bright);
 }
 
 .pat-kopf .btn {
@@ -151,7 +126,7 @@ textarea.md-input {
 }
 
 .pat-register {
-  border-top: 1px solid var(--leather-edge);
+  border-top: 1px solid var(--panel-edge);
 }
 
 .pat-spaltenkopf,
@@ -169,8 +144,8 @@ textarea.md-input {
   padding-bottom: 11px;
   font-size: 11.5px;
   font-weight: 500;
-  color: var(--wood-text-soft);
-  border-bottom: 1px solid var(--leather-edge-soft);
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
 }
 
 .pat-gruppe {
@@ -178,13 +153,13 @@ textarea.md-input {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .pat-zeile {
   padding-top: 14px;
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
@@ -198,7 +173,7 @@ textarea.md-input {
   min-width: 0;
   font-size: 15px;
   font-weight: 600;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .pat-zeile__titel {
@@ -223,14 +198,14 @@ textarea.md-input {
   white-space: nowrap;
   font-size: 13px;
   font-weight: 400;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .pat-zeile__treffer-ort {
   margin-right: 10px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .pat-zeile mark {
@@ -261,17 +236,17 @@ textarea.md-input {
 .pat-zeile__akten,
 .pat-zeile__letzte {
   font-size: 13px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .pat-zeile__pfeil {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
 .pat-zeile:hover .pat-zeile__pfeil {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   transform: translateX(2px);
 }
 
@@ -302,12 +277,12 @@ textarea.md-input {
   margin: 8px 0 26px;
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   transition: color 0.15s ease;
 }
 
 .patient-seite__zurueck:hover {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .pkopf {
@@ -328,7 +303,7 @@ textarea.md-input {
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.1;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -347,25 +322,25 @@ textarea.md-input {
 
 .pkopf__label {
   font-size: 12.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .pkopf__wert {
   font-size: 15px;
   font-weight: 500;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .pkopf__leer {
   font-size: 14px;
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .pkopf__meta {
   margin: 14px 0 0;
   font-size: 12.5px;
   line-height: 1.45;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .pkopf__meta:empty {
@@ -376,12 +351,12 @@ textarea.md-input {
 .pkopf__link {
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   transition: color 0.15s ease;
 }
 
 .pkopf__link:hover {
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .pkopf__aktionen {
@@ -413,7 +388,7 @@ textarea.md-input {
   margin: 12px 0 0;
   font-size: 14.5px;
   line-height: 1.6;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .phinweise .akte-hinweis + .phinweise__zeile {
@@ -423,7 +398,7 @@ textarea.md-input {
 .phinweise__label {
   margin-right: 10px;
   font-weight: 600;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 /* --- Bearbeiten-Formular --------------------------------------------------- */
@@ -451,7 +426,7 @@ textarea.md-input {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .pedit__titel:first-of-type {
@@ -462,7 +437,7 @@ textarea.md-input {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--leather-edge-soft);
+  background: var(--panel-edge-soft);
 }
 
 .md-grid-3 {
@@ -493,7 +468,7 @@ textarea.md-input {
   padding: 0;
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   transition: color 0.15s ease;
 }
 
@@ -523,12 +498,12 @@ textarea.md-input {
   width: 280px;
   max-width: 100%;
   padding: 9px 14px;
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge-soft);
+  background: var(--panel-800);
+  border: 1px solid var(--panel-edge-soft);
   border-radius: var(--radius-lg);
   font-family: var(--font-body);
   font-size: 13.5px;
-  color: var(--wood-text);
+  color: var(--text);
   transition: border-color 0.15s ease;
 }
 
@@ -537,7 +512,7 @@ textarea.md-input {
 }
 
 .pakten__suche::placeholder {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 .pakten__suche:hover {
@@ -546,7 +521,7 @@ textarea.md-input {
 
 .pakten__suche:focus {
   outline: none;
-  border-color: var(--brass-bright);
+  border-color: var(--accent-bright);
 }
 
 .pakten__leer {
@@ -561,7 +536,7 @@ textarea.md-input {
 .pakten__leer p {
   margin: 0 0 16px;
   font-size: 14.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .akten-monat {
@@ -570,7 +545,7 @@ textarea.md-input {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .akten-monat:first-child {
@@ -596,14 +571,14 @@ textarea.md-input {
 .pakten__anzahl {
   margin-top: 4px;
   font-size: 13.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 /* Eine Zeile pro Akte, zugeklappt: Nummer, Behandlungsgrund (mit einer
    Vorschau-Zeile), Datum, Verfasser. Ein Klick öffnet das Akte-Fenster. Gleiche
    Optik wie das Patientenregister. */
 .akten-liste {
-  border-top: 1px solid var(--leather-edge);
+  border-top: 1px solid var(--panel-edge);
 }
 
 .akte-zeile {
@@ -612,7 +587,7 @@ textarea.md-input {
   align-items: center;
   column-gap: 20px;
   padding: 16px 14px;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
@@ -626,7 +601,7 @@ textarea.md-input {
 .akte-zeile__nr {
   font-size: 14px;
   font-weight: 700;
-  color: var(--wood-text);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -647,12 +622,12 @@ textarea.md-input {
 .akte-zeile__titel {
   font-size: 15.5px;
   font-weight: 600;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .akte-zeile__vorschau {
   font-size: 13px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .akte-zeile__datum,
@@ -661,7 +636,7 @@ textarea.md-input {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -672,7 +647,7 @@ textarea.md-input {
   width: 30px;
   height: 30px;
   border-radius: var(--radius-md);
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
   opacity: 0;
   transition: opacity 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
@@ -689,12 +664,12 @@ textarea.md-input {
 }
 
 .akte-zeile__pfeil {
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
 .akte-zeile:hover .akte-zeile__pfeil {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   transform: translateX(2px);
 }
 
@@ -734,7 +709,7 @@ textarea.md-input {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--leather-800);
+  background: var(--panel-800);
 }
 
 .modal.modal--schmal {
@@ -762,7 +737,7 @@ textarea.md-input {
 .akte-blatt__sub {
   margin-top: 8px;
   font-size: 14.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .akte-blatt__kopf .modal__close {
@@ -776,7 +751,7 @@ textarea.md-input {
   margin-bottom: 7px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .modal--akte .modal__body {
@@ -793,7 +768,7 @@ textarea.md-input {
   margin-top: 0;
   padding: 18px 40px;
   background: rgba(0, 0, 0, 0.18);
-  border-top: 1px solid var(--leather-edge-soft);
+  border-top: 1px solid var(--panel-edge-soft);
 }
 
 .modal--akte .modal__footer .btn {
@@ -806,17 +781,17 @@ textarea.md-input {
 .akte-fuss__loeschen {
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   transition: color 0.12s ease;
 }
 
 .akte-fuss__link:hover {
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .akte-fuss__loeschen {
   margin-right: auto;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .akte-fuss__loeschen:hover {
@@ -865,7 +840,7 @@ textarea.md-input {
 .akte-blatt__seite {
   padding: 84px 32px 40px;
   background: rgba(0, 0, 0, 0.18);
-  border-left: 1px solid var(--leather-edge-soft);
+  border-left: 1px solid var(--panel-edge-soft);
 }
 
 .akte-blatt__seite-innen {
@@ -881,7 +856,7 @@ textarea.md-input {
 .akte-seite dt {
   margin-bottom: 3px;
   font-size: 12.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .akte-seite dd {
@@ -889,7 +864,7 @@ textarea.md-input {
   font-size: 15px;
   font-weight: 500;
   line-height: 1.4;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -897,7 +872,7 @@ textarea.md-input {
   margin-top: 22px;
   font-size: 12.5px;
   line-height: 1.55;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 /* --- Inhalt der Ansicht -------------------------------------------------- */
@@ -911,7 +886,7 @@ textarea.md-input {
   margin: 0;
   font-size: 14.5px;
   line-height: 1.6;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .akte-hinweis__zeile + .akte-hinweis__zeile {
@@ -932,7 +907,7 @@ textarea.md-input {
   margin: 0 0 7px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 .akte-abschnitt p {
@@ -941,13 +916,13 @@ textarea.md-input {
   white-space: pre-wrap;
   font-size: 16px;
   line-height: 1.7;
-  color: var(--wood-text);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .akte-leer {
   margin-top: 30px;
-  color: var(--wood-text-placeholder);
+  color: var(--text-placeholder);
 }
 
 /* --- Formular -------------------------------------------------------------- */
@@ -973,7 +948,7 @@ textarea.md-input {
   font-size: 15.5px;
   overflow: hidden;
   background: rgba(130, 170, 190, 0.05);
-  border: 1px solid var(--leather-edge-soft);
+  border: 1px solid var(--panel-edge-soft);
   border-radius: 6px;
 }
 
@@ -982,7 +957,7 @@ textarea.md-input {
 }
 
 .akte-blatt__haupt textarea.md-input:focus {
-  border-color: var(--brass-bright);
+  border-color: var(--accent-bright);
   box-shadow: none;
 }
 
@@ -1000,7 +975,7 @@ textarea.md-input {
   .akte-blatt__seite {
     padding: 28px 24px;
     border-left: none;
-    border-top: 1px solid var(--leather-edge-soft);
+    border-top: 1px solid var(--panel-edge-soft);
   }
   .akte-blatt__seite-innen {
     position: static;
@@ -1026,13 +1001,13 @@ textarea.md-input {
   margin-top: 6px;
   font-size: 14px;
   line-height: 1.65;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .akte-link__info {
   margin-top: 14px;
   font-size: 13px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 
 /* --------------------------------------------------------------------------
@@ -1044,7 +1019,7 @@ textarea.md-input {
   gap: 10px;
   margin: 0 0 22px;
   font-size: 13.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .anwesenheit[hidden] {
@@ -1075,7 +1050,7 @@ textarea.md-input {
   border-left: 3px solid var(--status-open);
   font-size: 13px;
   line-height: 1.5;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .konflikt-hinweis[hidden] {
@@ -1089,7 +1064,7 @@ textarea.md-input {
 .konflikt-hinweis__aktion {
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--brass-bright);
+  color: var(--accent-bright);
   white-space: nowrap;
 }
 
@@ -1128,21 +1103,21 @@ textarea.md-input {
   width: 100%;
   padding: 10px 0;
   text-align: left;
-  border-bottom: 1px solid var(--leather-edge-soft);
+  border-bottom: 1px solid var(--panel-edge-soft);
 }
 
 .aehnlich__zeile:hover .aehnlich__name {
-  color: var(--brass-bright);
+  color: var(--accent-bright);
 }
 
 .aehnlich__name {
   font-size: 14.5px;
   font-weight: 600;
-  color: var(--wood-text);
+  color: var(--text);
 }
 
 .aehnlich__info {
   font-size: 12.5px;
-  color: var(--wood-text-soft);
+  color: var(--text-soft);
 }
 

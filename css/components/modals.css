@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
-   17. Modals: einheitlich dunkles Leder mit Messing-Kante für alle Dialoge,
-   inklusive Datenschutz/Informationen — keine Pergament-Optik mehr.
+   17. Modals: einheitliche dunkle Fläche mit feiner Kante für alle Dialoge,
+   inklusive Datenschutz/Informationen.
    -------------------------------------------------------------------------- */
 .modal-overlay {
   position: fixed;
@@ -22,8 +22,8 @@
 
 .modal {
   width: 420px;
-  background: var(--leather-800);
-  border: 1px solid var(--leather-edge);
+  background: var(--panel-800);
+  border: 1px solid var(--panel-edge);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   padding: 30px;
@@ -46,69 +46,6 @@
   overflow-y: auto;
 }
 
-/* Großes, zweispaltiges Bestellungs-Fenster: breites Verwaltungsfenster
-   statt schmalem, langem Formular - links Allgemeine Infos + Produkt
-   hinzufügen, rechts die Live-Zusammenfassung mit der Produkttabelle. Header/
-   Footer bleiben fix, nur die beiden Spalten (.bestellung-spalte--links/
-   --rechts, siehe Abschnitt 14) scrollen bei Bedarf für sich. */
-.modal--xlarge {
-  width: 88vw;
-  max-width: 1360px;
-  height: 88vh;
-  max-height: 88vh;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  overflow: hidden;
-}
-
-.modal--xlarge .modal__header {
-  flex: 0 0 auto;
-  padding: 26px 34px 18px;
-  margin-bottom: 0;
-  border-bottom: 1px solid var(--leather-edge);
-}
-
-.modal--xlarge .modal__body {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  padding: 0;
-}
-
-.modal--xlarge .modal__footer {
-  flex: 0 0 auto;
-  margin-top: 0;
-  padding: 16px 34px 22px;
-  border-top: 1px solid var(--leather-edge);
-}
-
-/* Handelsrechner: seit Version 36 kein eigener Sidebar-Reiter mehr, sondern
-   ein Modal, aufrufbar über den Eckknopf in Waren & Preise (bzw. den
-   Dashboard-Schnellzugriff) - der normale ".modal__body { flex-direction:
-   column }" reicht hier (anders als bei ".modal--xlarge"), weil der Inhalt
-   selbst schon sein eigenes zweispaltiges Grid (".rechner-layout", siehe
-   css/views/handelsrechner.css) mitbringt und die Angebotsliste darunter
-   einfach weiterfließen soll. */
-.modal--rechner {
-  width: 92vw;
-  max-width: 1180px;
-  max-height: 88vh;
-  overflow-y: auto;
-}
-
-@media (max-width: 900px) {
-  .modal--xlarge {
-    width: 96vw;
-    max-width: 96vw;
-  }
-  .modal--xlarge .modal__body {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-}
-
 .modal__header {
   display: flex;
   align-items: center;
@@ -125,11 +62,11 @@
   height: 28px;
   border-radius: var(--radius-sm);
   font-size: 13px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
 }
 
 .modal__close:hover {
-  background: var(--brass-soft);
+  background: var(--accent-soft);
 }
 
 .modal__body {
@@ -139,7 +76,7 @@
 
 .modal__hint {
   font-size: 12.5px;
-  color: var(--wood-text-muted);
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 

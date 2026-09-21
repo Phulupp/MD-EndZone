@@ -16,7 +16,7 @@
    Module können nicht einfach `window.irgendwas` benutzen, ohne es explizit
    dranzuhängen - deshalb hängt diese Datei ganz bewusst eine kleine, klar
    benannte Schnittstelle an `window` (siehe ganz unten: `window.Benutzer-
-   Verwaltung`), damit js/app.js (die "alte" Datei) diese Funktionen nutzen
+   Verwaltung`), damit js/views/admin.js (ein klassisches Skript) diese Funktionen nutzen
    kann, ohne selbst ein Modul sein zu müssen.
 
    ÜBERBLICK, WAS HIER PASSIERT:
@@ -26,8 +26,8 @@
    4. Der zentrale "Ist gerade jemand eingeloggt?"-Beobachter
       (onAuthStateChanged), der je nach Status (pending/approved/rejected/
       locked) die richtige Ansicht zeigt und - sobald jemand freigegeben
-      ist - der bestehenden App (js/app.js) per Event Bescheid gibt
-      ("hof:auth-approved" / "hof:auth-profile-updated" / "hof:auth-signed-out")
+      ist - den klassischen App-Skripten (js/main.js) per Event Bescheid gibt
+      ("md:auth-approved" / "md:auth-profile-updated" / "md:auth-signed-out")
    5. Die komplette Benutzerverwaltung für Verwalter (Liste laden, freigeben,
       ablehnen, sperren, Rang ändern, Verwalterrechte vergeben, umbenennen,
       Notiz setzen, löschen, neuen Benutzer direkt anlegen)
@@ -403,7 +403,7 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
       if (el.appRoot) el.appRoot.hidden = true;
       if (el.authScreen) el.authScreen.hidden = false;
       zeigeAuthSchritt("form-login");
-      window.dispatchEvent(new CustomEvent("hof:auth-signed-out"));
+      window.dispatchEvent(new CustomEvent("md:auth-signed-out"));
       return;
     }
 
@@ -433,9 +433,9 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
           if (!bereitsGestartet) {
             bereitsGestartet = true;
             updateDoc(doc(db, "users", firebaseUser.uid), { lastLogin: serverTimestamp() }).catch(() => {});
-            window.dispatchEvent(new CustomEvent("hof:auth-approved", { detail }));
+            window.dispatchEvent(new CustomEvent("md:auth-approved", { detail }));
           } else {
-            window.dispatchEvent(new CustomEvent("hof:auth-profile-updated", { detail }));
+            window.dispatchEvent(new CustomEvent("md:auth-profile-updated", { detail }));
           }
         } else {
           aktuellerAdmin = null;
@@ -454,14 +454,14 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
 
           if (daten.status === "locked" && el.authStatusLockedText) {
             el.authStatusLockedText.textContent = daten.gesperrtBis
-              ? `Dein Account ist gesperrt bis ${formatiereDeutschesDatum(daten.gesperrtBis)}. Bitte wende dich an einen Verwalter des Hofes, falls du denkst, dass das ein Fehler ist.`
-              : "Dein Account wurde dauerhaft gesperrt. Bitte wende dich an einen Verwalter des Hofes.";
+              ? `Dein Account ist gesperrt bis ${formatiereDeutschesDatum(daten.gesperrtBis)}. Bitte wende dich an einen Verwalter des Medical Departments, falls du denkst, dass das ein Fehler ist.`
+              : "Dein Account wurde dauerhaft gesperrt. Bitte wende dich an einen Verwalter des Medical Departments.";
           }
 
           if (el.appRoot) el.appRoot.hidden = true;
           if (el.authScreen) el.authScreen.hidden = false;
           zeigeAuthSchritt(`auth-status-${daten.status}`);
-          window.dispatchEvent(new CustomEvent("hof:auth-signed-out"));
+          window.dispatchEvent(new CustomEvent("md:auth-signed-out"));
         }
       },
       (fehler) => {
@@ -488,7 +488,7 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
 
   /* ------------------------------------------------------------------------
      12. Benutzerverwaltung (nur für Verwalter) - öffentliche Schnittstelle
-         für js/app.js.
+         für js/views/admin.js.
      ------------------------------------------------------------------------ */
   window.BenutzerVerwaltung = {
     onListe(callback) {
@@ -589,7 +589,7 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
       const zufallsPasswort =
         (window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : String(Math.random())) + Date.now();
 
-      const tempApp = initializeApp(firebaseConfig, "hofAdminCreate-" + Date.now());
+      const tempApp = initializeApp(firebaseConfig, "mdAdminCreate-" + Date.now());
       const tempAuth = getAuth(tempApp);
 
       try {

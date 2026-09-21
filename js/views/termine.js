@@ -126,7 +126,7 @@
 
     let marke = "";
     if (status === "erledigt") marke = '<span class="badge" style="color:var(--status-done)">Erledigt</span>';
-    else if (status === "abgesagt") marke = '<span class="badge" style="color:var(--wood-text-soft)">Abgesagt</span>';
+    else if (status === "abgesagt") marke = '<span class="badge" style="color:var(--text-soft)">Abgesagt</span>';
     else if (terminTag(t) < heute) marke = '<span class="badge" style="color:var(--status-danger-bright)">Überfällig</span>';
 
     const aktion =

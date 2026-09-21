@@ -174,7 +174,7 @@
         }
         <div class="detail-row"><span class="detail-row__label">Registriert</span><span>${formatDatumUhrzeit(b.createdAt)}</span></div>
         <div class="detail-row"><span class="detail-row__label">Letzter Login</span><span>${formatDatumUhrzeit(b.lastLogin)}</span></div>
-        <div class="detail-row" style="justify-content:flex-end; border-top:1px solid var(--leather-edge); padding-top:14px;">
+        <div class="detail-row" style="justify-content:flex-end; border-top:1px solid var(--panel-edge); padding-top:14px;">
           <button class="btn btn--danger btn--sm" data-benutzer-aktion="loeschen">Benutzer löschen</button>
         </div>
       </div>`;

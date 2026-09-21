@@ -92,6 +92,6 @@
     akteBasisStempel = 0;
   }
 
-  window.addEventListener("hof:auth-approved", (event) => starteApp(event.detail));
-  window.addEventListener("hof:auth-profile-updated", (event) => aktualisiereNutzerProfil(event.detail));
-  window.addEventListener("hof:auth-signed-out", stoppeApp);
+  window.addEventListener("md:auth-approved", (event) => starteApp(event.detail));
+  window.addEventListener("md:auth-profile-updated", (event) => aktualisiereNutzerProfil(event.detail));
+  window.addEventListener("md:auth-signed-out", stoppeApp);

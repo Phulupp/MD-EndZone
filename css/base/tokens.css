@@ -1,17 +1,9 @@
 /* ==========================================================================
-   MEDICAL DEPARTMENT — Hofverwaltung
+   MEDICAL DEPARTMENT — Verwaltung
    ---------------------------------------------------------------------------
    Dunkles, klinisch-technisches Design: kühles Anthrazit/Slate-Blau als
-   Fläche, Teal/Cyan als einzige lebendige Akzentfarbe (Status/aktive
-   Elemente), klare serifenlose Schrift statt Western-Schmuckschriften.
-   Keine Foto-/Holztexturen mehr - reine Flächen/Verläufe.
-
-   Hinweis zu den Variablennamen: die Tokens heißen weiterhin "wood",
-   "leather" und "brass" wie zuvor im Western-Theme - nur die FARBWERTE
-   dahinter sind komplett neu. Das hält den Diff in allen anderen CSS-
-   Dateien (die diese Variablen an hunderten Stellen referenzieren) minimal
-   und risikoarm; ein vollständiges Umbenennen der Variablen selbst wäre ein
-   rein kosmetischer Zusatzschritt ohne visuellen Effekt.
+   Fläche, Medizin-Rot als lebendige Akzentfarbe (aktive/wichtige Elemente),
+   klare serifenlose Schrift (Inter). Reine Flächen/Verläufe, keine Bilder.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -19,52 +11,39 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Dunkles Anthrazit/Slate (Sidebar, Kopfleisten, Footer). */
-  --wood-950: #05080b;
-  --wood-900: #0a1116;
-  --wood-850: #0e161c;
-  --wood-800: #142029;
-  --wood-700: #1b2c38;
-  --wood-600: #24404f;
-  --wood-line: #030507;
+  --slate-950: #05080b;
+  --slate-900: #0a1116;
+  --slate-850: #0e161c;
+  --slate-line: #030507;
 
   /* Karten-/Panel-Ebenen: vier abgestufte, kühle Slate-Ebenen -
-     "leather-800" bleibt die meistgenutzte Haupt-Panel-Ebene, "leather-900"
-     die dunkelste (Inputs), "leather-600" die hellste (Highlights/Hover). */
-  --leather-900: #0a1319;
-  --leather-800: #0f1a21;
-  --leather-700: #142530;
-  --leather-600: #1a2f3b;
-  --leather-edge: rgba(130, 170, 190, 0.22);
-  --leather-edge-soft: rgba(130, 170, 190, 0.12);
+     "panel-800" ist die meistgenutzte Haupt-Panel-Ebene, "panel-900"
+     die dunkelste (Inputs), "panel-600" die hellste (Highlights/Hover). */
+  --panel-900: #0a1319;
+  --panel-800: #0f1a21;
+  --panel-700: #142530;
+  --panel-600: #1a2f3b;
+  --panel-edge: rgba(130, 170, 190, 0.22);
+  --panel-edge-soft: rgba(130, 170, 190, 0.12);
 
-  /* Text auf dunklem Slate — kühles Weiß/Grau statt warmem Pergament. */
-  --wood-text: #f2f7f9;
-  --wood-text-muted: #97acb9;
-  --wood-text-soft: #6f8794;
-  --wood-text-placeholder: #55707d;
+  /* Text auf dunklem Slate — kühles Weiß/Grau. */
+  --text: #f2f7f9;
+  --text-muted: #97acb9;
+  --text-soft: #6f8794;
+  --text-placeholder: #55707d;
 
   /* Medizin-Rot — die lebendige Hauptakzentfarbe für aktive/wichtige/
-     interaktive Elemente (Rotkreuz-Assoziation). "brass*"-Namen bleiben
-     bestehen (an ihnen hängt der Großteil der Anwendung), tragen jetzt aber
-     Rot-Werte. Bewusst ein anderer Rotton als --status-danger weiter unten,
-     damit "aktiv/wichtig" (Akzent) und "gefährlich/löschen" (Status) trotz
-     gemeinsamer Rot-Familie unterscheidbar bleiben. */
-  --brass: #a8323d; /* Rot Muted - Normalgewicht (Ränder, Icons in Ruhe) */
-  --brass-bright: #d94452; /* Primary Rot - wichtige/aktive/fokussierte Elemente */
-  --brass-deep: #7a2530; /* Rot Dark */
-  --brass-soft: rgba(217, 68, 82, 0.16);
-  --copper-hover: #ea5865;
-  --copper-light: #f28d96;
-
-  /* Zweiter, seltener Sekundärakzent (z. B. Rang-Badge "Chefarzt"). */
-  --old-brass: #5b8fd6;
-  --old-brass-light: #82aee0;
+     interaktive Elemente (Rotkreuz-Assoziation). Bewusst ein anderer
+     Rotton als --status-danger weiter unten, damit "aktiv/wichtig" (Akzent)
+     und "gefährlich/löschen" (Status) trotz gemeinsamer Rot-Familie
+     unterscheidbar bleiben. */
+  --accent: #a8323d; /* Rot Muted - Normalgewicht (Ränder, Icons in Ruhe) */
+  --accent-bright: #d94452; /* Primary Rot - wichtige/aktive/fokussierte Elemente */
+  --accent-deep: #7a2530; /* Rot Dark */
+  --accent-soft: rgba(217, 68, 82, 0.16);
 
   /* Status-Akzente (klar, funktional statt gedämpft-erdig) */
   --status-open: #d8a53d;
-  --status-open-soft: rgba(216, 165, 61, 0.18);
-  --status-progress: #35b5bd;
-  --status-progress-soft: rgba(53, 181, 189, 0.2);
   --status-done: #43b57a;
   --status-done-soft: rgba(67, 181, 122, 0.2);
   --status-danger: #d9534f;
@@ -78,7 +57,6 @@
   --shadow-card: 0 4px 13px rgba(2, 5, 8, 0.44), 0 1px 0 rgba(180, 210, 225, 0.07) inset;
   --shadow-raised: 0 16px 38px rgba(2, 5, 8, 0.58);
   --shadow-modal: 0 32px 76px rgba(2, 5, 8, 0.72);
-  --shadow-copper-glow: rgba(53, 181, 189, 0.18);
 
   --sidebar-width: 232px;
   --content-width: 1360px;

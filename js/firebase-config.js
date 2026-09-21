@@ -1,16 +1,16 @@
 /* ==========================================================================
-   Firebase-Konfiguration — Zur Dicken Kuh
+   Firebase-Konfiguration — Medical Department
    ==========================================================================
-   Deine Projektdaten sind hier bereits eingetragen (unverändert aus dem
-   bisherigen Projekt übernommen — alle bestehenden Benutzerkonten und
-   Firestore-Daten bleiben dadurch erhalten).
+   Die Projektdaten des Firebase-Projekts "medical-department" sind hier
+   eingetragen (Benutzerkonten und Firestore-Daten liegen in diesem
+   Projekt).
 
    WICHTIG: Im Firebase-Projekt muss unter "Sicherheit -> Authentication ->
    Sign-in method" der Anbieter "E-Mail/Passwort" aktiviert sein (und
    "Google", falls du den Google-Login nutzen willst). Das echte Login-
    /Benutzersystem lebt in js/auth.js (eigenes Modul, moderne "Modular SDK"-
    Schreibweise) - diese Datei hier stellt nur die gemeinsamen Projektdaten
-   bereit, die sowohl vom "alten" Compat-Code (js/app.js) als auch von
+   bereit, die sowohl vom Compat-Code (js/core, js/ui, js/views) als auch von
    js/auth.js genutzt werden (siehe `window.firebaseConfig` weiter unten).
    ========================================================================== */
 
@@ -29,13 +29,13 @@ const firebaseConfig = {
 // werden müssen, statt sie doppelt zu pflegen.
 window.firebaseConfig = firebaseConfig;
 
-// Firebase initialisieren (wird von js/app.js verwendet)
+// Firebase initialisieren (wird von den Compat-Skripten und akte.html verwendet)
 let auth = null;
 let db = null;
 
 if (typeof firebase !== "undefined") {
   firebase.initializeApp(firebaseConfig);
-  // Die öffentliche, login-freie Preisliste (preise/index.html) lädt bewusst
+  // Die öffentliche, login-freie Akten-Ansicht (akte.html) lädt bewusst
   // NUR das Firestore-SDK, nicht das Auth-SDK - "firebase.auth" existiert
   // dort also gar nicht. Ohne diese Prüfung würde der Aufruf dort mit einem
   // Fehler abbrechen, noch bevor "db" überhaupt gesetzt wird.
