@@ -16,18 +16,15 @@
   background: var(--slate-950);
 }
 
-/* Kein Foto mehr - dieselbe ruhige, technische Rasterfläche wie im
-   eingeloggten Bereich (siehe .app in css/base/textures.css), nur ohne
-   Sidebar drumherum. */
+/* Derselbe Hintergrund wie im eingeloggten Bereich (--hintergrund in
+   tokens.css), dazu ein weicher roter Lichtschein hinter der Anmelde-Karte. */
 .auth-screen__bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(circle at 50% 0%, rgba(53, 181, 189, 0.07) 0%, transparent 50%),
-    repeating-linear-gradient(0deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
-    repeating-linear-gradient(90deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
-    linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
+    radial-gradient(ellipse 760px 460px at 50% 34%, rgba(217, 68, 82, 0.11), transparent 72%),
+    var(--hintergrund);
 }
 
 .auth-screen__vignette {

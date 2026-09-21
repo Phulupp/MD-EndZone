@@ -1,15 +1,11 @@
 /* --------------------------------------------------------------------------
    3. Hintergrund der gesamten App
    --------------------------------------------------------------------------
-   Keine Fotos mehr - eine ruhige, kühle Slate-Fläche mit einem sehr feinen,
-   kaum sichtbaren technischen Rasterraster (typisch für Dispatch-/Monitoring-
-   Software), das den "klinisch-technischen" Look unterstützt, ohne vom
-   Inhalt abzulenken. */
+   Ruhiger Slate-Verlauf mit rotem Hauch (siehe --hintergrund in tokens.css),
+   bewusst kein Muster. "fixed": der Lichtschein bleibt beim Scrollen stehen,
+   statt sich über lange Seiten zu dehnen. */
   .app {
     position: relative;
-    background:
-      radial-gradient(circle at 15% 0%, rgba(53, 181, 189, 0.05) 0%, transparent 45%),
-      repeating-linear-gradient(0deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
-      repeating-linear-gradient(90deg, rgba(130, 170, 190, 0.035) 0, rgba(130, 170, 190, 0.035) 1px, transparent 1px, transparent 48px),
-      linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
+    background: var(--hintergrund);
+    background-attachment: fixed;
   }

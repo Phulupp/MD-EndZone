@@ -18,7 +18,9 @@
   border-right: 1px solid rgba(0, 0, 0, 0.5);
   box-shadow: 6px 0 18px rgba(0, 0, 0, 0.35), -1px 0 0 rgba(130, 170, 190, 0.08) inset;
   z-index: 20;
-  background: linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
+  background:
+    radial-gradient(300px 220px at 0% 0%, rgba(217, 68, 82, 0.13), transparent 70%),
+    linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
 }
 
 /* Sidebar-Kopf: nur die Marke. Das Konto (Avatar, Name, Rang) sitzt unten

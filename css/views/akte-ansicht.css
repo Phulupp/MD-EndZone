@@ -6,7 +6,9 @@
 .akte-oeffentlich {
   height: auto;
   min-height: 100%;
-  background: var(--slate-900);
+  background: var(--hintergrund);
+  background-attachment: fixed;
+  background-color: var(--slate-900);
 }
 
 .akte-oeffentlich__rahmen {

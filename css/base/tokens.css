@@ -16,6 +16,18 @@
   --slate-850: #0e161c;
   --slate-line: #030507;
 
+  /* Gemeinsamer Hintergrund (App, Login, öffentliche Akte): ruhiger, kühler
+     Slate-Verlauf mit einem Hauch Medizin-Rot oben links und einem kühlen
+     Gegenlicht unten rechts - gibt Tiefe, ohne Muster oder Bilder. Ganz oben
+     liegt ein kaum sichtbares Filmkorn (SVG-Rauschen), das sichtbare
+     Farbstufen in den dunklen Verläufen verhindert. */
+  --hintergrund:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.028 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 180px 180px repeat,
+    radial-gradient(1200px 780px at 5% -12%, rgba(217, 68, 82, 0.21), transparent 62%),
+    radial-gradient(1000px 700px at 100% 108%, rgba(70, 120, 160, 0.16), transparent 62%),
+    radial-gradient(1500px 950px at 58% 32%, rgba(130, 170, 190, 0.055), transparent 72%),
+    linear-gradient(180deg, #0f1922 0%, #0a1218 52%, #070d12 100%);
+
   /* Karten-/Panel-Ebenen: vier abgestufte, kühle Slate-Ebenen -
      "panel-800" ist die meistgenutzte Haupt-Panel-Ebene, "panel-900"
      die dunkelste (Inputs), "panel-600" die hellste (Highlights/Hover). */
