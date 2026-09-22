@@ -9,8 +9,9 @@
 
      "d" ist ein einfaches Objekt (siehe akteDaten in patientenakten.js):
      { nummer, patientName, geburtsdatum, allergien, vorerkrankungen, datum,
-       autor, bearbeitetVon, bearbeitetAm, behandlungsgrund, hergang, befund,
-       behandlung, bemerkungen } - alle Werte fertige Anzeige-Texte. */
+       autor, bearbeitetVon, bearbeitetAm, behandlungsgrund, vitalwerte,
+       hergang, befund, behandlung, bemerkungen } - alle Werte fertige
+       Anzeige-Texte. */
   function dokEsc(text) {
     const div = document.createElement("div");
     div.textContent = text == null ? "" : String(text);
@@ -59,6 +60,7 @@
       zeile("Patient", d.patientName) +
       zeile("Geburtsdatum", d.geburtsdatum) +
       zeile("Datum", d.datum) +
+      zeile("Vitalwerte", d.vitalwerte) +
       zeile("Verfasst von", d.autor) +
       zeile("Zuletzt bearbeitet", d.bearbeitetVon ? `${d.bearbeitetVon} · ${d.bearbeitetAm}` : "")
     );
@@ -69,6 +71,7 @@
     const zeilen = [`Behandlungsakte - Akte ${d.nummer}`, d.behandlungsgrund || "", "", `Patient: ${d.patientName || "—"}`];
     if (d.geburtsdatum) zeilen.push(`Geburtsdatum: ${d.geburtsdatum}`);
     zeilen.push(`Datum: ${d.datum || "—"}`, `Verfasst von: ${d.autor || "—"}`);
+    if (d.vitalwerte) zeilen.push(`Vitalwerte: ${d.vitalwerte}`);
     if (d.allergien) zeilen.push(`Allergien: ${d.allergien}`);
     if (d.vorerkrankungen) zeilen.push(`Vorerkrankungen: ${d.vorerkrankungen}`);
     zeilen.push("");

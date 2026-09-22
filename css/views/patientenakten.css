@@ -934,6 +934,14 @@ textarea.md-input {
   margin-top: 26px;
 }
 
+.akte-vitalwerte-zeile {
+  margin-top: 18px;
+}
+
+.akte-vitalwerte.md-grid-3 {
+  gap: 0 20px;
+}
+
 .md-input--gross {
   padding: 10px 0;
   font-size: 21px;

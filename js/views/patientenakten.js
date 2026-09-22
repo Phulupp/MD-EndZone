@@ -778,12 +778,31 @@
   });
 
   // --- Akte anlegen/bearbeiten (ein gemeinsames Formular) -------------------
+  // Vitalwerte (Puls/Blutdruck/SpO2) sind selten nötig (v. a. bei kleinen
+  // Eingriffen wie Schusswundenversorgung) und deshalb standardmäßig
+  // eingeklappt; nur beim Bearbeiten einer Akte mit vorhandenen Werten
+  // werden sie automatisch aufgeklappt.
+  function setzeAkteVitalwerteSichtbar(sichtbar) {
+    el.akteVitalwerteFelder.hidden = !sichtbar;
+    el.akteVitalwerteToggle.textContent = sichtbar ? "− Vitalwerte ausblenden" : "+ Vitalwerte";
+  }
+
+  if (el.akteVitalwerteToggle) {
+    el.akteVitalwerteToggle.addEventListener("click", () => {
+      setzeAkteVitalwerteSichtbar(el.akteVitalwerteFelder.hidden);
+    });
+  }
+
   function fuelleAkteFormFelder(a) {
     // Altwerte ohne Uhrzeit (noch mit reinem Datumsfeld angelegte Akten)
     // werden auf "00:00" ergänzt, sonst würde das datetime-local-Feld sie
     // stillschweigend verwerfen und leer bleiben.
     el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
     el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
+    el.aktePuls.value = a ? a.puls || "" : "";
+    el.akteBlutdruck.value = a ? a.blutdruck || "" : "";
+    el.akteSpo2.value = a ? a.spo2 || "" : "";
+    setzeAkteVitalwerteSichtbar(!!(a && (a.puls || a.blutdruck || a.spo2)));
     el.akteHergang.value = a ? a.hergang || "" : "";
     el.akteBefund.value = a ? a.befund || "" : "";
     el.akteBehandlung.value = a ? a.behandlung || "" : "";
@@ -901,6 +920,9 @@
         patientId,
         datum,
         behandlungsgrund,
+        puls: el.aktePuls.value.trim(),
+        blutdruck: el.akteBlutdruck.value.trim(),
+        spo2: el.akteSpo2.value.trim(),
         hergang: el.akteHergang.value.trim(),
         befund: el.akteBefund.value.trim(),
         behandlung: el.akteBehandlung.value.trim(),
@@ -946,6 +968,9 @@
       bearbeitetVon: a.bearbeiter || "",
       bearbeitetAm: a.bearbeiter ? formatDatumUhrzeit(a.bearbeitetAm) : "",
       behandlungsgrund: a.behandlungsgrund || "",
+      vitalwerte: [a.puls ? `Puls ${a.puls}` : "", a.blutdruck ? `RR ${a.blutdruck}` : "", a.spo2 ? `SpO2 ${a.spo2}` : ""]
+        .filter(Boolean)
+        .join(" · "),
       hergang: a.hergang || "",
       befund: a.befund || "",
       behandlung: a.behandlung || "",

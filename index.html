@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=137" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=138" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=137" />
-  <link rel="stylesheet" href="css/base/reset.css?v=137" />
-  <link rel="stylesheet" href="css/base/background.css?v=137" />
-  <link rel="stylesheet" href="css/views/auth.css?v=137" />
-  <link rel="stylesheet" href="css/components/forms.css?v=137" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=137" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=137" />
-  <link rel="stylesheet" href="css/components/cards.css?v=137" />
-  <link rel="stylesheet" href="css/components/badges.css?v=137" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=137" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=137" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=137" />
-  <link rel="stylesheet" href="css/views/termine.css?v=137" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=137" />
-  <link rel="stylesheet" href="css/components/modals.css?v=137" />
-  <link rel="stylesheet" href="css/views/admin.css?v=137" />
-  <link rel="stylesheet" href="css/components/toast.css?v=137" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=137" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=137" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=138" />
+  <link rel="stylesheet" href="css/base/reset.css?v=138" />
+  <link rel="stylesheet" href="css/base/background.css?v=138" />
+  <link rel="stylesheet" href="css/views/auth.css?v=138" />
+  <link rel="stylesheet" href="css/components/forms.css?v=138" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=138" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=138" />
+  <link rel="stylesheet" href="css/components/cards.css?v=138" />
+  <link rel="stylesheet" href="css/components/badges.css?v=138" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=138" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=138" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=138" />
+  <link rel="stylesheet" href="css/views/termine.css?v=138" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=138" />
+  <link rel="stylesheet" href="css/components/modals.css?v=138" />
+  <link rel="stylesheet" href="css/views/admin.css?v=138" />
+  <link rel="stylesheet" href="css/components/toast.css?v=138" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=138" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=138" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -700,6 +700,24 @@
             <input type="text" id="akte-behandlungsgrund" class="md-input md-input--gross" placeholder="Worum geht es? z. B. Schussverletzung am Oberarm" autocomplete="off" />
           </div>
 
+          <div class="akte-vitalwerte-zeile">
+            <button type="button" class="btn btn--ghost btn--sm" id="btn-akte-vitalwerte-toggle">+ Vitalwerte</button>
+          </div>
+          <div class="md-grid-3 akte-vitalwerte" id="akte-vitalwerte-felder" hidden>
+            <div class="md-feld">
+              <label for="akte-puls">Puls (bpm)</label>
+              <input type="text" id="akte-puls" class="md-input" placeholder="z. B. 90" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="akte-blutdruck">Blutdruck (mmHg)</label>
+              <input type="text" id="akte-blutdruck" class="md-input" placeholder="z. B. 120/80" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="akte-spo2">SpO2 (%)</label>
+              <input type="text" id="akte-spo2" class="md-input" placeholder="z. B. 98" autocomplete="off" />
+            </div>
+          </div>
+
           <div class="md-feld">
             <label for="akte-hergang">Hergang</label>
             <textarea id="akte-hergang" class="md-input" rows="3" placeholder="Was ist passiert?"></textarea>
@@ -1011,26 +1029,26 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=137"></script>
-  <script defer src="js/core/config.js?v=137"></script>
-  <script defer src="js/core/state.js?v=137"></script>
-  <script defer src="js/core/dom.js?v=137"></script>
-  <script defer src="js/core/utils.js?v=137"></script>
-  <script defer src="js/core/akte-dokument.js?v=137"></script>
-  <script defer src="js/core/akte-pdf.js?v=137"></script>
-  <script defer src="js/ui/modals.js?v=137"></script>
-  <script defer src="js/ui/nav.js?v=137"></script>
-  <script defer src="js/ui/presence.js?v=137"></script>
-  <script defer src="js/views/startseite.js?v=137"></script>
-  <script defer src="js/views/patientenakten.js?v=137"></script>
-  <script defer src="js/views/akte-link.js?v=137"></script>
-  <script defer src="js/views/termine.js?v=137"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=137"></script>
-  <script defer src="js/views/beispiele.js?v=137"></script>
-  <script defer src="js/views/einstellungen.js?v=137"></script>
-  <script defer src="js/views/admin.js?v=137"></script>
-  <script defer src="js/ui/version-check.js?v=137"></script>
-  <script defer src="js/main.js?v=137"></script>
-  <script type="module" src="js/auth.js?v=137"></script>
+  <script defer src="js/firebase-config.js?v=138"></script>
+  <script defer src="js/core/config.js?v=138"></script>
+  <script defer src="js/core/state.js?v=138"></script>
+  <script defer src="js/core/dom.js?v=138"></script>
+  <script defer src="js/core/utils.js?v=138"></script>
+  <script defer src="js/core/akte-dokument.js?v=138"></script>
+  <script defer src="js/core/akte-pdf.js?v=138"></script>
+  <script defer src="js/ui/modals.js?v=138"></script>
+  <script defer src="js/ui/nav.js?v=138"></script>
+  <script defer src="js/ui/presence.js?v=138"></script>
+  <script defer src="js/views/startseite.js?v=138"></script>
+  <script defer src="js/views/patientenakten.js?v=138"></script>
+  <script defer src="js/views/akte-link.js?v=138"></script>
+  <script defer src="js/views/termine.js?v=138"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=138"></script>
+  <script defer src="js/views/beispiele.js?v=138"></script>
+  <script defer src="js/views/einstellungen.js?v=138"></script>
+  <script defer src="js/views/admin.js?v=138"></script>
+  <script defer src="js/ui/version-check.js?v=138"></script>
+  <script defer src="js/main.js?v=138"></script>
+  <script type="module" src="js/auth.js?v=138"></script>
 </body>
 </html>
