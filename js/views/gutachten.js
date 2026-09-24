@@ -81,8 +81,8 @@
       .slice()
       .reverse()
       .map((g) => {
-        // Zweite Zeile: Ergebnis, Datum, Person; dritte Zeile: Grund bzw. Notiz.
-        const ergebnisZeile = `${gutachtenErgebnisText(g)} am ${formatDatum(g.datum)}${g.erstelltVon ? ` von ${g.erstelltVon}` : ""}`;
+        // Große Zeile: Ergebnis + Datum; zweite Zeile: Art und Person; dritte: Grund bzw. Notiz.
+        const untertitel = `${g.art || GUTACHTEN_ART_KLEIN}${g.erstelltVon ? ` · ${g.erstelltVon}` : ""}`;
         const zusatz = g.ergebnis === "nicht-erteilt" ? (g.begruendung ? `Grund: ${g.begruendung}` : "") : g.notizen || "";
         const loeschen = loeschenErlaubt
           ? `<button type="button" class="akte-zeile__loeschen" data-gutachten-loeschen="${g.id}" title="Gutachten löschen" aria-label="Gutachten vom ${escapeHtml(formatDatum(g.datum))} löschen">
@@ -91,8 +91,8 @@
           : "<span></span>";
         return `<div class="akte-zeile akte-zeile--gutachten" tabindex="0" data-gutachten-oeffnen="${g.id}">
             <span class="akte-zeile__haupt">
-              <span class="akte-zeile__titel">${escapeHtml(g.art || GUTACHTEN_ART_KLEIN)}</span>
-              <span class="akte-zeile__vorschau akte-zeile__vorschau--voll">${escapeHtml(ergebnisZeile)}</span>
+              <span class="akte-zeile__titel">${escapeHtml(gutachtenErgebnisText(g))}<span class="akte-titel-datum"> · ${escapeHtml(formatDatum(g.datum))}</span></span>
+              <span class="akte-zeile__vorschau akte-zeile__vorschau--voll">${escapeHtml(untertitel)}</span>
               ${zusatz ? `<span class="akte-zeile__vorschau">${escapeHtml(zusatz)}</span>` : ""}
             </span>
             ${loeschen}

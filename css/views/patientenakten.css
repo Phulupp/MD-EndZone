@@ -992,6 +992,11 @@ textarea.md-input {
   grid-template-columns: minmax(0, 1fr) 30px 16px;
 }
 
+.akte-zeile--gutachten .akte-zeile__titel {
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
 .akte-zeile__vorschau--voll {
   color: var(--text-wert);
 }
