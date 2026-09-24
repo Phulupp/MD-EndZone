@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 138;
+  const VERSION_AKTUELL = 139;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -71,6 +71,12 @@
 
   const PATIENTEN_COLLECTION = "patienten";
   const AKTEN_COLLECTION = "akten";
+
+  // Psychologische Gutachten (Waffenschein): eigenes Dokument je Gutachten,
+  // verknüpft über "patientId", siehe js/views/gutachten.js.
+  const GUTACHTEN_COLLECTION = "gutachten";
+  const GUTACHTEN_ART_KLEIN = "Kleiner Waffenschein";
+  const GUTACHTEN_ERGEBNIS = { erteilt: "Erteilt", "nicht-erteilt": "Nicht erteilt" };
 
   // Termine (MRT, CT, ...): eine Collection, ein Dokument pro Termin - siehe
   // js/views/termine.js. "Sonstiges" erlaubt eine eigene Bezeichnung, damit die

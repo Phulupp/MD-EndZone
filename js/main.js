@@ -41,6 +41,7 @@
     starteHeartbeat();
     startePatientenListener();
     starteAktenListener();
+    starteGutachtenListener();
     starteLeitfaedenListener();
     starteTermineListener();
     starteMitarbeiterListener();
@@ -74,13 +75,17 @@
 
   function stoppeApp() {
     aktuellerNutzer = null;
-    [unsubPatienten, unsubAkten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst].forEach((unsub) => unsub && unsub());
-    unsubPatienten = unsubAkten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = null;
+    [unsubPatienten, unsubAkten, unsubGutachten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst].forEach((unsub) => unsub && unsub());
+    unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = null;
     stoppeBenutzerverwaltung();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
     patienten = [];
     akten = [];
+    gutachten = [];
+    bearbeitetesGutachtenId = null;
+    offenesGutachtenId = null;
+    gewaehltesGutachtenErgebnis = "";
     leitfaeden = [];
     leitfadenKategorien = [];
     termine = [];

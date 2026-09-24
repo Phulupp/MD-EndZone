@@ -925,6 +925,51 @@ textarea.md-input {
   color: var(--text-placeholder);
 }
 
+/* --- Gutachten ------------------------------------------------------------- */
+.ptabs {
+  margin-top: 44px;
+}
+
+.ptab-panel > .pakten {
+  margin-top: 0;
+}
+
+.gutachten-optionen {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.gutachten-option {
+  padding: 16px 18px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-muted);
+  background: rgba(130, 170, 190, 0.05);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: 6px;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.gutachten-option:hover {
+  color: var(--text);
+  border-color: rgba(130, 170, 190, 0.34);
+}
+
+.gutachten-option--aktiv,
+.gutachten-option--aktiv:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: var(--accent-bright);
+}
+
+#modal-gutachten-form .akte-blatt__seite .md-feld {
+  margin-bottom: 22px;
+}
+
 /* --- Formular -------------------------------------------------------------- */
 .akte-titelfeld {
   margin-top: 30px;
@@ -932,14 +977,6 @@ textarea.md-input {
 
 .akte-blatt__haupt .md-feld {
   margin-top: 26px;
-}
-
-.akte-vitalwerte-zeile {
-  margin-top: 18px;
-}
-
-.akte-vitalwerte.md-grid-3 {
-  gap: 0 20px;
 }
 
 .md-input--gross {

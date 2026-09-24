@@ -20,6 +20,9 @@
   // korrekt neu zu rendern.
   let offenerPatientId = null;
 
+  let gutachten = [];
+  let unsubGutachten = null;
+
   let unsubLeitfaeden = null;
   let leitfaeden = [];
   let leitfadenKategorien = [];

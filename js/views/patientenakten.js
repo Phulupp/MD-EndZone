@@ -423,14 +423,17 @@
     fuellePatientDetailFelder(p);
     setzeProfilBearbeiten(!!bearbeiten);
     renderPatientDetailAkten(patientId);
+    setzePatientTab("akten");
     aktualisiereAdminSteuerung();
     if (bearbeiten && el.patientGeburtsdatum) el.patientGeburtsdatum.focus();
   }
 
   // Löschen von Patienten ist Admins vorbehalten (siehe firestore.rules) -
-  // der Button wird nur für sie eingeblendet.
+  // der Button wird nur für sie eingeblendet. Gleiches gilt für das Löschen
+  // von Gutachten (Löschen-Knöpfe in der Liste).
   function aktualisiereAdminSteuerung() {
     if (el.btnPatientLoeschen) el.btnPatientLoeschen.hidden = !istAdmin();
+    if (offenerPatientId) renderPatientDetailGutachten(offenerPatientId);
   }
 
   if (el.btnPatientLoeschen) {
@@ -439,12 +442,17 @@
       const id = offenerPatientId;
       const p = patienten.find((x) => x.id === id);
       const seineAkten = akten.filter((a) => a.patientId === id);
-      const text = seineAkten.length
-        ? `Möchtest du ${p ? p.name : "diesen Patienten"} samt ${seineAkten.length} ${seineAkten.length === 1 ? "Akte" : "Akten"} wirklich unwiderruflich löschen?`
+      const seineGutachten = gutachten.filter((g) => g.patientId === id);
+      const teile = [];
+      if (seineAkten.length) teile.push(`${seineAkten.length} ${seineAkten.length === 1 ? "Akte" : "Akten"}`);
+      if (seineGutachten.length) teile.push(`${seineGutachten.length} Gutachten`);
+      const text = teile.length
+        ? `Möchtest du ${p ? p.name : "diesen Patienten"} samt ${teile.join(" und ")} wirklich unwiderruflich löschen?`
         : `Möchtest du ${p ? p.name : "diesen Patienten"} wirklich unwiderruflich löschen?`;
       fordereLoeschungAn("Patient löschen", text, async () => {
         const batch = db.batch();
         seineAkten.forEach((a) => batch.delete(db.collection(AKTEN_COLLECTION).doc(a.id)));
+        seineGutachten.forEach((g) => batch.delete(db.collection(GUTACHTEN_COLLECTION).doc(g.id)));
         batch.delete(db.collection(PATIENTEN_COLLECTION).doc(id));
         // Vor dem Commit zurücksetzen, damit der Listener das Verschwinden
         // nicht als "von jemand anderem gelöscht" meldet.
@@ -778,31 +786,12 @@
   });
 
   // --- Akte anlegen/bearbeiten (ein gemeinsames Formular) -------------------
-  // Vitalwerte (Puls/Blutdruck/SpO2) sind selten nötig (v. a. bei kleinen
-  // Eingriffen wie Schusswundenversorgung) und deshalb standardmäßig
-  // eingeklappt; nur beim Bearbeiten einer Akte mit vorhandenen Werten
-  // werden sie automatisch aufgeklappt.
-  function setzeAkteVitalwerteSichtbar(sichtbar) {
-    el.akteVitalwerteFelder.hidden = !sichtbar;
-    el.akteVitalwerteToggle.textContent = sichtbar ? "− Vitalwerte ausblenden" : "+ Vitalwerte";
-  }
-
-  if (el.akteVitalwerteToggle) {
-    el.akteVitalwerteToggle.addEventListener("click", () => {
-      setzeAkteVitalwerteSichtbar(el.akteVitalwerteFelder.hidden);
-    });
-  }
-
   function fuelleAkteFormFelder(a) {
     // Altwerte ohne Uhrzeit (noch mit reinem Datumsfeld angelegte Akten)
     // werden auf "00:00" ergänzt, sonst würde das datetime-local-Feld sie
     // stillschweigend verwerfen und leer bleiben.
     el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
     el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
-    el.aktePuls.value = a ? a.puls || "" : "";
-    el.akteBlutdruck.value = a ? a.blutdruck || "" : "";
-    el.akteSpo2.value = a ? a.spo2 || "" : "";
-    setzeAkteVitalwerteSichtbar(!!(a && (a.puls || a.blutdruck || a.spo2)));
     el.akteHergang.value = a ? a.hergang || "" : "";
     el.akteBefund.value = a ? a.befund || "" : "";
     el.akteBehandlung.value = a ? a.behandlung || "" : "";
@@ -920,9 +909,6 @@
         patientId,
         datum,
         behandlungsgrund,
-        puls: el.aktePuls.value.trim(),
-        blutdruck: el.akteBlutdruck.value.trim(),
-        spo2: el.akteSpo2.value.trim(),
         hergang: el.akteHergang.value.trim(),
         befund: el.akteBefund.value.trim(),
         behandlung: el.akteBehandlung.value.trim(),
@@ -968,9 +954,6 @@
       bearbeitetVon: a.bearbeiter || "",
       bearbeitetAm: a.bearbeiter ? formatDatumUhrzeit(a.bearbeitetAm) : "",
       behandlungsgrund: a.behandlungsgrund || "",
-      vitalwerte: [a.puls ? `Puls ${a.puls}` : "", a.blutdruck ? `RR ${a.blutdruck}` : "", a.spo2 ? `SpO2 ${a.spo2}` : ""]
-        .filter(Boolean)
-        .join(" · "),
       hergang: a.hergang || "",
       befund: a.befund || "",
       behandlung: a.behandlung || "",

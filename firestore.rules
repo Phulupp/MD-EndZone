@@ -199,6 +199,14 @@ service cloud.firestore {
       allow read, write: if istFreigegeben();
     }
 
+    // Psychologische Gutachten (Waffenschein): ein Dokument pro Gutachten,
+    // referenziert den Patienten über "patientId". Jeder freigegebene Nutzer
+    // darf Gutachten anlegen, lesen und bearbeiten; LÖSCHEN darf nur ein Admin.
+    match /gutachten/{dokument} {
+      allow read, create, update: if istFreigegeben();
+      allow delete: if istAdmin();
+    }
+
     // Termine (MRT, CT, ...): ein Dokument pro Termin, verknüpft mit einem
     // Patienten ("patientId") oder mit einem frei eingetragenen Namen. Jeder
     // freigegebene Nutzer darf Termine anlegen, lesen, bearbeiten und löschen.

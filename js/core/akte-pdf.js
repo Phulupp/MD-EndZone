@@ -77,7 +77,6 @@
       ["Patient", d.patientName],
       ["Geburtsdatum", d.geburtsdatum],
       ["Datum", d.datum],
-      ["Vitalwerte", d.vitalwerte],
       ["Verfasst von", d.autor],
       ["Zuletzt bearbeitet", d.bearbeitetVon ? `${d.bearbeitetVon} · ${d.bearbeitetAm}` : ""],
     ].filter(([, wert]) => wert);
