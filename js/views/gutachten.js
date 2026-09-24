@@ -74,29 +74,27 @@
     const chronologisch = patientGutachten(patientId);
     el.patientGutachtenLeer.hidden = chronologisch.length !== 0;
 
-    const neuestes = chronologisch[chronologisch.length - 1];
     el.ptabZaehlerGutachten.textContent = chronologisch.length || "";
-    el.patientGutachtenStand.textContent = neuestes ? `Aktuell: ${gutachtenErgebnisText(neuestes)} · ${formatDatum(neuestes.datum)}` : "";
-    el.patientGutachtenStand.parentElement.hidden = !neuestes;
 
     const loeschenErlaubt = istAdmin();
     el.patientGutachtenListe.innerHTML = chronologisch
       .slice()
       .reverse()
       .map((g) => {
-        const vorschau = g.ergebnis === "nicht-erteilt" ? g.begruendung || "" : g.notizen || "";
+        // Zweite Zeile: Ergebnis, Datum, Person; dritte Zeile: Grund bzw. Notiz.
+        const ergebnisZeile = `${gutachtenErgebnisText(g)} am ${formatDatum(g.datum)}${g.erstelltVon ? ` von ${g.erstelltVon}` : ""}`;
+        const zusatz = g.ergebnis === "nicht-erteilt" ? (g.begruendung ? `Grund: ${g.begruendung}` : "") : g.notizen || "";
         const loeschen = loeschenErlaubt
           ? `<button type="button" class="akte-zeile__loeschen" data-gutachten-loeschen="${g.id}" title="Gutachten löschen" aria-label="Gutachten vom ${escapeHtml(formatDatum(g.datum))} löschen">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>`
           : "<span></span>";
-        return `<div class="akte-zeile akte-zeile--ohne-nr" tabindex="0" data-gutachten-oeffnen="${g.id}">
+        return `<div class="akte-zeile akte-zeile--gutachten" tabindex="0" data-gutachten-oeffnen="${g.id}">
             <span class="akte-zeile__haupt">
-              <span class="akte-zeile__titel">${escapeHtml(gutachtenErgebnisText(g))}</span>
-              ${vorschau ? `<span class="akte-zeile__vorschau">${escapeHtml(vorschau)}</span>` : ""}
+              <span class="akte-zeile__titel">${escapeHtml(g.art || GUTACHTEN_ART_KLEIN)}</span>
+              <span class="akte-zeile__vorschau akte-zeile__vorschau--voll">${escapeHtml(ergebnisZeile)}</span>
+              ${zusatz ? `<span class="akte-zeile__vorschau">${escapeHtml(zusatz)}</span>` : ""}
             </span>
-            <span class="akte-zeile__datum">${escapeHtml(formatDatumZeit(g.datum))}</span>
-            <span class="akte-zeile__autor">${escapeHtml(g.erstelltVon || "—")}</span>
             ${loeschen}
             <svg class="akte-zeile__pfeil" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
           </div>`;

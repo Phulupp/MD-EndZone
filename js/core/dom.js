@@ -134,7 +134,6 @@
     ptabGutachten: document.getElementById("ptab-gutachten"),
     patientGutachtenListe: document.getElementById("patient-gutachten-liste"),
     patientGutachtenLeer: document.getElementById("patient-gutachten-leer"),
-    patientGutachtenStand: document.getElementById("patient-gutachten-stand"),
     btnGutachtenNeu: document.getElementById("btn-gutachten-neu"),
     btnGutachtenErste: document.getElementById("btn-gutachten-erste"),
     gutachtenFormTitel: document.getElementById("gutachten-form-titel"),

@@ -987,6 +987,15 @@ textarea.md-input {
   }
 }
 
+/* Gutachten-Zeile: Titel, Ergebnis-Zeile, Notiz - ohne Extra-Spalten. */
+.akte-zeile--gutachten {
+  grid-template-columns: minmax(0, 1fr) 30px 16px;
+}
+
+.akte-zeile__vorschau--voll {
+  color: var(--text-wert);
+}
+
 /* Datum hinter dem Titel (Liste und Überschrift der Akte) */
 .akte-titel-datum {
   font-weight: 500;
