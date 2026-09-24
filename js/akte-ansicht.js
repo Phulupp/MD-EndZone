@@ -49,9 +49,9 @@
       if (!snap.exists) return zeigeFehler("Dieser Link ist ungültig oder abgelaufen.");
       const freigabe = snap.data();
       daten = freigabe.daten;
-      document.title = `Akte ${daten.nummer} — ${daten.patientName} — Medical Department`;
-      document.getElementById("akte-kicker").textContent = `Behandlungsakte · Akte ${daten.nummer}`;
-      document.getElementById("akte-titel").textContent = daten.behandlungsgrund || `Akte ${daten.nummer}`;
+      document.title = `Akte vom ${akteDatumKurz(daten)} — ${daten.patientName} — Medical Department`;
+      document.getElementById("akte-kicker").textContent = `Behandlungsakte · ${daten.patientName}`;
+      document.getElementById("akte-titel").innerHTML = akteUeberschriftHtml(daten);
       document.getElementById("akte-inhalt").innerHTML = akteInhaltHtml(daten);
       document.getElementById("akte-seite").innerHTML = akteSeiteHtml(daten);
       const stand = formatZeit(freigabe.aktualisiertAm);

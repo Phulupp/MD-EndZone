@@ -8,13 +8,25 @@
      gleich aussehen. Bewusst ohne Abhängigkeiten zu anderen Dateien.
 
      "d" ist ein einfaches Objekt (siehe akteDaten in patientenakten.js):
-     { nummer, patientName, geburtsdatum, allergien, vorerkrankungen, datum,
+     { patientName, geburtsdatum, allergien, vorerkrankungen, datum,
        autor, bearbeitetVon, bearbeitetAm, behandlungsgrund, hergang, befund,
        behandlung, bemerkungen } - alle Werte fertige Anzeige-Texte. */
   function dokEsc(text) {
     const div = document.createElement("div");
     div.textContent = text == null ? "" : String(text);
     return div.innerHTML;
+  }
+
+  // Nur das Datum aus dem Anzeige-Text ("25.09.2026, 19:30 Uhr" -> "25.09.2026").
+  // Akten werden über das Datum unterschieden, nicht über eine Nummer.
+  function akteDatumKurz(d) {
+    return (d.datum || "").split(",")[0].trim();
+  }
+
+  // Überschrift der Akte: Titel, dahinter automatisch das Datum.
+  function akteUeberschriftHtml(d) {
+    const datum = akteDatumKurz(d);
+    return `${dokEsc(d.behandlungsgrund || "Behandlungsakte")}${datum ? `<span class="akte-titel-datum"> · ${dokEsc(datum)}</span>` : ""}`;
   }
 
   // [Beschriftung, Feldname] in der Reihenfolge des Dokuments. Der
@@ -66,7 +78,7 @@
 
   // Reiner Text (Zwischenablage, z. B. für Discord/TeamSpeak-Chat).
   function akteAlsText(d) {
-    const zeilen = [`Behandlungsakte - Akte ${d.nummer}`, d.behandlungsgrund || "", "", `Patient: ${d.patientName || "—"}`];
+    const zeilen = [`Behandlungsakte vom ${akteDatumKurz(d) || "—"}`, d.behandlungsgrund || "", "", `Patient: ${d.patientName || "—"}`];
     if (d.geburtsdatum) zeilen.push(`Geburtsdatum: ${d.geburtsdatum}`);
     zeilen.push(`Datum: ${d.datum || "—"}`, `Verfasst von: ${d.autor || "—"}`);
     if (d.allergien) zeilen.push(`Allergien: ${d.allergien}`);

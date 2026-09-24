@@ -186,14 +186,14 @@
       ["Notfallkontakt", p.notfallkontakt],
       ["Notfallkontakt Telefon", p.notfallkontaktTelefon],
     ].map(([ort, text]) => ({ ort, text: text || "" }));
-    patientAkten(p.id).forEach((a, index) => {
+    patientAkten(p.id).forEach((a) => {
       [
         ["Behandlungsgrund", a.behandlungsgrund],
         ["Hergang", a.hergang],
         ["Befund", a.befund],
         ["Behandlung", a.behandlung],
         ["Zusätzliche Informationen", a.bemerkungen],
-      ].forEach(([feld, text]) => felder.push({ ort: `Akte ${index + 1} · ${feld}`, text: text || "" }));
+      ].forEach(([feld, text]) => felder.push({ ort: `Akte vom ${formatDatum(a.datum)} · ${feld}`, text: text || "" }));
     });
     return felder;
   }
@@ -689,12 +689,11 @@
     }
     const tokens = suchbar ? normalisiere(patientAktenSuchbegriff).split(" ").filter(Boolean) : [];
 
-    // Neueste zuerst; "nummer" ist die feste chronologische Nummer und wird
-    // VOR dem Filtern vergeben, damit Akte 3 auch in der Suche Akte 3 bleibt.
+    // Neueste zuerst.
     const sichtbar = chronologisch
-      .map((a, index) => ({ a, nummer: index + 1 }))
+      .slice()
       .reverse()
-      .filter(({ a }) => !tokens.length || aktePasstZurSuche(a, tokens));
+      .filter((a) => !tokens.length || aktePasstZurSuche(a, tokens));
 
     if (el.patientAktenAnzahl) {
       el.patientAktenAnzahl.textContent = tokens.length ? `${sichtbar.length} von ${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}` : "";
@@ -707,7 +706,7 @@
 
     let letzterMonat = "";
     el.patientAktenListe.innerHTML = sichtbar
-      .map(({ a, nummer }) => {
+      .map((a) => {
         let monat = "";
         if (suchbar) {
           const m = monatUeberschrift(a.datum);
@@ -719,15 +718,15 @@
         // Zugeklappt: Behandlungsgrund + eine Vorschau-Zeile (Hergang, sonst
         // Befund/Behandlung). Der ganze Inhalt steht im Akte-Fenster.
         const vorschau = a.hergang || a.befund || a.behandlung || "";
-        return `${monat}<div class="akte-zeile" tabindex="0" data-akte-oeffnen="${a.id}">
-            <span class="akte-zeile__nr">Akte ${nummer}</span>
+        const uhrzeit = formatDatumZeit(a.datum).split(", ")[1] || "";
+        return `${monat}<div class="akte-zeile akte-zeile--ohne-nr" tabindex="0" data-akte-oeffnen="${a.id}">
             <span class="akte-zeile__haupt">
-              <span class="akte-zeile__titel">${escapeHtml(a.behandlungsgrund || "—")}</span>
+              <span class="akte-zeile__titel">${escapeHtml(a.behandlungsgrund || "Behandlungsakte")}<span class="akte-titel-datum"> · ${escapeHtml(formatDatum(a.datum))}</span></span>
               ${vorschau ? `<span class="akte-zeile__vorschau">${escapeHtml(vorschau)}</span>` : ""}
             </span>
-            <span class="akte-zeile__datum">${escapeHtml(formatDatumZeit(a.datum))}</span>
+            <span class="akte-zeile__datum">${escapeHtml(uhrzeit)}</span>
             <span class="akte-zeile__autor">${escapeHtml(a.erstelltVon || "—")}</span>
-            <button type="button" class="akte-zeile__loeschen" data-akte-loeschen="${a.id}" data-akte-nummer="${nummer}" title="Akte ${nummer} löschen" aria-label="Akte ${nummer} löschen">
+            <button type="button" class="akte-zeile__loeschen" data-akte-loeschen="${a.id}" title="Akte löschen" aria-label="Akte vom ${escapeHtml(formatDatum(a.datum))} löschen">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
             <svg class="akte-zeile__pfeil" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
@@ -747,7 +746,7 @@
     const oeffneEintrag = (event) => {
       const loeschen = event.target.closest("[data-akte-loeschen]");
       if (loeschen) {
-        loescheAkteMitBestaetigung(loeschen.getAttribute("data-akte-loeschen"), loeschen.getAttribute("data-akte-nummer"));
+        loescheAkteMitBestaetigung(loeschen.getAttribute("data-akte-loeschen"));
         return;
       }
       const eintrag = event.target.closest("[data-akte-oeffnen]");
@@ -766,8 +765,9 @@
   }
 
   // Gemeinsam für den Löschen-Knopf in der Zeitleiste und im Akte-Fenster.
-  function loescheAkteMitBestaetigung(akteId, nummer, danach) {
-    const bezeichnung = nummer ? `Akte ${nummer}` : "diese Akte";
+  function loescheAkteMitBestaetigung(akteId, danach) {
+    const akte = akten.find((x) => x.id === akteId);
+    const bezeichnung = akte ? `die Akte vom ${formatDatum(akte.datum)}` : "diese Akte";
     fordereLoeschungAn("Akte löschen", `Möchtest du ${bezeichnung} wirklich unwiderruflich löschen?`, async () => {
       await db.collection(AKTEN_COLLECTION).doc(akteId).delete();
       // Zugehörige Zugriffslinks (Kopien) mit entfernen.
@@ -786,12 +786,21 @@
   });
 
   // --- Akte anlegen/bearbeiten (ein gemeinsames Formular) -------------------
+  const AKTE_TITEL_MAX = 60;
+
+  function aktualisiereTitelZaehler() {
+    if (el.akteTitelZaehler) el.akteTitelZaehler.textContent = `${el.akteBehandlungsgrund.value.length} / ${AKTE_TITEL_MAX}`;
+  }
+
+  if (el.akteBehandlungsgrund) el.akteBehandlungsgrund.addEventListener("input", aktualisiereTitelZaehler);
+
   function fuelleAkteFormFelder(a) {
     // Altwerte ohne Uhrzeit (noch mit reinem Datumsfeld angelegte Akten)
     // werden auf "00:00" ergänzt, sonst würde das datetime-local-Feld sie
     // stillschweigend verwerfen und leer bleiben.
     el.akteDatum.value = a ? (a.datum && !a.datum.includes("T") ? `${a.datum}T00:00` : a.datum) || jetzigerZeitpunkt() : jetzigerZeitpunkt();
     el.akteBehandlungsgrund.value = a ? a.behandlungsgrund || "" : "";
+    aktualisiereTitelZaehler();
     el.akteHergang.value = a ? a.hergang || "" : "";
     el.akteBefund.value = a ? a.befund || "" : "";
     el.akteBehandlung.value = a ? a.behandlung || "" : "";
@@ -804,6 +813,16 @@
     const patient = patienten.find((x) => x.id === patientId);
     el.akteFormPatientId.value = patientId;
     el.akteFormPatientName.textContent = patient ? patient.name : "";
+    el.akteFormPatientGeb.textContent = patient && patient.geburtsdatum ? ` · geboren am ${patient.geburtsdatum}` : "";
+    // Allergien/Vorerkrankungen beim Schreiben im Blick behalten.
+    const hinweise = [
+      ["Allergien", patient && hatEintrag(patient.allergien) ? patient.allergien : ""],
+      ["Vorerkrankungen", patient && hatEintrag(patient.vorerkrankungen) ? patient.vorerkrankungen : ""],
+    ].filter(([, wert]) => wert);
+    el.akteFormHinweise.innerHTML = hinweise
+      .map(([label, wert]) => `<p class="akte-hinweis__zeile"><span class="akte-hinweis__label">${label}</span>${escapeHtml(wert)}</p>`)
+      .join("");
+    el.akteFormHinweise.hidden = !hinweise.length;
     versteckeFeldFehler(el.akteError);
 
     const a = akteId ? akten.find((x) => x.id === akteId) : null;
@@ -944,7 +963,6 @@
   function akteDaten(a) {
     const patient = patienten.find((x) => x.id === a.patientId);
     return {
-      nummer: patientAkten(a.patientId).findIndex((x) => x.id === a.id) + 1,
       patientName: patient ? patient.name : "—",
       geburtsdatum: patient ? patient.geburtsdatum || "" : "",
       allergien: patient && hatEintrag(patient.allergien) ? patient.allergien : "",
@@ -967,8 +985,8 @@
     offeneAkteDetailId = akteId;
     const d = akteDaten(a);
 
-    el.akteDetailKicker.textContent = `Behandlungsakte · Akte ${d.nummer}`;
-    el.akteDetailTitel.textContent = d.behandlungsgrund || `Akte ${d.nummer}`;
+    el.akteDetailKicker.textContent = `Behandlungsakte · ${d.patientName}`;
+    el.akteDetailTitel.innerHTML = akteUeberschriftHtml(d);
     el.akteDetailInhalt.innerHTML = akteInhaltHtml(d);
     el.akteDetailSeite.innerHTML = akteSeiteHtml(d);
     oeffneModal("modal-akte-detail");
@@ -1035,9 +1053,7 @@
     el.btnAkteLoeschen.addEventListener("click", () => {
       if (!offeneAkteDetailId) return;
       const id = offeneAkteDetailId;
-      const a = akten.find((x) => x.id === id);
-      const nummer = a ? patientAkten(a.patientId).findIndex((x) => x.id === id) + 1 : 0;
-      loescheAkteMitBestaetigung(id, nummer, () => {
+      loescheAkteMitBestaetigung(id, () => {
         offeneAkteDetailId = null;
         schliesseModal("modal-akte-detail");
       });

@@ -21,7 +21,7 @@
   }
 
   function aktePdfDateiname(d) {
-    const name = `Akte ${d.nummer} - ${d.patientName || "Patient"}`.replace(/[\\/:*?"<>|]+/g, "").trim();
+    const name = `Akte vom ${akteDatumKurz(d)} - ${d.patientName || "Patient"}`.replace(/[\\/:*?"<>|]+/g, "").trim();
     return `${name}.pdf`;
   }
 
@@ -64,7 +64,7 @@
 
     // Kopf
     schreibe("MEDICAL DEPARTMENT", 8.5, "bold", GRAU, 1);
-    schreibe(`BEHANDLUNGSAKTE  ·  AKTE ${d.nummer}`, 9.5, "bold", ROT, 3);
+    schreibe(`BEHANDLUNGSAKTE  ·  ${akteDatumKurz(d)}`, 9.5, "bold", ROT, 3);
     schreibe(d.behandlungsgrund || "Behandlungsakte", 20, "bold", SCHWARZ, 5);
 
     doc.setDrawColor(200, 205, 210);
@@ -125,7 +125,7 @@
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8);
       doc.setTextColor(...GRAU);
-      doc.text(pdfSicher(`Medical Department  ·  Akte ${d.nummer}  ·  ${d.patientName || ""}`), rand, seiteH - 12);
+      doc.text(pdfSicher(`Medical Department  ·  Akte vom ${akteDatumKurz(d)}  ·  ${d.patientName || ""}`), rand, seiteH - 12);
       doc.text(`Seite ${i} von ${seiten}`, seiteB - rand, seiteH - 12, { align: "right" });
     }
 

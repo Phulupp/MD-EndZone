@@ -81,7 +81,7 @@
     linkAkteId = akteId;
     linkDoc = null;
     const d = akteDaten(a);
-    el.akteLinkTitel.textContent = `Akte ${d.nummer} · ${d.patientName}`;
+    el.akteLinkTitel.textContent = `Akte vom ${akteDatumKurz(d)} · ${d.patientName}`;
     el.akteLinkTage.textContent = String(ZUGRIFFSLINK_TAGE);
     versteckeFeldFehler(el.akteLinkError);
     [el.akteLinkLeer, el.akteLinkAktiv, el.btnAkteLinkErstellen, el.btnAkteLinkKopieren, el.btnAkteLinkAktualisieren, el.btnAkteLinkLoeschen].forEach(

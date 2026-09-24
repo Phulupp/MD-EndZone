@@ -81,17 +81,16 @@
 
     const loeschenErlaubt = istAdmin();
     el.patientGutachtenListe.innerHTML = chronologisch
-      .map((g, index) => ({ g, nummer: index + 1 }))
+      .slice()
       .reverse()
-      .map(({ g, nummer }) => {
+      .map((g) => {
         const vorschau = g.ergebnis === "nicht-erteilt" ? g.begruendung || "" : g.notizen || "";
         const loeschen = loeschenErlaubt
-          ? `<button type="button" class="akte-zeile__loeschen" data-gutachten-loeschen="${g.id}" data-gutachten-nummer="${nummer}" title="Gutachten ${nummer} löschen" aria-label="Gutachten ${nummer} löschen">
+          ? `<button type="button" class="akte-zeile__loeschen" data-gutachten-loeschen="${g.id}" title="Gutachten löschen" aria-label="Gutachten vom ${escapeHtml(formatDatum(g.datum))} löschen">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>`
           : "<span></span>";
-        return `<div class="akte-zeile" tabindex="0" data-gutachten-oeffnen="${g.id}">
-            <span class="akte-zeile__nr">Nr. ${nummer}</span>
+        return `<div class="akte-zeile akte-zeile--ohne-nr" tabindex="0" data-gutachten-oeffnen="${g.id}">
             <span class="akte-zeile__haupt">
               <span class="akte-zeile__titel">${escapeHtml(gutachtenErgebnisText(g))}</span>
               ${vorschau ? `<span class="akte-zeile__vorschau">${escapeHtml(vorschau)}</span>` : ""}
@@ -109,7 +108,7 @@
     const oeffneEintrag = (event) => {
       const loeschen = event.target.closest("[data-gutachten-loeschen]");
       if (loeschen) {
-        loescheGutachtenMitBestaetigung(loeschen.getAttribute("data-gutachten-loeschen"), loeschen.getAttribute("data-gutachten-nummer"));
+        loescheGutachtenMitBestaetigung(loeschen.getAttribute("data-gutachten-loeschen"));
         return;
       }
       const eintrag = event.target.closest("[data-gutachten-oeffnen]");
@@ -124,9 +123,10 @@
     });
   }
 
-  function loescheGutachtenMitBestaetigung(gutachtenId, nummer, danach) {
+  function loescheGutachtenMitBestaetigung(gutachtenId, danach) {
     if (!istAdmin()) return;
-    const bezeichnung = nummer ? `Gutachten Nr. ${nummer}` : "dieses Gutachten";
+    const g = gutachten.find((x) => x.id === gutachtenId);
+    const bezeichnung = g ? `das Gutachten vom ${formatDatum(g.datum)}` : "dieses Gutachten";
     fordereLoeschungAn("Gutachten löschen", `Möchtest du ${bezeichnung} wirklich unwiderruflich löschen?`, async () => {
       await db.collection(GUTACHTEN_COLLECTION).doc(gutachtenId).delete();
       if (danach) danach();
@@ -228,18 +228,18 @@
     const abschnitt = (label, text) =>
       `<section class="akte-abschnitt"><h4 class="akte-abschnitt__label">${label}</h4><p>${escapeHtml(text)}</p></section>`;
 
-    el.gutachtenDetailKicker.textContent = `Psychologisches Gutachten · ${g.art || GUTACHTEN_ART_KLEIN}`;
-    el.gutachtenDetailTitel.textContent = gutachtenErgebnisText(g);
+    el.gutachtenDetailKicker.textContent = "Psychologisches Gutachten";
+    el.gutachtenDetailTitel.textContent = g.name || "Gutachten";
 
-    let inhalt = "";
+    const person = [g.geburtsdatum ? `Geboren am ${g.geburtsdatum}` : "", g.telefon ? `Tel. ${g.telefon}` : ""].filter(Boolean).join(" · ");
+    let inhalt = person ? `<p class="gutachten-person">${escapeHtml(person)}</p>` : "";
+    inhalt += `<section class="akte-abschnitt"><h4 class="akte-abschnitt__label">Ergebnis</h4><p class="gutachten-ergebnis">${escapeHtml(gutachtenErgebnisText(g))}</p></section>`;
     if (g.ergebnis === "nicht-erteilt" && g.begruendung) inhalt += abschnitt("Begründung", g.begruendung);
     if (g.notizen) inhalt += abschnitt("Notizen", g.notizen);
-    el.gutachtenDetailInhalt.innerHTML = inhalt || '<p class="akte-leer">Keine weiteren Angaben.</p>';
+    el.gutachtenDetailInhalt.innerHTML = inhalt;
 
     el.gutachtenDetailSeite.innerHTML =
-      zeile("Name", g.name) +
-      zeile("Geburtsdatum", g.geburtsdatum) +
-      zeile("Telefon", g.telefon) +
+      zeile("Art", g.art || GUTACHTEN_ART_KLEIN) +
       zeile("Ausgestellt am", formatDatumZeit(g.datum)) +
       zeile("Ausgestellt von", g.erstelltVon) +
       zeile("Zuletzt bearbeitet", g.bearbeiter ? `${g.bearbeiter} · ${formatDatumUhrzeit(g.bearbeitetAm)}` : "");
@@ -286,10 +286,7 @@
   if (el.btnGutachtenLoeschen) {
     el.btnGutachtenLoeschen.addEventListener("click", () => {
       if (!offenesGutachtenId) return;
-      const id = offenesGutachtenId;
-      const g = gutachten.find((x) => x.id === id);
-      const nummer = g ? patientGutachten(g.patientId).findIndex((x) => x.id === id) + 1 : 0;
-      loescheGutachtenMitBestaetigung(id, nummer, () => {
+      loescheGutachtenMitBestaetigung(offenesGutachtenId, () => {
         offenesGutachtenId = null;
         schliesseModal("modal-gutachten-detail");
       });

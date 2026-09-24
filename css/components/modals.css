@@ -22,7 +22,7 @@
 
 .modal {
   width: 420px;
-  background: var(--panel-800);
+  background: var(--fenster);
   border: 1px solid var(--panel-edge);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
