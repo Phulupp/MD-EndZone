@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 150;
+  const VERSION_AKTUELL = 151;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -99,6 +99,11 @@
   const MD_FUNK = "2";
   const DIENST_COLLECTION = "dienst";
   const DIENST_STATUS = { "im-dienst": "Im Dienst", "ausser-dienst": "Außer Dienst" };
+
+  // Kurzes gemeinsames Info-Feld der Leitstelle (ein Dokument, jeder Freigegebene
+  // darf es ändern): { text, bearbeitetVon, bearbeitetAm }, siehe js/views/startseite.js.
+  const LEITSTELLE_INFO_DOC = "leitstelle/infos";
+  const LEITSTELLE_INFO_MAX = 600;
 
   // Zugriffslinks: schreibgeschützte Kopie einer Akte, die jeder mit dem Link
   // (auch ohne Konto) ansehen kann - siehe js/views/akte-link.js und akte.html.

@@ -47,6 +47,7 @@
     starteTermineListener();
     starteMitarbeiterListener();
     starteDienstListener();
+    starteLeitstelleInfoListener();
     if (istAdmin()) starteBenutzerverwaltung();
 
     zeigeAnsicht(ladeStartseite());
@@ -77,8 +78,8 @@
   function stoppeApp() {
     aktuellerNutzer = null;
     wendeThemaAn("dunkel");
-    [unsubPatienten, unsubAkten, unsubGutachten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst].forEach((unsub) => unsub && unsub());
-    unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = null;
+    [unsubPatienten, unsubAkten, unsubGutachten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst, unsubLeitstelleInfo].forEach((unsub) => unsub && unsub());
+    unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = unsubLeitstelleInfo = null;
     stoppeBenutzerverwaltung();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
@@ -93,6 +94,8 @@
     termine = [];
     mitarbeiter = [];
     dienstStatus = {};
+    leitstelleInfo = { text: "", von: "", am: null };
+    leitstelleInfoBearbeiten = false;
     mitarbeiterMeta = { von: "", am: null };
     mitarbeiterBearbeiten = false;
     mitarbeiterEntwurf = [];

@@ -142,7 +142,7 @@ textarea.md-input {
 .pat-spaltenkopf,
 .pat-zeile {
   display: grid;
-  grid-template-columns: 26px minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 1fr) 16px;
+  grid-template-columns: 26px minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.9fr) 16px;
   align-items: center;
   column-gap: 20px;
   padding-left: 24px;
@@ -253,7 +253,8 @@ textarea.md-input {
 
 .pat-zeile__geb,
 .pat-zeile__akten,
-.pat-zeile__letzte {
+.pat-zeile__letzte,
+.pat-zeile__gutachten {
   font-size: 13.5px;
   color: var(--text-wert);
   font-variant-numeric: tabular-nums;
@@ -277,7 +278,9 @@ textarea.md-input {
   }
   .pat-spaltenkopf > :nth-child(3),
   .pat-spaltenkopf > :nth-child(5),
+  .pat-spaltenkopf > :nth-child(6),
   .pat-zeile__geb,
+  .pat-zeile__gutachten,
   .pat-zeile__letzte {
     display: none;
   }

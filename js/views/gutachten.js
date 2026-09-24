@@ -25,6 +25,7 @@
         (snap) => {
           gutachten = [];
           snap.forEach((docSnap) => gutachten.push({ id: docSnap.id, ...docSnap.data() }));
+          renderPatientenListe();
           if (offenerPatientId) renderPatientDetailGutachten(offenerPatientId);
           if (offenesGutachtenId) {
             const g = gutachten.find((x) => x.id === offenesGutachtenId);

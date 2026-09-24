@@ -62,6 +62,86 @@
   color: var(--text);
 }
 
+/* Info-Feld: kurzer gemeinsamer Text, jeder darf ihn aktualisieren. */
+.leitstelle-info {
+  margin-bottom: 40px;
+  padding: 20px 26px 18px;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.leitstelle-info__kopf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.leitstelle-info__titel {
+  margin: 0;
+}
+
+.leitstelle-info__text {
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.leitstelle-info__leer {
+  font-size: 14.5px;
+  color: var(--text-soft);
+}
+
+.leitstelle-info__eingabe {
+  display: block;
+  width: 100%;
+  min-height: 84px;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--text);
+  background: rgba(var(--tint), 0.05);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: 6px;
+  resize: vertical;
+  transition: border-color 0.15s ease;
+}
+
+.leitstelle-info__eingabe::placeholder {
+  color: var(--text-placeholder);
+}
+
+.leitstelle-info__eingabe:hover {
+  border-color: rgba(var(--tint), 0.34);
+}
+
+.leitstelle-info__eingabe:focus {
+  outline: none;
+  border-color: var(--accent-bright);
+}
+
+.leitstelle-info__aktionen {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.leitstelle-info__meta {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+}
+
+.leitstelle-info__meta:empty {
+  display: none;
+}
+
 .empty-state__link {
   font-weight: 700;
   color: var(--accent-bright);

@@ -104,6 +104,84 @@
       : `<p class="empty-state">Noch keine Mitarbeiter eingetragen. Trage sie in der <button type="button" class="empty-state__link" data-quicklink="mitarbeiterliste">Mitarbeiterliste</button> ein, dann erscheinen sie hier.</p>`;
   }
 
+  // --- Info-Feld (kurzer gemeinsamer Text, jeder darf ihn aktualisieren) -------
+  function starteLeitstelleInfoListener() {
+    if (!db) return;
+    if (unsubLeitstelleInfo) unsubLeitstelleInfo();
+    unsubLeitstelleInfo = db.doc(LEITSTELLE_INFO_DOC).onSnapshot(
+      (snap) => {
+        const daten = snap.exists ? snap.data() : {};
+        leitstelleInfo = { text: daten.text || "", von: daten.bearbeitetVon || "", am: daten.bearbeitetAm || null };
+        // Wer gerade schreibt, wird nicht überschrieben.
+        if (!leitstelleInfoBearbeiten) renderLeitstelleInfo();
+      },
+      (fehler) => {
+        console.error("Leitstellen-Info konnte nicht geladen werden:", fehler);
+        el.infoLeer.textContent = fehler && fehler.code === "permission-denied"
+          ? 'Keine Berechtigung: Die Firestore-Regel für "leitstelle" ist noch nicht veröffentlicht (Firebase Console, Firestore, Regeln).'
+          : "Die Infos konnten nicht geladen werden.";
+      }
+    );
+  }
+
+  function renderLeitstelleInfo() {
+    if (!el.infoText) return;
+    const text = leitstelleInfo.text.trim();
+    el.infoText.textContent = text;
+    el.infoText.hidden = !text;
+    el.infoLeer.hidden = !!text;
+    el.infoAnsicht.hidden = leitstelleInfoBearbeiten;
+    el.infoForm.hidden = !leitstelleInfoBearbeiten;
+    el.btnInfoBearbeiten.hidden = leitstelleInfoBearbeiten;
+    el.infoMeta.hidden = leitstelleInfoBearbeiten;
+    el.infoMeta.textContent = leitstelleInfo.von && leitstelleInfo.am ? `Zuletzt geändert von ${leitstelleInfo.von}, ${formatDatumUhrzeit(leitstelleInfo.am)}` : "";
+  }
+
+  if (el.btnInfoBearbeiten) {
+    el.btnInfoBearbeiten.addEventListener("click", () => {
+      leitstelleInfoBearbeiten = true;
+      el.infoEingabe.value = leitstelleInfo.text;
+      versteckeFeldFehler(el.infoError);
+      renderLeitstelleInfo();
+      el.infoEingabe.focus();
+    });
+  }
+
+  if (el.btnInfoAbbrechen) {
+    el.btnInfoAbbrechen.addEventListener("click", () => {
+      leitstelleInfoBearbeiten = false;
+      renderLeitstelleInfo();
+    });
+  }
+
+  if (el.btnInfoSpeichern) {
+    el.btnInfoSpeichern.addEventListener("click", async () => {
+      versteckeFeldFehler(el.infoError);
+      const text = el.infoEingabe.value.trim().slice(0, LEITSTELLE_INFO_MAX);
+      el.btnInfoSpeichern.disabled = true;
+      try {
+        await db.doc(LEITSTELLE_INFO_DOC).set({
+          text,
+          bearbeitetVon: aktuellerNutzer ? aktuellerNutzer.name : "",
+          bearbeitetAm: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        leitstelleInfoBearbeiten = false;
+        renderLeitstelleInfo();
+        zeigeToast("Infos gespeichert.");
+      } catch (fehler) {
+        console.error(fehler);
+        zeigeFeldFehler(
+          el.infoError,
+          fehler && fehler.code === "permission-denied"
+            ? 'Keine Berechtigung: Die Firestore-Regel für "leitstelle" ist noch nicht veröffentlicht.'
+            : "Speichern fehlgeschlagen. Bitte erneut versuchen."
+        );
+      } finally {
+        el.btnInfoSpeichern.disabled = false;
+      }
+    });
+  }
+
   async function setzeDienststatus(id, status) {
     const person = dienstPersonen().find((p) => p.id === id);
     if (!db || !person || !DIENST_STATUS[status] || statusVon(person) === status) return;

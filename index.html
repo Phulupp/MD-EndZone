@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=150" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=151" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=150" />
-  <link rel="stylesheet" href="css/base/reset.css?v=150" />
-  <link rel="stylesheet" href="css/base/background.css?v=150" />
-  <link rel="stylesheet" href="css/views/auth.css?v=150" />
-  <link rel="stylesheet" href="css/components/forms.css?v=150" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=150" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=150" />
-  <link rel="stylesheet" href="css/components/cards.css?v=150" />
-  <link rel="stylesheet" href="css/components/badges.css?v=150" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=150" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=150" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=150" />
-  <link rel="stylesheet" href="css/views/termine.css?v=150" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=150" />
-  <link rel="stylesheet" href="css/components/modals.css?v=150" />
-  <link rel="stylesheet" href="css/views/admin.css?v=150" />
-  <link rel="stylesheet" href="css/components/toast.css?v=150" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=150" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=150" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=151" />
+  <link rel="stylesheet" href="css/base/reset.css?v=151" />
+  <link rel="stylesheet" href="css/base/background.css?v=151" />
+  <link rel="stylesheet" href="css/views/auth.css?v=151" />
+  <link rel="stylesheet" href="css/components/forms.css?v=151" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=151" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=151" />
+  <link rel="stylesheet" href="css/components/cards.css?v=151" />
+  <link rel="stylesheet" href="css/components/badges.css?v=151" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=151" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=151" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=151" />
+  <link rel="stylesheet" href="css/views/termine.css?v=151" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=151" />
+  <link rel="stylesheet" href="css/components/modals.css?v=151" />
+  <link rel="stylesheet" href="css/views/admin.css?v=151" />
+  <link rel="stylesheet" href="css/components/toast.css?v=151" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=151" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=151" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -342,6 +342,27 @@
                 <span class="leitstelle-stat__wert" id="dienst-zaehler">–</span>
                 <span class="leitstelle-stat__hinweis">Mitarbeiter aktuell im Dienst</span>
               </div>
+            </div>
+
+            <!-- Kurzes Info-Feld für wichtige Hinweise (z. B. "Heute 20 Uhr Teambesprechung") -->
+            <div class="leitstelle-info">
+              <div class="leitstelle-info__kopf">
+                <h3 class="leitstelle-kopf leitstelle-info__titel">Infos</h3>
+                <button type="button" class="pkopf__link" id="btn-info-bearbeiten">Bearbeiten</button>
+              </div>
+              <div id="info-ansicht">
+                <p class="leitstelle-info__text" id="info-text" hidden></p>
+                <p class="leitstelle-info__leer" id="info-leer">Keine Infos eingetragen.</p>
+              </div>
+              <div id="info-form" hidden>
+                <textarea id="info-eingabe" class="leitstelle-info__eingabe" rows="3" maxlength="600" placeholder="Wichtige Hinweise für alle, z. B. Heute 20 Uhr Teambesprechung"></textarea>
+                <p class="field-error" id="info-error" hidden></p>
+                <div class="leitstelle-info__aktionen">
+                  <button type="button" class="btn btn--primary btn--sm" id="btn-info-speichern">Speichern</button>
+                  <button type="button" class="btn btn--ghost btn--sm" id="btn-info-abbrechen">Abbrechen</button>
+                </div>
+              </div>
+              <p class="leitstelle-info__meta" id="info-meta"></p>
             </div>
 
             <h3 class="leitstelle-kopf">Dienstübersicht</h3>
@@ -1138,27 +1159,27 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=150"></script>
-  <script defer src="js/core/config.js?v=150"></script>
-  <script defer src="js/core/state.js?v=150"></script>
-  <script defer src="js/core/dom.js?v=150"></script>
-  <script defer src="js/core/utils.js?v=150"></script>
-  <script defer src="js/core/akte-dokument.js?v=150"></script>
-  <script defer src="js/core/akte-pdf.js?v=150"></script>
-  <script defer src="js/ui/modals.js?v=150"></script>
-  <script defer src="js/ui/nav.js?v=150"></script>
-  <script defer src="js/ui/presence.js?v=150"></script>
-  <script defer src="js/views/startseite.js?v=150"></script>
-  <script defer src="js/views/patientenakten.js?v=150"></script>
-  <script defer src="js/views/gutachten.js?v=150"></script>
-  <script defer src="js/views/akte-link.js?v=150"></script>
-  <script defer src="js/views/termine.js?v=150"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=150"></script>
-  <script defer src="js/views/beispiele.js?v=150"></script>
-  <script defer src="js/views/einstellungen.js?v=150"></script>
-  <script defer src="js/views/admin.js?v=150"></script>
-  <script defer src="js/ui/version-check.js?v=150"></script>
-  <script defer src="js/main.js?v=150"></script>
-  <script type="module" src="js/auth.js?v=150"></script>
+  <script defer src="js/firebase-config.js?v=151"></script>
+  <script defer src="js/core/config.js?v=151"></script>
+  <script defer src="js/core/state.js?v=151"></script>
+  <script defer src="js/core/dom.js?v=151"></script>
+  <script defer src="js/core/utils.js?v=151"></script>
+  <script defer src="js/core/akte-dokument.js?v=151"></script>
+  <script defer src="js/core/akte-pdf.js?v=151"></script>
+  <script defer src="js/ui/modals.js?v=151"></script>
+  <script defer src="js/ui/nav.js?v=151"></script>
+  <script defer src="js/ui/presence.js?v=151"></script>
+  <script defer src="js/views/startseite.js?v=151"></script>
+  <script defer src="js/views/patientenakten.js?v=151"></script>
+  <script defer src="js/views/gutachten.js?v=151"></script>
+  <script defer src="js/views/akte-link.js?v=151"></script>
+  <script defer src="js/views/termine.js?v=151"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=151"></script>
+  <script defer src="js/views/beispiele.js?v=151"></script>
+  <script defer src="js/views/einstellungen.js?v=151"></script>
+  <script defer src="js/views/admin.js?v=151"></script>
+  <script defer src="js/ui/version-check.js?v=151"></script>
+  <script defer src="js/main.js?v=151"></script>
+  <script type="module" src="js/auth.js?v=151"></script>
 </body>
 </html>

@@ -34,6 +34,16 @@
     dienstError: document.getElementById("dienst-error"),
     dienstZaehler: document.getElementById("dienst-zaehler"),
     dienstListe: document.getElementById("dienst-liste"),
+    infoAnsicht: document.getElementById("info-ansicht"),
+    infoText: document.getElementById("info-text"),
+    infoLeer: document.getElementById("info-leer"),
+    infoMeta: document.getElementById("info-meta"),
+    infoForm: document.getElementById("info-form"),
+    infoEingabe: document.getElementById("info-eingabe"),
+    infoError: document.getElementById("info-error"),
+    btnInfoBearbeiten: document.getElementById("btn-info-bearbeiten"),
+    btnInfoSpeichern: document.getElementById("btn-info-speichern"),
+    btnInfoAbbrechen: document.getElementById("btn-info-abbrechen"),
 
     // Patientenakten
     patientenSearch: document.getElementById("patienten-search"),

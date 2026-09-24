@@ -45,6 +45,11 @@
   let dienstStatus = {};
   let unsubDienst = null;
 
+  // Info-Feld der Leitstelle (siehe js/views/startseite.js)
+  let leitstelleInfo = { text: "", von: "", am: null };
+  let unsubLeitstelleInfo = null;
+  let leitstelleInfoBearbeiten = false;
+
   let unsubPresence = null;
 
   let unsubBenutzerliste = null;

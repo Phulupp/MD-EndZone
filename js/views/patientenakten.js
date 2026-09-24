@@ -250,7 +250,7 @@
     // sortiert, siehe startePatientenListener) - bei einer Suche ohne
     // Gruppen, damit die Treffer-Reihenfolge (Name zuerst) sichtbar bleibt.
     let html = `<div class="pat-spaltenkopf">
-        <span></span><span>Patient</span><span>Geburtsdatum</span><span>Akten</span><span>Letzte Behandlung</span><span></span>
+        <span></span><span>Patient</span><span>Geburtsdatum</span><span>Akten</span><span>Letzte Behandlung</span><span>Waffenschein</span><span></span>
       </div>`;
     let aktuellerBuchstabe = "";
     liste.forEach(({ p, treffer }) => {
@@ -263,6 +263,9 @@
         buchstabeZelle = escapeHtml(buchstabe);
       }
       const seine = patientAkten(p.id);
+      // Waffenschein: Ergebnis des neuesten Gutachtens (siehe js/views/gutachten.js).
+      const seinGutachten = patientGutachten(p.id);
+      const waffenschein = seinGutachten.length ? escapeHtml(gutachtenErgebnisText(seinGutachten[seinGutachten.length - 1])) : "—";
       const letzte = seine.reduce((max, a) => (a.datum && a.datum > max ? a.datum : max), "");
       html += `<div class="pat-zeile" data-patient-oeffnen="${p.id}">
           <span class="pat-zeile__buchstabe">${buchstabeZelle}</span>
@@ -276,6 +279,7 @@
           <span class="pat-zeile__geb">${escapeHtml(p.geburtsdatum || "—")}</span>
           <span class="pat-zeile__akten">${seine.length}</span>
           <span class="pat-zeile__letzte">${letzte ? escapeHtml(formatDatumZeit(letzte).split(",")[0]) : "—"}</span>
+          <span class="pat-zeile__gutachten">${waffenschein}</span>
           <svg class="pat-zeile__pfeil" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
         </div>`;
     });

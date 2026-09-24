@@ -226,6 +226,16 @@ service cloud.firestore {
       allow delete: if istAdmin();
     }
 
+    // Info-Feld der Leitstelle (leitstelle/infos): ein kurzer gemeinsamer Text,
+    // den jeder freigegebene Nutzer lesen und ändern darf (max. 600 Zeichen).
+    match /leitstelle/{dokument} {
+      allow read: if istFreigegeben();
+      allow create, update: if istFreigegeben()
+                            && request.resource.data.text is string
+                            && request.resource.data.text.size() <= 600;
+      allow delete: if istAdmin();
+    }
+
     // Zugriffslinks: eine schreibgeschützte KOPIE einer Akte (nicht die Akte
     // selbst), die per Link auch ohne Konto lesbar ist. Die Dokument-ID ist ein
     // zufälliger, nicht erratbarer Schlüssel (>= 32 Zeichen). Einzelabruf
