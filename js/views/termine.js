@@ -103,8 +103,19 @@
     const text = isNaN(datum.getTime())
       ? schluessel
       : datum.toLocaleDateString("de-DE", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
-    const marke = schluessel === heuteSchluessel() ? "Heute" : schluessel === morgenSchluessel() ? "Morgen" : "";
-    return `${marke ? `<span class="termine-tag__marke">${marke}</span>` : ""}<span>${escapeHtml(text)}</span>`;
+    const diff = isNaN(datum.getTime()) ? null : Math.round((datum - tagAnfang(new Date())) / 86400000);
+    let marke = "";
+    if (diff === 0) marke = "Heute";
+    else if (diff === 1) marke = "Morgen";
+    else if (diff === -1) marke = "Gestern";
+    else if (diff > 1) marke = `in ${diff} Tagen`;
+    else if (diff < -1) marke = `vor ${-diff} Tagen`;
+    const nah = diff === 0 || diff === 1;
+    return `<span>${escapeHtml(text)}</span>${marke ? `<span class="termine-tag__marke${nah ? " termine-tag__marke--nah" : ""}">${marke}</span>` : ""}`;
+  }
+
+  function tagAnfang(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
 
   function passtZumFilter(t, filter, heute, woche) {
@@ -136,11 +147,11 @@
 
     return `<div class="termin-zeile termin-zeile--${status}" tabindex="0" data-termin-oeffnen="${t.id}">
         <span class="termin-zeile__zeit">${escapeHtml(terminZeit(t))}</span>
-        <span class="termin-zeile__art">${escapeHtml(t.art || "Termin")}</span>
         <span class="termin-zeile__haupt">
           ${nameHtml}
           ${t.grund ? `<span class="termin-zeile__grund">${escapeHtml(t.grund)}</span>` : ""}
         </span>
+        <span class="termin-zeile__art">${escapeHtml(t.art || "Termin")}</span>
         <span class="termin-zeile__status">${marke}</span>
         ${aktion}
       </div>`;
@@ -172,17 +183,21 @@
     }
     el.termineEmpty.hidden = true;
 
-    let letzterTag = "";
-    el.termineListe.innerHTML = liste
-      .map((t) => {
-        const tag = terminTag(t);
-        let kopf = "";
-        if (tag !== letzterTag) {
-          letzterTag = tag;
-          kopf = `<h4 class="termine-tag">${tagUeberschriftHtml(tag)}</h4>`;
-        }
-        return kopf + terminZeileHtml(t, heute);
-      })
+    // Pro Tag eine Karte (Kopfstreifen mit Datum, dann die Termine).
+    const gruppen = [];
+    liste.forEach((t) => {
+      const tag = terminTag(t);
+      const letzte = gruppen[gruppen.length - 1];
+      if (letzte && letzte.tag === tag) letzte.termine.push(t);
+      else gruppen.push({ tag, termine: [t] });
+    });
+    el.termineListe.innerHTML = gruppen
+      .map(
+        (g) => `<section class="termine-tagkarte${g.tag === heute ? " termine-tagkarte--heute" : ""}">
+          <h4 class="termine-tag">${tagUeberschriftHtml(g.tag)}<span class="termine-tag__anzahl">${g.termine.length} ${g.termine.length === 1 ? "Termin" : "Termine"}</span></h4>
+          ${g.termine.map((t) => terminZeileHtml(t, heute)).join("")}
+        </section>`
+      )
       .join("");
   }
 

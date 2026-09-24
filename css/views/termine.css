@@ -30,59 +30,99 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Ein Tag = eine Karte: Kopfstreifen mit Datum, relativer Angabe (Heute,
+   Morgen, in 3 Tagen) und Anzahl, darunter die Termine des Tages. Der heutige
+   Tag bekommt links einen schmalen roten Streifen. */
+.termine-tagkarte {
+  overflow: hidden;
+  margin-bottom: 22px;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.termine-tagkarte--heute {
+  border-left: 3px solid var(--accent-bright);
+}
+
 .termine-tag {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 38px 0 10px;
-  font-size: 13.5px;
+  margin: 0;
+  padding: 14px 24px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--text-muted);
-}
-
-.termine-tag:first-child {
-  margin-top: 4px;
+  color: var(--text);
+  background: var(--kopfstreifen);
+  border-bottom: 1px solid var(--panel-edge-soft);
 }
 
 .termine-tag__marke {
+  padding: 3px 11px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  background: rgba(var(--tint), 0.14);
+  border-radius: 999px;
+}
+
+.termine-tag__marke--nah {
   color: var(--accent-bright);
+  background: var(--accent-soft);
+}
+
+.termine-tag__anzahl {
+  margin-left: auto;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .termin-zeile {
   display: grid;
-  grid-template-columns: 64px 190px minmax(0, 1fr) 110px 34px;
+  grid-template-columns: 84px minmax(0, 1fr) 230px 110px 38px;
   align-items: center;
   column-gap: 20px;
-  padding: 16px 14px;
+  padding: 18px 24px;
   border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
 
-.termine-tag + .termin-zeile {
-  border-top: 1px solid var(--panel-edge);
+.termin-zeile:last-child {
+  border-bottom: none;
 }
 
 .termin-zeile:hover,
 .termin-zeile:focus-visible {
   outline: none;
-  background: rgba(var(--tint), 0.06);
+  background: rgba(var(--tint), 0.08);
 }
 
 .termin-zeile__zeit {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
+/* Art (MRT, CT ...) als kleine, neutrale Beschriftung. */
 .termin-zeile__art {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-muted);
+  justify-self: start;
+  max-width: 100%;
+  padding: 4px 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-edge);
+  border-radius: 999px;
 }
 
 .termin-zeile__haupt {
@@ -95,10 +135,11 @@
 
 .termin-zeile__patient {
   max-width: 100%;
+  padding: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 15.5px;
+  font-size: 16px;
   font-weight: 600;
   text-align: left;
   color: var(--text);
@@ -115,7 +156,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-muted);
 }
 
@@ -138,26 +179,30 @@
   text-decoration: line-through;
 }
 
+/* Erledigt-Knopf: immer als schlichter Kreis sichtbar, grün erst beim Drüberfahren. */
 .termin-zeile__aktion {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  color: var(--text-soft);
-  transition: color 0.12s ease, background 0.12s ease;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--panel-edge);
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .termin-zeile__aktion:hover {
   color: var(--status-done);
   background: var(--status-done-soft);
+  border-color: var(--status-done);
 }
 
 @media (max-width: 820px) {
   .termin-zeile {
-    grid-template-columns: 56px minmax(0, 1fr) 34px;
+    grid-template-columns: 56px minmax(0, 1fr) 36px;
     column-gap: 14px;
+    padding: 16px 18px;
   }
   .termin-zeile__art,
   .termin-zeile__status {

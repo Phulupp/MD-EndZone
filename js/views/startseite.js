@@ -98,7 +98,7 @@
 
     const personen = dienstPersonen();
     const imDienst = personen.filter((p) => statusVon(p) === "im-dienst").length;
-    el.dienstZaehler.textContent = personen.length ? `${imDienst} von ${personen.length} im Dienst` : "";
+    el.dienstZaehler.innerHTML = personen.length ? `${imDienst}<span class="leitstelle-stat__von"> / ${personen.length}</span>` : "–";
     el.dienstListe.innerHTML = personen.length
       ? personen.map(dienstZeileHtml).join("")
       : `<p class="empty-state">Noch keine Mitarbeiter eingetragen. Trage sie in der <button type="button" class="empty-state__link" data-quicklink="mitarbeiterliste">Mitarbeiterliste</button> ein, dann erscheinen sie hier.</p>`;

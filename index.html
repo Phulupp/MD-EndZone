@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=142" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=145" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=142" />
-  <link rel="stylesheet" href="css/base/reset.css?v=142" />
-  <link rel="stylesheet" href="css/base/background.css?v=142" />
-  <link rel="stylesheet" href="css/views/auth.css?v=142" />
-  <link rel="stylesheet" href="css/components/forms.css?v=142" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=142" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=142" />
-  <link rel="stylesheet" href="css/components/cards.css?v=142" />
-  <link rel="stylesheet" href="css/components/badges.css?v=142" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=142" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=142" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=142" />
-  <link rel="stylesheet" href="css/views/termine.css?v=142" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=142" />
-  <link rel="stylesheet" href="css/components/modals.css?v=142" />
-  <link rel="stylesheet" href="css/views/admin.css?v=142" />
-  <link rel="stylesheet" href="css/components/toast.css?v=142" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=142" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=142" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=145" />
+  <link rel="stylesheet" href="css/base/reset.css?v=145" />
+  <link rel="stylesheet" href="css/base/background.css?v=145" />
+  <link rel="stylesheet" href="css/views/auth.css?v=145" />
+  <link rel="stylesheet" href="css/components/forms.css?v=145" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=145" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=145" />
+  <link rel="stylesheet" href="css/components/cards.css?v=145" />
+  <link rel="stylesheet" href="css/components/badges.css?v=145" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=145" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=145" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=145" />
+  <link rel="stylesheet" href="css/views/termine.css?v=145" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=145" />
+  <link rel="stylesheet" href="css/components/modals.css?v=145" />
+  <link rel="stylesheet" href="css/views/admin.css?v=145" />
+  <link rel="stylesheet" href="css/components/toast.css?v=145" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=145" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=145" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -330,18 +330,23 @@
           <!-- VIEW: STARTSEITE (LEITSTELLE) -->
           <!-- ============================ -->
           <section class="view view--active" id="view-startseite">
-            <div class="leitstelle-funk">
-              <span class="leitstelle-funk__label">MD-Funk</span>
-              <span class="leitstelle-funk__nummer" id="leitstelle-funk">2</span>
-              <span class="leitstelle-funk__hinweis">Hauptfunk Medical Department</span>
+            <!-- Kennzahlen als Kacheln (Platz für weitere, z. B. Fahrzeuge) -->
+            <div class="leitstelle-stats">
+              <div class="leitstelle-stat leitstelle-stat--funk">
+                <span class="leitstelle-stat__label">MD-Funk</span>
+                <span class="leitstelle-stat__wert" id="leitstelle-funk">2</span>
+                <span class="leitstelle-stat__hinweis">Hauptfunk Medical Department</span>
+              </div>
+              <div class="leitstelle-stat">
+                <span class="leitstelle-stat__label">Im Dienst</span>
+                <span class="leitstelle-stat__wert" id="dienst-zaehler">–</span>
+                <span class="leitstelle-stat__hinweis">Mitarbeiter aktuell im Dienst</span>
+              </div>
             </div>
 
-            <div class="leitstelle-kopf">
-              <h3 class="leitstelle-kopf__titel">Dienstübersicht</h3>
-              <span class="leitstelle-kopf__zaehler" id="dienst-zaehler"></span>
-            </div>
+            <h3 class="leitstelle-kopf">Dienstübersicht</h3>
             <p class="field-error" id="dienst-error" hidden></p>
-            <div id="dienst-liste"></div>
+            <div class="dienst-liste" id="dienst-liste"></div>
           </section>
 
           <!-- ============================ -->
@@ -526,19 +531,23 @@
           <!-- VIEW: MITARBEITERLISTE        -->
           <!-- ============================ -->
           <section class="view" id="view-mitarbeiterliste">
-            <div class="ma-kopf">
-              <div class="ma-logo" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h3.2l2-5.5L11.5 19l2.7-12 2 6H22" /></svg>
+            <div class="ma-kopfzeile">
+              <div class="ma-kopf">
+                <div class="ma-logo" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h3.2l2-5.5L11.5 19l2.7-12 2 6H22" /></svg>
+                </div>
+                <div class="ma-kopf__text">
+                  <h2 class="ma-titel">Mitarbeiterliste</h2>
+                  <p class="ma-untertitel">Medical Department</p>
+                </div>
               </div>
-              <h2 class="ma-titel">Mitarbeiterliste</h2>
-              <p class="ma-untertitel">Medical Department</p>
-            </div>
 
-            <div class="ma-aktionen" id="ma-aktionen" hidden>
-              <button type="button" class="btn btn--ghost" id="btn-ma-bearbeiten">Bearbeiten</button>
-              <button type="button" class="btn btn--ghost" id="btn-ma-zeile" hidden>+ Zeile</button>
-              <button type="button" class="btn btn--ghost" id="btn-ma-abbrechen" hidden>Abbrechen</button>
-              <button type="button" class="btn btn--primary" id="btn-ma-speichern" hidden>Speichern</button>
+              <div class="ma-aktionen" id="ma-aktionen" hidden>
+                <button type="button" class="btn btn--ghost" id="btn-ma-bearbeiten">Bearbeiten</button>
+                <button type="button" class="btn btn--ghost" id="btn-ma-zeile" hidden>+ Zeile</button>
+                <button type="button" class="btn btn--ghost" id="btn-ma-abbrechen" hidden>Abbrechen</button>
+                <button type="button" class="btn btn--primary" id="btn-ma-speichern" hidden>Speichern</button>
+              </div>
             </div>
 
             <div class="konflikt-hinweis" id="ma-konflikt" hidden>
@@ -1132,27 +1141,27 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=142"></script>
-  <script defer src="js/core/config.js?v=142"></script>
-  <script defer src="js/core/state.js?v=142"></script>
-  <script defer src="js/core/dom.js?v=142"></script>
-  <script defer src="js/core/utils.js?v=142"></script>
-  <script defer src="js/core/akte-dokument.js?v=142"></script>
-  <script defer src="js/core/akte-pdf.js?v=142"></script>
-  <script defer src="js/ui/modals.js?v=142"></script>
-  <script defer src="js/ui/nav.js?v=142"></script>
-  <script defer src="js/ui/presence.js?v=142"></script>
-  <script defer src="js/views/startseite.js?v=142"></script>
-  <script defer src="js/views/patientenakten.js?v=142"></script>
-  <script defer src="js/views/gutachten.js?v=142"></script>
-  <script defer src="js/views/akte-link.js?v=142"></script>
-  <script defer src="js/views/termine.js?v=142"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=142"></script>
-  <script defer src="js/views/beispiele.js?v=142"></script>
-  <script defer src="js/views/einstellungen.js?v=142"></script>
-  <script defer src="js/views/admin.js?v=142"></script>
-  <script defer src="js/ui/version-check.js?v=142"></script>
-  <script defer src="js/main.js?v=142"></script>
-  <script type="module" src="js/auth.js?v=142"></script>
+  <script defer src="js/firebase-config.js?v=145"></script>
+  <script defer src="js/core/config.js?v=145"></script>
+  <script defer src="js/core/state.js?v=145"></script>
+  <script defer src="js/core/dom.js?v=145"></script>
+  <script defer src="js/core/utils.js?v=145"></script>
+  <script defer src="js/core/akte-dokument.js?v=145"></script>
+  <script defer src="js/core/akte-pdf.js?v=145"></script>
+  <script defer src="js/ui/modals.js?v=145"></script>
+  <script defer src="js/ui/nav.js?v=145"></script>
+  <script defer src="js/ui/presence.js?v=145"></script>
+  <script defer src="js/views/startseite.js?v=145"></script>
+  <script defer src="js/views/patientenakten.js?v=145"></script>
+  <script defer src="js/views/gutachten.js?v=145"></script>
+  <script defer src="js/views/akte-link.js?v=145"></script>
+  <script defer src="js/views/termine.js?v=145"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=145"></script>
+  <script defer src="js/views/beispiele.js?v=145"></script>
+  <script defer src="js/views/einstellungen.js?v=145"></script>
+  <script defer src="js/views/admin.js?v=145"></script>
+  <script defer src="js/ui/version-check.js?v=145"></script>
+  <script defer src="js/main.js?v=145"></script>
+  <script type="module" src="js/auth.js?v=145"></script>
 </body>
 </html>

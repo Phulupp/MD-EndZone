@@ -149,7 +149,7 @@ when adding a new listener or view state, add it to both.
   random key, used by the Leitstelle) plus
   `bearbeitetVon`/`bearbeitetAm`. No groups, all fields free text (the `rang`
   is not tied to `BENUTZER_RAENGE`, but known ranks get their colour). The view
-  always shows at least `MITARBEITER_MIN_ZEILEN` (10) rows; admins edit inline
+  shows only filled rows; edit mode pads to `MITARBEITER_MIN_ZEILEN` (10) rows; admins edit inline
   ("Bearbeiten" → Speichern/Abbrechen/+ Zeile). It has its own header with the
   red/white ECG logo, so `nav.js` hides the generic `#page-header` for it.
   Covered by the existing `kataloge` rule (read: approved, write: admin), so no

@@ -167,7 +167,13 @@
     if (!mitarbeiterBearbeiten) el.maKonflikt.hidden = true;
 
     if (mitarbeiterBearbeiten) renderMaFormular();
-    else el.maBody.innerHTML = maZeilenMitAuffuellung().map(maAnsichtZeileHtml).join("");
+    else {
+      // Ansicht: nur ausgefüllte Zeilen (die Füllzeilen gibt es nur im Bearbeiten-Modus).
+      const gefuellt = mitarbeiter.filter((z) => !maZeileLeer(z));
+      el.maBody.innerHTML = gefuellt.length
+        ? gefuellt.map(maAnsichtZeileHtml).join("")
+        : `<tr class="ma-zeile ma-zeile--hinweis"><td class="ma-zelle" colspan="6">Noch keine Mitarbeiter eingetragen.</td></tr>`;
+    }
 
     let fuss = "Interne Übersicht · Nur für Mitarbeiter";
     if (mitarbeiterMeta.von && mitarbeiterMeta.am) {
