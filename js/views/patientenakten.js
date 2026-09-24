@@ -250,20 +250,22 @@
     // sortiert, siehe startePatientenListener) - bei einer Suche ohne
     // Gruppen, damit die Treffer-Reihenfolge (Name zuerst) sichtbar bleibt.
     let html = `<div class="pat-spaltenkopf">
-        <span>Patient</span><span>Geburtsdatum</span><span>Akten</span><span>Letzte Behandlung</span><span></span>
+        <span></span><span>Patient</span><span>Geburtsdatum</span><span>Akten</span><span>Letzte Behandlung</span><span></span>
       </div>`;
     let aktuellerBuchstabe = "";
     liste.forEach(({ p, treffer }) => {
       // Diakritika entfernen, damit Ä/Ö/Ü in der Gruppe A/O/U landen.
       const erster = (p.name || "").trim().normalize("NFD").charAt(0).toLocaleUpperCase("de");
       const buchstabe = /\p{L}/u.test(erster) ? erster : "#";
+      let buchstabeZelle = "";
       if (!suche && buchstabe !== aktuellerBuchstabe) {
         aktuellerBuchstabe = buchstabe;
-        html += `<div class="pat-gruppe">${escapeHtml(buchstabe)}</div>`;
+        buchstabeZelle = escapeHtml(buchstabe);
       }
       const seine = patientAkten(p.id);
       const letzte = seine.reduce((max, a) => (a.datum && a.datum > max ? a.datum : max), "");
       html += `<div class="pat-zeile" data-patient-oeffnen="${p.id}">
+          <span class="pat-zeile__buchstabe">${buchstabeZelle}</span>
           <span class="pat-zeile__name">
             <span class="pat-zeile__titel">
               <span>${escapeHtml(p.name)}</span>
