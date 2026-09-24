@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=139" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=140" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=139" />
-  <link rel="stylesheet" href="css/base/reset.css?v=139" />
-  <link rel="stylesheet" href="css/base/background.css?v=139" />
-  <link rel="stylesheet" href="css/views/auth.css?v=139" />
-  <link rel="stylesheet" href="css/components/forms.css?v=139" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=139" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=139" />
-  <link rel="stylesheet" href="css/components/cards.css?v=139" />
-  <link rel="stylesheet" href="css/components/badges.css?v=139" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=139" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=139" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=139" />
-  <link rel="stylesheet" href="css/views/termine.css?v=139" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=139" />
-  <link rel="stylesheet" href="css/components/modals.css?v=139" />
-  <link rel="stylesheet" href="css/views/admin.css?v=139" />
-  <link rel="stylesheet" href="css/components/toast.css?v=139" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=139" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=139" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=140" />
+  <link rel="stylesheet" href="css/base/reset.css?v=140" />
+  <link rel="stylesheet" href="css/base/background.css?v=140" />
+  <link rel="stylesheet" href="css/views/auth.css?v=140" />
+  <link rel="stylesheet" href="css/components/forms.css?v=140" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=140" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=140" />
+  <link rel="stylesheet" href="css/components/cards.css?v=140" />
+  <link rel="stylesheet" href="css/components/badges.css?v=140" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=140" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=140" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=140" />
+  <link rel="stylesheet" href="css/views/termine.css?v=140" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=140" />
+  <link rel="stylesheet" href="css/components/modals.css?v=140" />
+  <link rel="stylesheet" href="css/views/admin.css?v=140" />
+  <link rel="stylesheet" href="css/components/toast.css?v=140" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=140" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=140" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -390,10 +390,6 @@
               </div>
               <div class="pkopf__aktionen">
                 <button type="button" class="pkopf__link" id="btn-patient-bearbeiten">Bearbeiten</button>
-                <button type="button" class="btn btn--primary" id="btn-akte-neu">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  <span>Neue Akte</span>
-                </button>
               </div>
             </div>
 
@@ -466,18 +462,25 @@
 
             <!-- Reiter: Akten | Gutachten (siehe js/views/gutachten.js) -->
             <div class="tabs ptabs">
-              <button type="button" class="tabs__tab tabs__tab--active" data-ptab="akten">Akten</button>
-              <button type="button" class="tabs__tab" data-ptab="gutachten">Gutachten</button>
+              <button type="button" class="tabs__tab tabs__tab--active" data-ptab="akten">Akten<span class="tabs__zaehler" id="ptab-zaehler-akten"></span></button>
+              <button type="button" class="tabs__tab" data-ptab="gutachten">Gutachten<span class="tabs__zaehler" id="ptab-zaehler-gutachten"></span></button>
+              <div class="ptabs__aktion">
+                <button type="button" class="btn btn--primary" id="btn-akte-neu">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neue Akte</span>
+                </button>
+                <button type="button" class="btn btn--primary" id="btn-gutachten-neu" hidden>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neues Gutachten</span>
+                </button>
+              </div>
             </div>
 
             <!-- Akten: volle Breite -->
             <div class="ptab-panel" id="ptab-akten">
               <div class="pakten">
-                <div class="pakten__kopf">
-                  <div>
-                    <h3>Behandlungsakten</h3>
-                    <p class="pakten__anzahl" id="patient-akten-anzahl"></p>
-                  </div>
+                <div class="pakten__kopf" hidden>
+                  <p class="pakten__anzahl" id="patient-akten-anzahl"></p>
                   <input type="text" class="pakten__suche" id="patient-akten-suche" placeholder="In den Akten suchen" autocomplete="off" hidden />
                 </div>
                 <div class="akten-liste" id="patient-akten-liste"></div>
@@ -491,15 +494,8 @@
             <!-- Gutachten: psychologisches Gutachten (Waffenschein) -->
             <div class="ptab-panel" id="ptab-gutachten" hidden>
               <div class="pakten">
-                <div class="pakten__kopf">
-                  <div>
-                    <h3>Psychologische Gutachten</h3>
-                    <p class="pakten__anzahl" id="patient-gutachten-stand"></p>
-                  </div>
-                  <button type="button" class="btn btn--primary" id="btn-gutachten-neu">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    <span>Neues Gutachten</span>
-                  </button>
+                <div class="pakten__kopf" hidden>
+                  <p class="pakten__anzahl" id="patient-gutachten-stand"></p>
                 </div>
                 <div class="akten-liste" id="patient-gutachten-liste"></div>
                 <div class="pakten__leer" id="patient-gutachten-leer" hidden>
@@ -1127,27 +1123,27 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=139"></script>
-  <script defer src="js/core/config.js?v=139"></script>
-  <script defer src="js/core/state.js?v=139"></script>
-  <script defer src="js/core/dom.js?v=139"></script>
-  <script defer src="js/core/utils.js?v=139"></script>
-  <script defer src="js/core/akte-dokument.js?v=139"></script>
-  <script defer src="js/core/akte-pdf.js?v=139"></script>
-  <script defer src="js/ui/modals.js?v=139"></script>
-  <script defer src="js/ui/nav.js?v=139"></script>
-  <script defer src="js/ui/presence.js?v=139"></script>
-  <script defer src="js/views/startseite.js?v=139"></script>
-  <script defer src="js/views/patientenakten.js?v=139"></script>
-  <script defer src="js/views/gutachten.js?v=139"></script>
-  <script defer src="js/views/akte-link.js?v=139"></script>
-  <script defer src="js/views/termine.js?v=139"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=139"></script>
-  <script defer src="js/views/beispiele.js?v=139"></script>
-  <script defer src="js/views/einstellungen.js?v=139"></script>
-  <script defer src="js/views/admin.js?v=139"></script>
-  <script defer src="js/ui/version-check.js?v=139"></script>
-  <script defer src="js/main.js?v=139"></script>
-  <script type="module" src="js/auth.js?v=139"></script>
+  <script defer src="js/firebase-config.js?v=140"></script>
+  <script defer src="js/core/config.js?v=140"></script>
+  <script defer src="js/core/state.js?v=140"></script>
+  <script defer src="js/core/dom.js?v=140"></script>
+  <script defer src="js/core/utils.js?v=140"></script>
+  <script defer src="js/core/akte-dokument.js?v=140"></script>
+  <script defer src="js/core/akte-pdf.js?v=140"></script>
+  <script defer src="js/ui/modals.js?v=140"></script>
+  <script defer src="js/ui/nav.js?v=140"></script>
+  <script defer src="js/ui/presence.js?v=140"></script>
+  <script defer src="js/views/startseite.js?v=140"></script>
+  <script defer src="js/views/patientenakten.js?v=140"></script>
+  <script defer src="js/views/gutachten.js?v=140"></script>
+  <script defer src="js/views/akte-link.js?v=140"></script>
+  <script defer src="js/views/termine.js?v=140"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=140"></script>
+  <script defer src="js/views/beispiele.js?v=140"></script>
+  <script defer src="js/views/einstellungen.js?v=140"></script>
+  <script defer src="js/views/admin.js?v=140"></script>
+  <script defer src="js/ui/version-check.js?v=140"></script>
+  <script defer src="js/main.js?v=140"></script>
+  <script type="module" src="js/auth.js?v=140"></script>
 </body>
 </html>

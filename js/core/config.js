@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 139;
+  const VERSION_AKTUELL = 140;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).

@@ -125,6 +125,8 @@
     btnAkteLoeschen: document.getElementById("btn-akte-loeschen"),
 
     // Gutachten (siehe js/views/gutachten.js)
+    ptabZaehlerAkten: document.getElementById("ptab-zaehler-akten"),
+    ptabZaehlerGutachten: document.getElementById("ptab-zaehler-gutachten"),
     ptabAkten: document.getElementById("ptab-akten"),
     ptabGutachten: document.getElementById("ptab-gutachten"),
     patientGutachtenListe: document.getElementById("patient-gutachten-liste"),

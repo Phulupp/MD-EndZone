@@ -676,8 +676,10 @@
     el.patientAktenLeer.hidden = gesamt !== 0;
 
     const suchbar = gesamt >= MIN_AKTEN_FUER_SUCHE;
+    el.ptabZaehlerAkten.textContent = gesamt || "";
     if (el.patientAktenSuche) {
       el.patientAktenSuche.hidden = !suchbar;
+      el.patientAktenSuche.closest(".pakten__kopf").hidden = !suchbar;
       if (!suchbar && patientAktenSuchbegriff) {
         patientAktenSuchbegriff = "";
         el.patientAktenSuche.value = "";
@@ -693,11 +695,7 @@
       .filter(({ a }) => !tokens.length || aktePasstZurSuche(a, tokens));
 
     if (el.patientAktenAnzahl) {
-      el.patientAktenAnzahl.textContent = !gesamt
-        ? ""
-        : tokens.length
-        ? `${sichtbar.length} von ${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}`
-        : `${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}`;
+      el.patientAktenAnzahl.textContent = tokens.length ? `${sichtbar.length} von ${gesamt} ${gesamt === 1 ? "Akte" : "Akten"}` : "";
     }
 
     if (gesamt && !sichtbar.length) {

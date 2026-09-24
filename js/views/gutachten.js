@@ -60,6 +60,8 @@
     });
     el.ptabAkten.hidden = tab !== "akten";
     el.ptabGutachten.hidden = tab !== "gutachten";
+    el.btnAkteNeu.hidden = tab !== "akten";
+    el.btnGutachtenNeu.hidden = tab !== "gutachten";
   }
 
   document.querySelectorAll("[data-ptab]").forEach((knopf) => {
@@ -73,7 +75,9 @@
     el.patientGutachtenLeer.hidden = chronologisch.length !== 0;
 
     const neuestes = chronologisch[chronologisch.length - 1];
+    el.ptabZaehlerGutachten.textContent = chronologisch.length || "";
     el.patientGutachtenStand.textContent = neuestes ? `Aktuell: ${gutachtenErgebnisText(neuestes)} · ${formatDatum(neuestes.datum)}` : "";
+    el.patientGutachtenStand.parentElement.hidden = !neuestes;
 
     const loeschenErlaubt = istAdmin();
     el.patientGutachtenListe.innerHTML = chronologisch
