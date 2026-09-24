@@ -129,7 +129,7 @@
 }
 
 .ma-zeile:nth-child(even) td {
-  background: rgba(130, 170, 190, 0.045);
+  background: rgba(var(--tint), 0.045);
 }
 
 .ma-tabelle:not(.ma-tabelle--bearbeiten) .ma-zeile:hover td {

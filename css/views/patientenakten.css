@@ -45,7 +45,7 @@
 }
 
 .md-input:hover {
-  border-bottom-color: rgba(130, 170, 190, 0.4);
+  border-bottom-color: rgba(var(--tint), 0.4);
 }
 
 .md-input:focus {
@@ -113,7 +113,7 @@ textarea.md-input {
 }
 
 .pat-suche input:hover {
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .pat-suche input:focus {
@@ -129,7 +129,7 @@ textarea.md-input {
    Spalte vor dem ersten Namen der Gruppe statt in einer eigenen Zeile. */
 .pat-register {
   overflow: hidden;
-  background: rgba(15, 26, 33, 0.72);
+  background: var(--karte);
   border: 1px solid var(--panel-edge-soft);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
@@ -142,7 +142,7 @@ textarea.md-input {
 .pat-spaltenkopf,
 .pat-zeile {
   display: grid;
-  grid-template-columns: 26px minmax(0, 1fr) 140px 80px 150px 16px;
+  grid-template-columns: 26px minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 1fr) 16px;
   align-items: center;
   column-gap: 20px;
   padding-left: 24px;
@@ -155,7 +155,7 @@ textarea.md-input {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--text-muted);
-  background: rgba(0, 0, 0, 0.16);
+  background: var(--kopfstreifen);
   border-bottom: 1px solid var(--panel-edge-soft);
 }
 
@@ -163,6 +163,11 @@ textarea.md-input {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  color: var(--text-soft);
+  transition: color 0.12s ease;
+}
+
+.pat-zeile:hover .pat-zeile__buchstabe {
   color: var(--accent-bright);
 }
 
@@ -179,7 +184,7 @@ textarea.md-input {
 }
 
 .pat-zeile:hover {
-  background: rgba(130, 170, 190, 0.08);
+  background: rgba(var(--tint), 0.08);
 }
 
 .pat-zeile__name {
@@ -226,7 +231,7 @@ textarea.md-input {
   padding: 0 2px;
   border-radius: 3px;
   background: rgba(217, 68, 82, 0.28);
-  color: #ffffff;
+  color: var(--text);
 }
 
 .pat-zeile__warn {
@@ -250,12 +255,12 @@ textarea.md-input {
 .pat-zeile__akten,
 .pat-zeile__letzte {
   font-size: 13.5px;
-  color: #b9c9d3;
+  color: var(--text-wert);
   font-variant-numeric: tabular-nums;
 }
 
 .pat-zeile__pfeil {
-  color: var(--text-placeholder);
+  color: var(--text-soft);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
@@ -531,7 +536,7 @@ textarea.md-input {
 }
 
 .pakten__suche:hover {
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .pakten__suche:focus {
@@ -542,7 +547,7 @@ textarea.md-input {
 .pakten__leer {
   padding: 56px 24px;
   text-align: center;
-  background: rgba(15, 26, 33, 0.55);
+  background: var(--karte-leise);
   border: 1px dashed var(--panel-edge);
   border-radius: var(--radius-lg);
 }
@@ -597,7 +602,7 @@ textarea.md-input {
    Optik wie das Patientenregister. */
 .akten-liste {
   overflow: hidden;
-  background: rgba(15, 26, 33, 0.72);
+  background: var(--karte);
   border: 1px solid var(--panel-edge-soft);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
@@ -634,7 +639,7 @@ textarea.md-input {
 .akte-zeile:hover,
 .akte-zeile:focus-visible {
   outline: none;
-  background: rgba(130, 170, 190, 0.08);
+  background: rgba(var(--tint), 0.08);
 }
 
 .akte-zeile__nr {
@@ -675,7 +680,7 @@ textarea.md-input {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13.5px;
-  color: #b9c9d3;
+  color: var(--text-wert);
   font-variant-numeric: tabular-nums;
 }
 
@@ -806,7 +811,7 @@ textarea.md-input {
   gap: 22px;
   margin-top: 0;
   padding: 18px 40px;
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--unterlegt);
   border-top: 1px solid var(--panel-edge-soft);
 }
 
@@ -878,7 +883,7 @@ textarea.md-input {
 
 .akte-blatt__seite {
   padding: 84px 32px 40px;
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--unterlegt);
   border-left: 1px solid var(--panel-edge-soft);
 }
 
@@ -993,7 +998,7 @@ textarea.md-input {
   font-weight: 600;
   text-align: left;
   color: var(--text-muted);
-  background: rgba(130, 170, 190, 0.05);
+  background: rgba(var(--tint), 0.05);
   border: 1px solid var(--panel-edge-soft);
   border-radius: 6px;
   transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
@@ -1001,7 +1006,7 @@ textarea.md-input {
 
 .gutachten-option:hover {
   color: var(--text);
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .gutachten-option--aktiv,
@@ -1037,13 +1042,13 @@ textarea.md-input {
   padding: 12px 14px;
   font-size: 15.5px;
   overflow: hidden;
-  background: rgba(130, 170, 190, 0.05);
+  background: rgba(var(--tint), 0.05);
   border: 1px solid var(--panel-edge-soft);
   border-radius: 6px;
 }
 
 .akte-blatt__haupt textarea.md-input:hover {
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .akte-blatt__haupt textarea.md-input:focus {

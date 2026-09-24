@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=141" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=142" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,25 +29,25 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=141" />
-  <link rel="stylesheet" href="css/base/reset.css?v=141" />
-  <link rel="stylesheet" href="css/base/background.css?v=141" />
-  <link rel="stylesheet" href="css/views/auth.css?v=141" />
-  <link rel="stylesheet" href="css/components/forms.css?v=141" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=141" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=141" />
-  <link rel="stylesheet" href="css/components/cards.css?v=141" />
-  <link rel="stylesheet" href="css/components/badges.css?v=141" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=141" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=141" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=141" />
-  <link rel="stylesheet" href="css/views/termine.css?v=141" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=141" />
-  <link rel="stylesheet" href="css/components/modals.css?v=141" />
-  <link rel="stylesheet" href="css/views/admin.css?v=141" />
-  <link rel="stylesheet" href="css/components/toast.css?v=141" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=141" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=141" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=142" />
+  <link rel="stylesheet" href="css/base/reset.css?v=142" />
+  <link rel="stylesheet" href="css/base/background.css?v=142" />
+  <link rel="stylesheet" href="css/views/auth.css?v=142" />
+  <link rel="stylesheet" href="css/components/forms.css?v=142" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=142" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=142" />
+  <link rel="stylesheet" href="css/components/cards.css?v=142" />
+  <link rel="stylesheet" href="css/components/badges.css?v=142" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=142" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=142" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=142" />
+  <link rel="stylesheet" href="css/views/termine.css?v=142" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=142" />
+  <link rel="stylesheet" href="css/components/modals.css?v=142" />
+  <link rel="stylesheet" href="css/views/admin.css?v=142" />
+  <link rel="stylesheet" href="css/components/toast.css?v=142" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=142" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=142" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -594,6 +594,15 @@
           <!-- ============================ -->
           <section class="view" id="view-einstellungen">
             <div class="abschnitt">
+              <h3>Darstellung</h3>
+              <p class="abschnitt__hint">Wähle zwischen dem dunklen und dem hellen Design — nur in deinem eigenen Browser gespeichert.</p>
+              <select id="thema-select" class="field-input" style="max-width: 320px;">
+                <option value="dunkel">Dunkel</option>
+                <option value="hell">Hell</option>
+              </select>
+            </div>
+
+            <div class="abschnitt">
               <h3>Standard-Startseite</h3>
               <p class="abschnitt__hint">Diese Seite öffnet sich automatisch, sobald du dich anmeldest — nur in deinem eigenen Browser gespeichert.</p>
               <select id="startseite-select" class="field-input" style="max-width: 320px;">
@@ -1123,27 +1132,27 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=141"></script>
-  <script defer src="js/core/config.js?v=141"></script>
-  <script defer src="js/core/state.js?v=141"></script>
-  <script defer src="js/core/dom.js?v=141"></script>
-  <script defer src="js/core/utils.js?v=141"></script>
-  <script defer src="js/core/akte-dokument.js?v=141"></script>
-  <script defer src="js/core/akte-pdf.js?v=141"></script>
-  <script defer src="js/ui/modals.js?v=141"></script>
-  <script defer src="js/ui/nav.js?v=141"></script>
-  <script defer src="js/ui/presence.js?v=141"></script>
-  <script defer src="js/views/startseite.js?v=141"></script>
-  <script defer src="js/views/patientenakten.js?v=141"></script>
-  <script defer src="js/views/gutachten.js?v=141"></script>
-  <script defer src="js/views/akte-link.js?v=141"></script>
-  <script defer src="js/views/termine.js?v=141"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=141"></script>
-  <script defer src="js/views/beispiele.js?v=141"></script>
-  <script defer src="js/views/einstellungen.js?v=141"></script>
-  <script defer src="js/views/admin.js?v=141"></script>
-  <script defer src="js/ui/version-check.js?v=141"></script>
-  <script defer src="js/main.js?v=141"></script>
-  <script type="module" src="js/auth.js?v=141"></script>
+  <script defer src="js/firebase-config.js?v=142"></script>
+  <script defer src="js/core/config.js?v=142"></script>
+  <script defer src="js/core/state.js?v=142"></script>
+  <script defer src="js/core/dom.js?v=142"></script>
+  <script defer src="js/core/utils.js?v=142"></script>
+  <script defer src="js/core/akte-dokument.js?v=142"></script>
+  <script defer src="js/core/akte-pdf.js?v=142"></script>
+  <script defer src="js/ui/modals.js?v=142"></script>
+  <script defer src="js/ui/nav.js?v=142"></script>
+  <script defer src="js/ui/presence.js?v=142"></script>
+  <script defer src="js/views/startseite.js?v=142"></script>
+  <script defer src="js/views/patientenakten.js?v=142"></script>
+  <script defer src="js/views/gutachten.js?v=142"></script>
+  <script defer src="js/views/akte-link.js?v=142"></script>
+  <script defer src="js/views/termine.js?v=142"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=142"></script>
+  <script defer src="js/views/beispiele.js?v=142"></script>
+  <script defer src="js/views/einstellungen.js?v=142"></script>
+  <script defer src="js/views/admin.js?v=142"></script>
+  <script defer src="js/ui/version-check.js?v=142"></script>
+  <script defer src="js/main.js?v=142"></script>
+  <script type="module" src="js/auth.js?v=142"></script>
 </body>
 </html>

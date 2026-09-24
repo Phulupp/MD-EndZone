@@ -38,6 +38,7 @@
     el.navAdminToggle.hidden = !istAdmin();
     if (!istAdmin()) el.navAdminBadge.hidden = true;
 
+    ladeThema();
     starteHeartbeat();
     startePatientenListener();
     starteAktenListener();
@@ -75,6 +76,7 @@
 
   function stoppeApp() {
     aktuellerNutzer = null;
+    wendeThemaAn("dunkel");
     [unsubPatienten, unsubAkten, unsubGutachten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst].forEach((unsub) => unsub && unsub());
     unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = null;
     stoppeBenutzerverwaltung();

@@ -14,21 +14,29 @@
   display: flex;
   flex-direction: column;
   margin-top: 22px;
-  border-top: 1px solid var(--panel-edge);
+  overflow: hidden;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.settings-list__item:last-child {
+  border-bottom: none;
 }
 
 .settings-list__item {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 12px;
+  padding: 16px 22px;
   border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
 }
 
 .settings-list__item:hover {
-  background: rgba(130, 170, 190, 0.06);
+  background: rgba(var(--tint), 0.06);
 }
 
 .settings-list__avatar {

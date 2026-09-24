@@ -212,6 +212,7 @@
 
     // Einstellungen
     startseiteSelect: document.getElementById("startseite-select"),
+    themaSelect: document.getElementById("thema-select"),
 
     // Verwaltung
     formAddBenutzer: document.getElementById("form-add-benutzer"),
@@ -391,7 +392,7 @@
   // bleiben als helle Browser-Auswahl stehen. Jedes Feld einzeln abgesichert,
   // damit ein Fehler nicht die übrigen mitnimmt.
   function wandleAuswahlfelderUm() {
-    [el.startseiteSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
+    [el.startseiteSelect, el.themaSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
       try {
         erzeugeCustomSelect(select);
       } catch (fehler) {

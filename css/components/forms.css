@@ -16,7 +16,7 @@
 .field-input {
   width: 100%;
   border: 1px solid var(--panel-edge-soft);
-  background: rgba(130, 170, 190, 0.05);
+  background: rgba(var(--tint), 0.05);
   border-radius: 6px;
   padding: 11px 14px;
   font-size: 14px;
@@ -30,7 +30,7 @@
 }
 
 .field-input:hover {
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .field-input:focus {
@@ -82,7 +82,7 @@ select.field-input {
   font-size: 14px;
   font-family: inherit;
   color: var(--text);
-  background: rgba(130, 170, 190, 0.05);
+  background: rgba(var(--tint), 0.05);
   border: 1px solid var(--panel-edge-soft);
   border-radius: 6px;
   text-align: left;
@@ -90,7 +90,7 @@ select.field-input {
 }
 
 .custom-select__trigger:hover {
-  border-color: rgba(130, 170, 190, 0.34);
+  border-color: rgba(var(--tint), 0.34);
 }
 
 .custom-select__trigger--offen {
@@ -157,7 +157,7 @@ select.field-input {
 }
 
 .custom-select__option:hover {
-  background: rgba(130, 170, 190, 0.1);
+  background: rgba(var(--tint), 0.1);
 }
 
 .custom-select__option--aktiv {

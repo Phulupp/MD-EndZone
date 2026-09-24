@@ -10,6 +10,12 @@
    1. Design-Tokens — Farbthema "Clinical Slate & Teal"
    -------------------------------------------------------------------------- */
 :root {
+  color-scheme: dark;
+
+  /* Tönung für Flächen/Ränder (als RGB-Tripel, damit sich je Thema die
+     Deckkraft weiter per rgba(var(--tint), 0.1) setzen lässt). */
+  --tint: 130, 170, 190;
+
   /* Dunkles Anthrazit/Slate (Sidebar, Kopfleisten, Footer). */
   --slate-950: #05080b;
   --slate-900: #0a1116;
@@ -25,7 +31,7 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.028 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 180px 180px repeat,
     radial-gradient(1200px 780px at 5% -12%, rgba(217, 68, 82, 0.21), transparent 62%),
     radial-gradient(1000px 700px at 100% 108%, rgba(70, 120, 160, 0.16), transparent 62%),
-    radial-gradient(1500px 950px at 58% 32%, rgba(130, 170, 190, 0.055), transparent 72%),
+    radial-gradient(1500px 950px at 58% 32%, rgba(var(--tint), 0.055), transparent 72%),
     linear-gradient(180deg, #0f1922 0%, #0a1218 52%, #070d12 100%);
 
   /* Karten-/Panel-Ebenen: vier abgestufte, kühle Slate-Ebenen -
@@ -35,8 +41,8 @@
   --panel-800: #0f1a21;
   --panel-700: #142530;
   --panel-600: #1a2f3b;
-  --panel-edge: rgba(130, 170, 190, 0.22);
-  --panel-edge-soft: rgba(130, 170, 190, 0.12);
+  --panel-edge: rgba(var(--tint), 0.22);
+  --panel-edge-soft: rgba(var(--tint), 0.12);
 
   /* Text auf dunklem Slate — kühles Weiß/Grau. */
   --text: #f2f7f9;
@@ -70,10 +76,83 @@
   --shadow-raised: 0 16px 38px rgba(2, 5, 8, 0.58);
   --shadow-modal: 0 32px 76px rgba(2, 5, 8, 0.72);
 
+  /* Flächen, die je Thema anders ausfallen (Karten, Leisten, Overlay ...). */
+  --karte: rgba(15, 26, 33, 0.72);
+  --karte-leise: rgba(15, 26, 33, 0.55);
+  --unterlegt: rgba(0, 0, 0, 0.18);
+  --kopfstreifen: rgba(0, 0, 0, 0.1);
+  --overlay: rgba(2, 5, 8, 0.65);
+  --text-wert: #b9c9d3;
+  --text-nav: #8ba0ad;
+  --text-aktiv: #ffffff;
+  --status-done-text: #7be0a8;
+  --sidebar-rand: rgba(0, 0, 0, 0.5);
+  --sidebar-schatten: 6px 0 18px rgba(0, 0, 0, 0.35);
+
   --sidebar-width: 232px;
   --content-width: 1360px;
 
   --font-brand: "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Inter", system-ui, -apple-system, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. Helles Thema ("Hell", Einstellungen -> Darstellung)
+   --------------------------------------------------------------------------
+   Gleiche Struktur und derselbe rote Akzent, nur helle kühle Flächen. Wird
+   per data-theme="hell" am <html>-Element aktiviert (js/views/einstellungen.js);
+   ohne das Attribut gilt das dunkle Design oben unverändert. */
+:root[data-theme="hell"] {
+  color-scheme: light;
+  --tint: 60, 90, 115;
+
+  --slate-950: #e2e9ef;
+  --slate-900: #ecf1f5;
+  --slate-850: #f4f7fa;
+  --slate-line: #ffffff;
+
+  --hintergrund:
+    radial-gradient(1200px 780px at 5% -12%, rgba(217, 68, 82, 0.1), transparent 62%),
+    radial-gradient(1000px 700px at 100% 108%, rgba(70, 120, 160, 0.12), transparent 62%),
+    linear-gradient(180deg, #f7f9fc 0%, #eff3f7 52%, #e8edf2 100%);
+
+  --panel-900: #e7edf2;
+  --panel-800: #ffffff;
+  --panel-700: #f1f5f8;
+  --panel-600: #dbe4eb;
+  --panel-edge: rgba(var(--tint), 0.26);
+  --panel-edge-soft: rgba(var(--tint), 0.15);
+
+  --text: #16212a;
+  --text-muted: #46596a;
+  --text-soft: #64778a;
+  --text-placeholder: #8a9bab;
+
+  --accent: #b23845;
+  --accent-bright: #c4303f;
+  --accent-deep: #8f2532;
+  --accent-soft: rgba(196, 48, 63, 0.11);
+
+  --status-done: #2c9a63;
+  --status-done-soft: rgba(44, 154, 99, 0.16);
+  --status-danger: #c9403c;
+  --status-danger-soft: rgba(201, 64, 60, 0.12);
+  --status-danger-bright: #c2352f;
+
+  --shadow-card: 0 2px 10px rgba(30, 55, 80, 0.09), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  --shadow-raised: 0 14px 34px rgba(30, 55, 80, 0.18);
+  --shadow-modal: 0 28px 64px rgba(30, 55, 80, 0.26);
+
+  --karte: rgba(255, 255, 255, 0.88);
+  --karte-leise: rgba(255, 255, 255, 0.6);
+  --unterlegt: rgba(var(--tint), 0.07);
+  --kopfstreifen: rgba(var(--tint), 0.07);
+  --overlay: rgba(22, 36, 50, 0.45);
+  --text-wert: #33444f;
+  --text-nav: #566a79;
+  --text-aktiv: #16212a;
+  --status-done-text: #1d7a4b;
+  --sidebar-rand: rgba(var(--tint), 0.2);
+  --sidebar-schatten: 4px 0 14px rgba(30, 55, 80, 0.07);
 }

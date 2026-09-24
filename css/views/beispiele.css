@@ -67,14 +67,26 @@
 
 /* --- Zeilenlisten (Ebene 1 und 2) ------------------------------------------ */
 .bsp-liste {
-  border-top: 1px solid var(--panel-edge);
+  overflow: hidden;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.bsp-liste:empty {
+  display: none;
+}
+
+.bsp-zeile:last-child {
+  border-bottom: none;
 }
 
 .bsp-zeile {
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 24px 14px;
+  padding: 24px 26px;
   border-bottom: 1px solid var(--panel-edge-soft);
   cursor: pointer;
   transition: background 0.12s ease;
@@ -83,7 +95,7 @@
 .bsp-zeile:hover,
 .bsp-zeile:focus-visible {
   outline: none;
-  background: rgba(130, 170, 190, 0.06);
+  background: rgba(var(--tint), 0.06);
 }
 
 .bsp-zeile__titel {
@@ -99,7 +111,7 @@
 .bsp-zeile__meta {
   flex-shrink: 0;
   font-size: 13.5px;
-  color: var(--text-soft);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
