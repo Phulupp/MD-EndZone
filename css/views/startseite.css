@@ -352,3 +352,83 @@
     padding-left: 25px;
   }
 }
+
+/* Funkstatus 1-6 zum Nachlesen: zugeklappt, nur das Wort "Funkstatus". */
+.funkstatus {
+  margin-top: 28px;
+}
+
+.funkstatus__titel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.12s ease;
+}
+
+.funkstatus__titel::-webkit-details-marker {
+  display: none;
+}
+
+.funkstatus__titel::before {
+  content: "›";
+  font-size: 17px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.funkstatus[open] > .funkstatus__titel::before {
+  transform: rotate(90deg);
+}
+
+.funkstatus__titel:hover {
+  color: var(--text);
+}
+
+.funkstatus__liste {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.funkstatus__liste li {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--panel-edge-soft);
+}
+
+.funkstatus__liste li:last-child {
+  border-bottom: none;
+}
+
+.funkstatus__nr {
+  flex: 0 0 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.funkstatus__text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.funkstatus__text strong {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+}
