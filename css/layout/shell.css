@@ -151,6 +151,24 @@
   opacity: 1;
 }
 
+/* "Leitung": optisch klar von der normalen Navigation abgesetzt - eigener
+   Trennstrich plus dezent rötlicher Ruhezustand, damit sofort erkennbar ist,
+   dass es sich um einen geschützten Bereich handelt (nicht nur eine weitere
+   Ansicht wie Termine oder Beispiele). */
+.sidebar__item--leitung {
+  margin-top: 14px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(var(--tint), 0.14);
+}
+
+.sidebar__item--leitung:not(.sidebar__item--active) {
+  color: var(--accent);
+}
+
+.sidebar__item--leitung:not(.sidebar__item--active):hover {
+  color: var(--text);
+}
+
 .sidebar__badge {
   margin-left: auto;
   display: inline-flex;
@@ -563,21 +581,21 @@
 }
 
 /* Noch nicht gebaute Leitungs-Unterseiten (Fortbildungen, Qualifikationen, ...):
-   Reiter bleibt sichtbar (zeigt die geplante Struktur), ist aber inaktiv. */
+   Reiter bleibt sichtbar (zeigt die geplante Struktur), tritt aber bewusst
+   zurück statt mit einem lauten "Demnächst"-Badge zu werben - nur Titel per
+   title-Attribut, dezent blasser und schmaler als die aktiven Reiter. */
 .tabs__tab:disabled {
+  padding-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-placeholder);
   cursor: default;
 }
 
-.tabs__soon {
-  margin-left: 8px;
-  padding: 1px 7px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-  border: 1px solid var(--panel-edge-soft);
-  border-radius: 999px;
-  vertical-align: middle;
+/* Leitungs-Reiterleiste: etwas kompakter als die generischen .tabs
+   (z. B. bei der Benutzerverwaltungs-Statusfilterung), da hier sieben statt
+   zwei Einträge nebeneinander stehen. */
+.leitung-tabs {
+  gap: 20px;
+  margin-bottom: 24px;
 }

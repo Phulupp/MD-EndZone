@@ -25,6 +25,21 @@
     return benutzerListe.filter((b) => b.status === "pending").length;
   }
 
+  // Kompakte "wer ist gerade im Dienst"-Zeile für die Leitungsübersicht -
+  // dieselbe Datenquelle wie die Leitstelle (dienstPersonen/statusVon/
+  // dienstStatus/seitText, alle global aus js/views/startseite.js), nur
+  // schlicht lesend statt mit Dropdown zum Umstellen.
+  function leitungDienstZeileHtml(person) {
+    const eintrag = person.id ? dienstStatus[person.id] : null;
+    const rang = person.rang.trim();
+    return `<div class="leitung-mini-zeile">
+        <span class="leitung-mini-zeile__haupt">${escapeHtml(person.name.trim())}${
+      rang ? ` <span class="leitung-mini-zeile__nebentext">· ${escapeHtml(rang)}</span>` : ""
+    }</span>
+        <span class="leitung-mini-zeile__nebentext">${escapeHtml(eintrag ? seitText(eintrag.aktualisiertAm) : "")}</span>
+      </div>`;
+  }
+
   // "Heute"/"Morgen" statt Datum, sonst TT.MM.JJJJ - lokal (kein UTC-Parsing
   // von "YYYY-MM-DD"), analog zu tagUeberschriftHtml in js/views/termine.js.
   function leitungTerminTagLabel(schluessel) {
@@ -64,8 +79,13 @@
     el.leitungKpiMitarbeiter.textContent = String(leitungMitarbeiterInsgesamt());
 
     const personen = dienstPersonen();
-    const imDienst = personen.filter((p) => statusVon(p) === "im-dienst").length;
-    el.leitungKpiDienst.innerHTML = personen.length ? `${imDienst}<span class="leitstelle-stat__von"> / ${personen.length}</span>` : "–";
+    const imDienstListe = personen.filter((p) => statusVon(p) === "im-dienst");
+    el.leitungKpiDienst.innerHTML = personen.length
+      ? `${imDienstListe.length}<span class="leitung-kennzahl__von"> / ${personen.length}</span>`
+      : "–";
+    el.leitungDienstListe.innerHTML = imDienstListe.length
+      ? imDienstListe.map(leitungDienstZeileHtml).join("")
+      : `<p class="empty-state empty-state--kompakt">Aktuell ist niemand im Dienst.</p>`;
 
     el.leitungKpiAntraege.textContent = String(leitungOffeneAntraege());
     el.leitungKpiTermine.textContent = String(termine.filter((t) => terminStatus(t) === "geplant").length);
@@ -80,10 +100,10 @@
     const naechsteTermine = leitungNaechsteTermine(4);
     el.leitungTermineListe.innerHTML = naechsteTermine.length
       ? naechsteTermine.map(leitungTerminZeileHtml).join("")
-      : `<p class="empty-state">Keine anstehenden Termine.</p>`;
+      : `<p class="empty-state empty-state--kompakt">Keine anstehenden Termine.</p>`;
 
-    const letzteAktivitaeten = adminLogEintraege.slice(0, 5);
+    const letzteAktivitaeten = adminLogEintraege.slice(0, 6);
     el.leitungAktivitaetenListe.innerHTML = letzteAktivitaeten.length
       ? letzteAktivitaeten.map(leitungAktivitaetHtml).join("")
-      : `<p class="empty-state">Noch keine Aktivitäten.</p>`;
+      : `<p class="empty-state empty-state--kompakt">Noch keine Aktivitäten.</p>`;
   }

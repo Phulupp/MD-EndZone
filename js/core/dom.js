@@ -39,6 +39,7 @@
     leitungKpiDienst: document.getElementById("leitung-kpi-dienst"),
     leitungKpiAntraege: document.getElementById("leitung-kpi-antraege"),
     leitungKpiTermine: document.getElementById("leitung-kpi-termine"),
+    leitungDienstListe: document.getElementById("leitung-dienst-liste"),
     leitungInfoText: document.getElementById("leitung-info-text"),
     leitungInfoLeer: document.getElementById("leitung-info-leer"),
     leitungInfoMeta: document.getElementById("leitung-info-meta"),

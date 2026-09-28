@@ -1,20 +1,76 @@
 /* --------------------------------------------------------------------------
    24. Leitung — Übersicht
    --------------------------------------------------------------------------
-   Kennzahlen-Kacheln werden bewusst aus css/views/startseite.css
-   wiederverwendet (.leitstelle-stat*, dort schon generisch genug), damit
-   nicht dieselbe Optik zweimal gepflegt werden muss. Hier nur, was für die
-   Leitung neu dazukommt: das zweispaltige Kartenraster und die kompakten
-   Listenzeilen für "Nächste Termine"/"Letzte Aktivitäten". */
-.leitung-info-karte {
-  margin-bottom: 28px;
+   Bewusst kein "Admin-Dashboard mit großen Statistik-Cards": die Kennzahlen
+   sind ein kompakter Streifen statt vier Hero-Kacheln, der gewonnene Platz
+   geht an strukturierte Listen (Dienstübersicht, Aktivitäten, Termine) in
+   einem zweispaltigen Layout - links das Laufende, rechts das Vorausschauende. */
+.leitung-kennzahlen {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 22px;
+  overflow: hidden;
 }
 
-.leitung-grid {
+.leitung-kennzahl {
+  flex: 1 1 200px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 22px;
+  border-right: 1px solid var(--panel-edge-soft);
+}
+
+.leitung-kennzahl:last-child {
+  border-right: none;
+}
+
+.leitung-kennzahl__wert {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.leitung-kennzahl__von {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-soft);
+}
+
+.leitung-kennzahl__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Zweispaltig: links die laufenden Dinge (Dienst, Infos, Aktivitäten),
+   rechts das Vorausschauende (Termine, Aufgaben, Fortbildungen). Die rechte
+   Spalte ist bewusst schmaler - sie zeigt kompakte Listen, keine Formulare. */
+.leitung-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
   gap: 20px;
-  margin-bottom: 28px;
+  align-items: start;
+}
+
+.leitung-hauptspalte,
+.leitung-nebenspalte {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 980px) {
+  .leitung-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 .leitung-mini-zeile {
@@ -22,7 +78,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  padding: 11px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--panel-edge-soft);
   font-size: 13.5px;
 }
@@ -49,11 +105,43 @@
 
 .leitung-mini-zeile__nebentext {
   flex: 0 0 auto;
+  font-weight: 400;
   color: var(--text-muted);
 }
 
-.leitung-hinweis {
+/* Wichtige Informationen: schlanker Inhalts-Wrapper statt eigener Karte mit
+   viel Leerraum - bei fehlendem Inhalt nur eine schmale Zeile. Die Klasse
+   bleibt bewusst vom Kartenrahmen (.karte) getrennt, damit sich der Inhalt
+   später (mehrere Ankündigungen) ändern lässt, ohne die Karte selbst
+   anzufassen. */
+.leitung-info-inhalt__text {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.leitung-info-inhalt__leer {
   font-size: 13px;
   color: var(--text-soft);
-  font-style: italic;
+}
+
+.leitung-info-inhalt__meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.leitung-info-inhalt__meta:empty {
+  display: none;
+}
+
+/* Kompakter Empty-State für kleinere Karten (Offene Aufgaben, Anstehende
+   Fortbildungen, Dienstübersicht) - der generische .empty-state ist für
+   ganzseitige Leerzustände gedacht und dafür zu groß/zentriert. */
+.empty-state--kompakt {
+  padding: 4px 0;
+  text-align: left;
+  font-size: 13px;
 }
