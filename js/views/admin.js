@@ -1,34 +1,36 @@
 "use strict";
 
   /* ------------------------------------------------------------------------
-     19. Verwaltung (Benutzerverwaltung + Aktivitäts-Log)
-     ------------------------------------------------------------------------ */
+     19. Verwaltung (Benutzerverwaltung) + gemeinsame Personendaten
+     ------------------------------------------------------------------------
+     benutzerListe wird HIER geladen, aber von ZWEI unabhängigen Bereichen
+     genutzt: der (admin-exklusiven) Verwaltung und der (leitung+admin)
+     Leitungs-Personalübersicht (js/views/leitung-personal.js) - eine
+     Collection, zwei getrennte Ansichten. Das technische adminLog
+     (starteAdminLog weiter unten) bleibt bewusst STRIKT admin-exklusiv und
+     komplett getrennt davon. */
   function starteBenutzerverwaltung() {
-    if (!window.BenutzerVerwaltung || !istAdmin()) return;
+    if (!window.BenutzerVerwaltung || !(istAdmin() || istLeitung())) return;
     if (unsubBenutzerliste) unsubBenutzerliste();
     unsubBenutzerliste = window.BenutzerVerwaltung.onListe((liste) => {
       benutzerListe = liste;
-      const pendingUids = liste.filter((b) => b.status === "pending").map((b) => b.uid);
 
-      if (bekanntePendingUids !== null) {
-        const neu = pendingUids.filter((uid) => !bekanntePendingUids.includes(uid));
-        if (neu.length > 0) zeigeToast(`${neu.length} neue Registrierung${neu.length === 1 ? "" : "en"} wartet auf Freigabe.`);
+      if (istAdmin()) {
+        const pendingUids = liste.filter((b) => b.status === "pending").map((b) => b.uid);
+        if (bekanntePendingUids !== null) {
+          const neu = pendingUids.filter((uid) => !bekanntePendingUids.includes(uid));
+          if (neu.length > 0) zeigeToast(`${neu.length} neue Registrierung${neu.length === 1 ? "" : "en"} wartet auf Freigabe.`);
+        }
+        bekanntePendingUids = pendingUids;
+        el.navAdminBadge.hidden = pendingUids.length === 0;
+        el.navAdminBadge.textContent = String(pendingUids.length);
       }
-      bekanntePendingUids = pendingUids;
-
-      el.navAdminBadge.hidden = pendingUids.length === 0;
-      el.navAdminBadge.textContent = String(pendingUids.length);
 
       renderBenutzerverwaltung();
       if (aktiverDetailUid) renderBenutzerDetails(aktiverDetailUid);
       renderLeitungUebersicht();
-    });
-
-    if (unsubAdminLog) unsubAdminLog();
-    unsubAdminLog = window.BenutzerVerwaltung.onLog((liste) => {
-      adminLogEintraege = liste;
-      renderAdminLog();
-      renderLeitungUebersicht();
+      renderLeitungPersonal();
+      aktualisierePersonalakteAnsicht();
     });
   }
 
@@ -37,11 +39,30 @@
       unsubBenutzerliste();
       unsubBenutzerliste = null;
     }
+    bekanntePendingUids = null;
+  }
+
+  /* ------------------------------------------------------------------------
+     19b. Technisches Aktivitäts-Log - STRIKT admin-exklusiv
+     ------------------------------------------------------------------------
+     Bewusst eigener Start/Stop, getrennt von starteBenutzerverwaltung oben:
+     eine reine Leitungsperson (ohne Adminrechte) darf benutzerListe sehen,
+     aber niemals adminLog - siehe firestore.rules (adminLog bleibt
+     ausschließlich istAdmin()). */
+  function starteAdminLog() {
+    if (!window.BenutzerVerwaltung || !istAdmin()) return;
+    if (unsubAdminLog) unsubAdminLog();
+    unsubAdminLog = window.BenutzerVerwaltung.onLog((liste) => {
+      adminLogEintraege = liste;
+      renderAdminLog();
+    });
+  }
+
+  function stoppeAdminLog() {
     if (unsubAdminLog) {
       unsubAdminLog();
       unsubAdminLog = null;
     }
-    bekanntePendingUids = null;
   }
 
   function gefiltertBenutzer() {
@@ -135,8 +156,6 @@
     if (!b) return;
     el.benutzerDetailsName.textContent = b.username || "Unbekannt";
 
-    const rangOptions = BENUTZER_RAENGE.map((r) => `<option value="${r}" ${r === normalisiereRang(b.rolle) ? "selected" : ""}>${r}</option>`).join("");
-
     el.benutzerDetailsBody.innerHTML = `
       <div class="detail-grid">
         ${
@@ -146,10 +165,13 @@
                 <button class="btn btn--danger btn--sm" data-benutzer-aktion="ablehnen">Ablehnen</button></div>`
             : ""
         }
-        <div class="detail-row detail-row--rang"><span class="detail-row__label">Rang</span>
-          <select class="field-input" id="detail-rolle-select" style="flex:1 1 240px;max-width:330px;">${rangOptions}</select></div>
+        <div class="detail-row"><span class="detail-row__label">Aktueller RP-Rang</span>
+          <span>${rangBadgeHtml(b.rolle) || "—"}</span></div>
+        <p class="abschnitt__hint" style="margin:-8px 0 0;">Den RP-Rang ändert die Leitung in der jeweiligen Personalakte, nicht hier.</p>
         <div class="detail-row"><span class="detail-row__label">Verwalterrechte</span>
           <label class="field-checkbox-row"><input type="checkbox" id="detail-admin-checkbox" ${b.isAdmin ? "checked" : ""}/> Verwalter</label></div>
+        <div class="detail-row"><span class="detail-row__label">Leitungsrechte</span>
+          <label class="field-checkbox-row"><input type="checkbox" id="detail-leitung-checkbox" ${b.isLeitung ? "checked" : ""}/> Leitung (RP-Führungsebene)</label></div>
         <div class="detail-row"><span class="detail-row__label">Status</span>
           ${
             b.status === "locked"
@@ -181,22 +203,22 @@
         </div>
       </div>`;
 
-    // Die beiden <select>-Felder hier werden per innerHTML neu erzeugt, sind
-    // also zur Ladezeit noch nicht Teil des generischen Custom-Select-Upgrades
-    // (siehe erzeugeCustomSelect in js/core/dom.js) - ohne diesen Aufruf
-    // blieben sie das native, unauffällige Browser-Dropdown, wodurch die
-    // Rang-Änderung leicht wie ein reines Text-Label statt einer echten
-    // Aktion wirkt.
-    const rolleSelect = document.getElementById("detail-rolle-select");
-    if (rolleSelect) {
-      erzeugeCustomSelect(rolleSelect);
-      rolleSelect.addEventListener("change", () => window.BenutzerVerwaltung.setzeRolle(uid, rolleSelect.value, b.username));
-    }
+    // Das <select>-Feld hier wird per innerHTML neu erzeugt, ist also zur
+    // Ladezeit noch nicht Teil des generischen Custom-Select-Upgrades (siehe
+    // erzeugeCustomSelect in js/core/dom.js) - ohne diesen Aufruf bliebe es
+    // das native, unauffällige Browser-Dropdown.
     const sperrDauerSelect = document.getElementById("detail-sperr-dauer");
     if (sperrDauerSelect) erzeugeCustomSelect(sperrDauerSelect);
 
     const adminCheckbox = document.getElementById("detail-admin-checkbox");
     if (adminCheckbox) adminCheckbox.addEventListener("change", () => window.BenutzerVerwaltung.setzeAdmin(uid, adminCheckbox.checked, b.username));
+
+    // Leitungsrechte: technisch identisch zu Verwalterrechten (eigenes,
+    // unabhängiges Feld), aber ausschließlich Admins dürfen sie vergeben
+    // (siehe firestore.rules) - deshalb lebt diese Checkbox bewusst hier in
+    // der Verwaltung, nicht in der Personalakte selbst.
+    const leitungCheckbox = document.getElementById("detail-leitung-checkbox");
+    if (leitungCheckbox) leitungCheckbox.addEventListener("change", () => window.BenutzerVerwaltung.setzeLeitung(uid, leitungCheckbox.checked, b.username));
 
     const notizInput = document.getElementById("detail-notiz-input");
     if (notizInput)

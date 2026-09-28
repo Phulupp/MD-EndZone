@@ -266,8 +266,17 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
       email: email || null,
       rolle: STANDARD_RANG_NEUER_BENUTZER,
       isAdmin: false,
+      // isLeitung: RP-interne Führungsebene, komplett unabhängig von isAdmin
+      // (siehe firestore.rules) - startet für jeden neuen Account auf false,
+      // genau wie isAdmin, und wird ausschließlich von einem Verwalter
+      // vergeben (siehe setzeLeitung weiter unten).
+      isLeitung: false,
       status: "pending",
       createdAt: serverTimestamp(),
+      // eintrittsdatum: eigenes RP-Eintrittsdatum, bewusst NICHT createdAt
+      // (das bleibt das rein technische Account-Erstelldatum) - startet leer,
+      // bis eine berechtigte Leitung/Admin es einträgt.
+      eintrittsdatum: null,
       lastLogin: null,
       adminNote: "",
     });
@@ -389,7 +398,14 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
      ------------------------------------------------------------------------ */
   let unsubUserDoc = null;
   let bereitsGestartet = false;
+  // aktuellerAdmin: NUR gesetzt, wenn isAdmin true ist - gate für das
+  // technische adminLog (protokolliere()), bleibt unverändert admin-exklusiv.
   let aktuellerAdmin = null;
+  // aktuellerProfil: für JEDEN freigegebenen Nutzer gesetzt (Admin, Leitung
+  // oder normaler Mitarbeiter) - wird für die RP-Ranghistorie gebraucht
+  // (protokolliereRang), da eine Rangänderung auch von einer Leitungsperson
+  // OHNE Adminrechte ausgelöst werden kann.
+  let aktuellerProfil = null;
 
   onAuthStateChanged(auth, (firebaseUser) => {
     if (unsubUserDoc) {
@@ -400,6 +416,7 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
     if (!firebaseUser) {
       bereitsGestartet = false;
       aktuellerAdmin = null;
+      aktuellerProfil = null;
       if (el.appRoot) el.appRoot.hidden = true;
       if (el.authScreen) el.authScreen.hidden = false;
       zeigeAuthSchritt("form-login");
@@ -424,11 +441,16 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
           if (el.authScreen) el.authScreen.hidden = true;
           if (el.appRoot) el.appRoot.hidden = false;
 
-          aktuellerAdmin = daten.isAdmin
-            ? { uid: firebaseUser.uid, username: daten.username || "Unbekannt" }
-            : null;
+          aktuellerProfil = { uid: firebaseUser.uid, username: daten.username || "Unbekannt" };
+          aktuellerAdmin = daten.isAdmin ? aktuellerProfil : null;
 
-          const detail = { uid: firebaseUser.uid, username: daten.username, rolle: daten.rolle, isAdmin: !!daten.isAdmin };
+          const detail = {
+            uid: firebaseUser.uid,
+            username: daten.username,
+            rolle: daten.rolle,
+            isAdmin: !!daten.isAdmin,
+            isLeitung: !!daten.isLeitung,
+          };
 
           if (!bereitsGestartet) {
             bereitsGestartet = true;
@@ -439,6 +461,7 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
           }
         } else {
           aktuellerAdmin = null;
+          aktuellerProfil = null;
 
           if (bereitsGestartet) {
             window.location.reload();
@@ -487,6 +510,28 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
   }
 
   /* ------------------------------------------------------------------------
+     11c. RP-Ranghistorie
+     ------------------------------------------------------------------------
+     Komplett getrennt vom technischen adminLog (siehe protokolliere() oben) -
+     eine eigene, unveränderliche Collection für RP-Karriereereignisse
+     (Aufnahme/Beförderung/Degradierung). Wird IMMER geschrieben, wenn sich
+     "rolle" ändert, egal ob durch Admin oder Leitung (siehe setzeRolle unten).
+     Nutzt aktuellerProfil statt aktuellerAdmin, weil auch eine Leitungsperson
+     ohne Adminrechte Ränge ändern darf. */
+  function protokolliereRang(uid, alterRang, neuerRang, begruendung) {
+    if (!aktuellerProfil) return Promise.resolve();
+    return addDoc(collection(db, "ranghistorie"), {
+      uid,
+      alterRang: alterRang || null,
+      neuerRang,
+      art: alterRang ? "rangaenderung" : "aufnahme",
+      von: aktuellerProfil.username,
+      am: serverTimestamp(),
+      begruendung: begruendung || "",
+    }).catch((fehler) => console.error("Ranghistorie konnte nicht geschrieben werden:", fehler));
+  }
+
+  /* ------------------------------------------------------------------------
      12. Benutzerverwaltung (nur für Verwalter) - öffentliche Schnittstelle
          für js/views/admin.js.
      ------------------------------------------------------------------------ */
@@ -508,13 +553,31 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
       const aktion = neuerStatus === "approved" ? "Freigegeben" : neuerStatus === "rejected" ? "Abgelehnt" : "Status geändert";
       protokolliere(aktion, uid, username);
     },
-    async setzeRolle(uid, neueRolle, username) {
+    // RP-Rang ändern - AUFRUFBAR von Admin ODER Leitung (Firestore-Regel
+    // entscheidet, siehe firestore.rules: Leitung darf hier ausschließlich
+    // das Feld "rolle" schreiben). Schreibt bewusst NICHT ins technische
+    // adminLog, sondern in die eigene RP-Ranghistorie (protokolliereRang) -
+    // funktioniert unabhängig davon, ob der/die Aufrufende Admin oder
+    // Leitung ist, da beide über aktuellerProfil erfasst werden.
+    async setzeRolle(uid, neueRolle, begruendung) {
+      const vorherSnap = await getDoc(doc(db, "users", uid));
+      const alterRang = vorherSnap.exists() ? vorherSnap.data().rolle || null : null;
+      if (alterRang === neueRolle) return;
       await updateDoc(doc(db, "users", uid), { rolle: neueRolle });
-      protokolliere("Rang geändert", uid, username, neueRolle);
+      await protokolliereRang(uid, alterRang, neueRolle, begruendung);
     },
     async setzeAdmin(uid, istAdminWert, username) {
       await updateDoc(doc(db, "users", uid), { isAdmin: !!istAdminWert });
       protokolliere(istAdminWert ? "Verwalterrechte vergeben" : "Verwalterrechte entzogen", uid, username);
+    },
+    // isLeitung: ausschließlich von Admins vergeben/entzogen (siehe
+    // firestore.rules) - technisch identisch zu setzeAdmin, aber komplett
+    // unabhängiges Feld. Bleibt im technischen adminLog, weil das Vergeben
+    // von Rechten selbst ein Admin-Vorgang ist (anders als die RP-Rangvergabe
+    // selbst, die in die Ranghistorie geht).
+    async setzeLeitung(uid, istLeitungWert, username) {
+      await updateDoc(doc(db, "users", uid), { isLeitung: !!istLeitungWert });
+      protokolliere(istLeitungWert ? "Leitungsrechte vergeben" : "Leitungsrechte entzogen", uid, username);
     },
     setzeNotiz(uid, text) {
       return updateDoc(doc(db, "users", uid), { adminNote: text });
@@ -601,8 +664,10 @@ if (!firebaseConfig || !firebaseConfig.apiKey) {
           email: email || null,
           rolle: rolle || STANDARD_RANG_NEUER_BENUTZER,
           isAdmin: false,
+          isLeitung: false,
           status: "approved",
           createdAt: serverTimestamp(),
+          eintrittsdatum: null,
           lastLogin: null,
           adminNote: "",
         });

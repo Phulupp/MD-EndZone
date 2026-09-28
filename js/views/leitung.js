@@ -3,26 +3,21 @@
   /* ------------------------------------------------------------------------
      24. Leitung — Übersicht (Cockpit)
      ------------------------------------------------------------------------
-     Phase 1 des Leitungsbereichs: reine Auswertung bereits vorhandener Daten,
-     keine eigene Firestore-Collection. Quellen:
-       - Mitarbeiter insgesamt / offene Anträge: benutzerListe (js/views/admin.js)
+     RP-Führungscockpit, sichtbar für Leitung UND Admin (istLeitung() ||
+     istAdmin()) - bewusst KEINE Daten aus dem technischen adminLog (das
+     bleibt admin-exklusiv, siehe js/views/admin.js). Quellen:
+       - Mitarbeiter insgesamt: benutzerListe (js/views/admin.js, wird für
+         Verwaltung UND Leitung geladen)
        - Aktuell im Dienst: dienstStatus/mitarbeiter (js/views/startseite.js)
        - Anstehende Termine: termine (js/views/termine.js)
        - Wichtige Informationen: leitstelleInfo (js/views/startseite.js) -
          bewusst mitverwendet statt einer eigenen Ankündigungs-Collection
-         vorzugreifen (siehe Konzept).
-       - Letzte Aktivitäten: adminLogEintraege (js/views/admin.js)
+         vorwegzunehmen (siehe Konzept).
      renderLeitungUebersicht() wird von den jeweiligen Snapshot-Listenern in
      admin.js/startseite.js/termine.js mit aufgerufen, damit die Kennzahlen
-     live bleiben, ohne dass diese Datei eigene Listener braucht. Nur für
-     Verwalter erreichbar (Sidebar-Button ist sonst hidden, siehe main.js) -
-     der frühe Ausstieg unten ist daher nur eine günstige Zusatzsicherung. */
+     live bleiben, ohne dass diese Datei eigene Listener braucht. */
   function leitungMitarbeiterInsgesamt() {
     return benutzerListe.filter((b) => b.status === "approved").length;
-  }
-
-  function leitungOffeneAntraege() {
-    return benutzerListe.filter((b) => b.status === "pending").length;
   }
 
   // Kompakte "wer ist gerade im Dienst"-Zeile für die Leitungsübersicht -
@@ -64,17 +59,8 @@
       </div>`;
   }
 
-  function leitungAktivitaetHtml(log) {
-    return `<div class="leitung-mini-zeile">
-        <span class="leitung-mini-zeile__haupt"><strong>${escapeHtml(log.adminName || "Unbekannt")}</strong> — ${escapeHtml(log.aktion)}${
-      log.zielName ? ` · ${escapeHtml(log.zielName)}` : ""
-    }</span>
-        <span class="leitung-mini-zeile__nebentext">${formatDatumUhrzeit(log.zeitpunkt)}</span>
-      </div>`;
-  }
-
   function renderLeitungUebersicht() {
-    if (!el.leitungKpiMitarbeiter || !istAdmin()) return;
+    if (!el.leitungKpiMitarbeiter || !(istAdmin() || istLeitung())) return;
 
     el.leitungKpiMitarbeiter.textContent = String(leitungMitarbeiterInsgesamt());
 
@@ -87,7 +73,6 @@
       ? imDienstListe.map(leitungDienstZeileHtml).join("")
       : `<p class="empty-state empty-state--kompakt">Aktuell ist niemand im Dienst.</p>`;
 
-    el.leitungKpiAntraege.textContent = String(leitungOffeneAntraege());
     el.leitungKpiTermine.textContent = String(termine.filter((t) => terminStatus(t) === "geplant").length);
 
     const infoText = leitstelleInfo.text.trim();
@@ -101,9 +86,4 @@
     el.leitungTermineListe.innerHTML = naechsteTermine.length
       ? naechsteTermine.map(leitungTerminZeileHtml).join("")
       : `<p class="empty-state empty-state--kompakt">Keine anstehenden Termine.</p>`;
-
-    const letzteAktivitaeten = adminLogEintraege.slice(0, 6);
-    el.leitungAktivitaetenListe.innerHTML = letzteAktivitaeten.length
-      ? letzteAktivitaeten.map(leitungAktivitaetHtml).join("")
-      : `<p class="empty-state empty-state--kompakt">Noch keine Aktivitäten.</p>`;
   }

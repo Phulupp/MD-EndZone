@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 154;
+  const VERSION_AKTUELL = 155;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -142,12 +142,16 @@
     mitarbeiterliste: { title: "Mitarbeiterliste", subtitle: "Alle Mitarbeiter des Medical Department." },
     beispiele: { title: "Beispiele", subtitle: "Behandlungsleitfäden für häufige Fälle." },
     einstellungen: { title: "Einstellungen", subtitle: "Persönliche Einstellungen." },
-    // Leitung: "admin"/"admin-log" sind bewusst die bisherigen internen
-    // View-Namen der Benutzerverwaltung/des Aktivitäts-Logs geblieben (siehe
-    // js/views/admin.js) - nur Titel/Einstieg wurden auf den neuen
-    // Leitungsbereich umgestellt, um die bestehende Logik unangetastet zu
-    // lassen (siehe Konzept Phase 1).
-    "leitung-uebersicht": { title: "Leitungsübersicht", subtitle: "Kennzahlen, anstehende Termine und Aktivitäten des Medical Department." },
-    admin: { title: "Personalakten", subtitle: "Freigaben, Ränge und Verwalterrechte verwalten — nur für die Leitung sichtbar." },
-    "admin-log": { title: "Aktivitäten", subtitle: "Wer hat wann was geändert — nur für die Leitung sichtbar." },
+    // Leitung: RP-interne Führungsebene (istLeitung() || istAdmin()) - siehe
+    // js/views/leitung.js + js/views/leitung-personal.js. Komplett getrennt
+    // von "admin"/"admin-log" weiter unten (rein technische Verwaltung,
+    // ausschließlich istAdmin()) - diese beiden Ebenen dürfen nie wieder
+    // vermischt werden (siehe Projekthistorie).
+    "leitung-uebersicht": { title: "Leitungsübersicht", subtitle: "Kennzahlen und anstehende Termine des Medical Department." },
+    "leitung-personal": { title: "Personal", subtitle: "Personalakten der Mitarbeiter — nur für die Leitung sichtbar." },
+    // Kein Sidebar-/Reiter-Eintrag - wird per oeffnePersonalakte (js/views/
+    // leitung-personal.js) geöffnet, Titel dort auf den Namen gesetzt.
+    "leitung-personalakte": { title: "Personalakte", subtitle: "" },
+    admin: { title: "Verwaltung", subtitle: "Technische Benutzerverwaltung — nur für Verwalter sichtbar." },
+    "admin-log": { title: "Aktivitäts-Log", subtitle: "Wer hat wann was geändert — nur für Verwalter sichtbar." },
   };

@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=154" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=155" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,26 +29,26 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=154" />
-  <link rel="stylesheet" href="css/base/reset.css?v=154" />
-  <link rel="stylesheet" href="css/base/background.css?v=154" />
-  <link rel="stylesheet" href="css/views/auth.css?v=154" />
-  <link rel="stylesheet" href="css/components/forms.css?v=154" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=154" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=154" />
-  <link rel="stylesheet" href="css/components/cards.css?v=154" />
-  <link rel="stylesheet" href="css/components/badges.css?v=154" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=154" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=154" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=154" />
-  <link rel="stylesheet" href="css/views/termine.css?v=154" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=154" />
-  <link rel="stylesheet" href="css/components/modals.css?v=154" />
-  <link rel="stylesheet" href="css/views/admin.css?v=154" />
-  <link rel="stylesheet" href="css/views/leitung.css?v=154" />
-  <link rel="stylesheet" href="css/components/toast.css?v=154" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=154" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=154" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=155" />
+  <link rel="stylesheet" href="css/base/reset.css?v=155" />
+  <link rel="stylesheet" href="css/base/background.css?v=155" />
+  <link rel="stylesheet" href="css/views/auth.css?v=155" />
+  <link rel="stylesheet" href="css/components/forms.css?v=155" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=155" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=155" />
+  <link rel="stylesheet" href="css/components/cards.css?v=155" />
+  <link rel="stylesheet" href="css/components/badges.css?v=155" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=155" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=155" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=155" />
+  <link rel="stylesheet" href="css/views/termine.css?v=155" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=155" />
+  <link rel="stylesheet" href="css/components/modals.css?v=155" />
+  <link rel="stylesheet" href="css/views/admin.css?v=155" />
+  <link rel="stylesheet" href="css/views/leitung.css?v=155" />
+  <link rel="stylesheet" href="css/components/toast.css?v=155" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=155" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=155" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -263,24 +263,34 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 4 6.5 3.6 4 4.3v14.3c2.5-.7 6-.3 8 1.2"/><path d="M12 5.5c2-1.5 5.5-1.9 8-1.2v14.3c-2.5-.7-6-.3-8 1.2Z"/><line x1="12" y1="5.5" x2="12" y2="19.8"/></svg>
           <span>Beispiele</span>
         </button>
-        <!-- Einstellungen + Leitung stehen unten in der Ecke, über
-             "Abmelden" - bleiben aber INNERHALB von #sidebar-nav, weil der
-             Klick-Handler in js/ui/nav.js an diesem Container hängt. -->
+        <!-- Einstellungen steht unten in der Ecke, über "Abmelden" - bleibt
+             aber INNERHALB von #sidebar-nav, weil der Klick-Handler in
+             js/ui/nav.js an diesem Container hängt. -->
         <div class="sidebar__nav-unten">
         <button class="sidebar__item" data-view="einstellungen">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.5-2.4.8a7.6 7.6 0 0 0-2.6-1.5L14 2h-4l-.4 2.3a7.6 7.6 0 0 0-2.6 1.5l-2.4-.8-2 3.5 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.5 2.4-.8a7.6 7.6 0 0 0 2.6 1.5L10 22h4l.4-2.3a7.6 7.6 0 0 0 2.6-1.5l2.4.8 2-3.5Z"/></svg>
           <span>Einstellungen</span>
         </button>
-        <!-- "Leitung": geschützter Bereich, nur für Verwalter (isAdmin) -
-             siehe el.navAdminToggle.hidden in js/main.js. Zielt auf die neue
-             Leitungsübersicht; Personalakten/Aktivitäten (= die bisherigen
-             Ansichten "admin"/"admin-log") sind darüber per Reiterleiste
-             erreichbar (siehe die Leitungs-Reiter in den jeweiligen Views). -->
-        <button class="sidebar__item sidebar__item--leitung" id="nav-admin-toggle" data-view="leitung-uebersicht" hidden>
+
+        <!-- Zwei GETRENNTE geschützte Bereiche, bewusst zwei eigene Buttons
+             statt einem gemeinsamen: "Leitung" = RP-interne Führungsebene
+             (istLeitung() ODER istAdmin(), siehe el.navLeitungToggle.hidden
+             in js/main.js), "Verwaltung" = rein technische Systemadmini-
+             stration (ausschließlich istAdmin()). Ein Admin sieht automatisch
+             beide, eine reine Leitungsperson sieht NUR "Leitung". Diese
+             Trennung darf nicht wieder aufgeweicht werden (siehe CLAUDE.md-
+             Historie zur Leitungs-/Verwaltungs-Vermischung). -->
+        <div class="sidebar__nav-geschuetzt">
+        <button class="sidebar__item sidebar__item--geschuetzt" id="nav-leitung-toggle" data-view="leitung-uebersicht" hidden>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v6c0 4.7 3.2 8.4 7.5 9 4.3-.6 7.5-4.3 7.5-9V6Z"/></svg>
           <span>Leitung</span>
+        </button>
+        <button class="sidebar__item sidebar__item--geschuetzt" id="nav-admin-toggle" data-view="admin" hidden>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 1.9"/></svg>
+          <span>Verwaltung</span>
           <span class="sidebar__badge" id="nav-admin-badge" hidden>0</span>
         </button>
+        </div>
         </div>
       </nav>
 
@@ -670,26 +680,30 @@
           <!-- ============================ -->
           <!-- VIEW: LEITUNG – Übersicht     -->
           <!-- ============================ -->
-          <!-- Geschützter Bereich, nur für Verwalter erreichbar (isAdmin,
-               siehe el.navAdminToggle.hidden in js/main.js) - keine neue
-               Rechteebene, dieselbe Prüfung wie bisher bei "Verwaltung".
-               Phase 1: nur Übersicht/Personalakten/Aktivitäten sind aktiv,
-               der Rest ist als "Demnächst" vorbereitet (siehe Konzept). -->
+          <!-- Geschützter Bereich: RP-interne Führungsebene, sichtbar bei
+               istLeitung() ODER istAdmin() (siehe el.navLeitungToggle.hidden
+               in js/main.js). BEWUSST GETRENNT von der technischen
+               Verwaltung (view-admin/view-admin-log, nur istAdmin()) - siehe
+               dazu die Architekturkorrektur in der Projekthistorie. Nur
+               Übersicht/Personal sind in dieser Phase aktiv, der Rest ist als
+               "Demnächst" vorbereitet. -->
           <section class="view" id="view-leitung-uebersicht">
             <div class="tabs leitung-tabs">
-              <button class="tabs__tab tabs__tab--active" data-leitung-tab="leitung-uebersicht">Übersicht</button>
-              <button class="tabs__tab" data-leitung-tab="admin">Personalakten</button>
+              <button class="tabs__tab tabs__tab--active" data-tab-view="leitung-uebersicht">Übersicht</button>
+              <button class="tabs__tab" data-tab-view="leitung-personal">Personal</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Fortbildungen</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Qualifikationen</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Dienstplanung</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Ankündigungen</button>
-              <button class="tabs__tab" data-leitung-tab="admin-log">Aktivitäten</button>
+              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Aktivitäten</button>
             </div>
 
             <!-- Kennzahlen: kompakter Streifen statt großer Hero-Cards - reine
-                 Auswertung bestehender Daten (Benutzer, Dienststatus, Termine),
-                 keine eigene Collection - siehe renderLeitungUebersicht in
-                 js/views/leitung.js. -->
+                 Auswertung bestehender, für die Leitung zulässiger Daten
+                 (freigegebene Mitarbeiter, Dienststatus, Termine). Bewusst
+                 KEINE "Offene Anträge"-Kennzahl mehr - das ist ein rein
+                 technischer Verwaltungs-Vorgang, siehe renderLeitungUebersicht
+                 in js/views/leitung.js. -->
             <div class="leitung-kennzahlen">
               <div class="leitung-kennzahl">
                 <span class="leitung-kennzahl__wert" id="leitung-kpi-mitarbeiter">–</span>
@@ -700,20 +714,16 @@
                 <span class="leitung-kennzahl__label">Aktuell im Dienst</span>
               </div>
               <div class="leitung-kennzahl">
-                <span class="leitung-kennzahl__wert" id="leitung-kpi-antraege">–</span>
-                <span class="leitung-kennzahl__label">Offene Anträge</span>
-              </div>
-              <div class="leitung-kennzahl">
                 <span class="leitung-kennzahl__wert" id="leitung-kpi-termine">–</span>
                 <span class="leitung-kennzahl__label">Anstehende Termine</span>
               </div>
             </div>
 
-            <!-- Zweispaltig: links die laufenden Dinge (Dienst, Infos,
-                 Aktivitäten), rechts das Vorausschauende (Termine, Aufgaben,
-                 Fortbildungen). Aufgaben/Fortbildungen sind reine, dauerhaft
-                 leere UI-Platzhalter ohne Datenquelle (siehe Konzept) - keine
-                 Dummy-Daten, keine neue Collection. -->
+            <!-- Zweispaltig: links die laufenden Dinge (Dienst, Infos), rechts
+                 das Vorausschauende (Termine, Aufgaben, Fortbildungen).
+                 Aufgaben/Fortbildungen/Aktivitäten sind reine, dauerhaft leere
+                 UI-Platzhalter ohne Datenquelle - keine Dummy-Daten, keine
+                 neue Collection. -->
             <div class="leitung-layout">
               <div class="leitung-hauptspalte">
                 <div class="karte">
@@ -742,12 +752,13 @@
                   </div>
                 </div>
 
+                <!-- Bewusst kein Bezug mehr zum technischen adminLog - ein
+                     eigenes RP-Aktivitätenprotokoll der Leitung folgt später. -->
                 <div class="karte">
                   <div class="karte__kopf">
                     <h3 class="karte__titel">Aktivitäten</h3>
-                    <button type="button" class="pkopf__link" data-leitung-tab="admin-log">Alle ansehen</button>
                   </div>
-                  <div id="leitung-aktivitaeten-liste"></div>
+                  <p class="empty-state empty-state--kompakt">Ein eigenes Leitungs-Aktivitätenprotokoll folgt in einer späteren Ausbaustufe.</p>
                 </div>
               </div>
 
@@ -778,22 +789,132 @@
           </section>
 
           <!-- ============================ -->
-          <!-- VIEW: LEITUNG – Personalakten (bisher "Verwaltung") -->
+          <!-- VIEW: LEITUNG – Personal      -->
           <!-- ============================ -->
-          <section class="view" id="view-admin">
+          <!-- Echte, eigenständige RP-Personalübersicht - KEINE Ansicht der
+               technischen Benutzerverwaltung (die bleibt unter Verwaltung,
+               siehe view-admin). Identifiziert Accounts über die uid, zeigt
+               nur freigegebene Mitarbeiter (siehe js/views/leitung-personal.js). -->
+          <section class="view" id="view-leitung-personal">
             <div class="tabs leitung-tabs">
-              <button class="tabs__tab" data-leitung-tab="leitung-uebersicht">Übersicht</button>
-              <button class="tabs__tab tabs__tab--active" data-leitung-tab="admin">Personalakten</button>
+              <button class="tabs__tab" data-tab-view="leitung-uebersicht">Übersicht</button>
+              <button class="tabs__tab tabs__tab--active" data-tab-view="leitung-personal">Personal</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Fortbildungen</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Qualifikationen</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Dienstplanung</button>
               <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Ankündigungen</button>
-              <button class="tabs__tab" data-leitung-tab="admin-log">Aktivitäten</button>
+              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Aktivitäten</button>
+            </div>
+
+            <div class="settings-list" id="leitung-personal-liste"></div>
+            <p class="empty-state" id="leitung-personal-empty" hidden>Noch keine freigegebenen Mitarbeiter.</p>
+          </section>
+
+          <!-- ============================ -->
+          <!-- VIEW: LEITUNG – Personalakte  -->
+          <!-- ============================ -->
+          <!-- Eigene Seite statt Modal (wie beim Patienten), kein eigener
+               Sidebar-/Reiter-Eintrag - wird per oeffnePersonalakte(uid)
+               geöffnet (js/views/leitung-personal.js). -->
+          <section class="view" id="view-leitung-personalakte">
+            <button type="button" class="patient-seite__zurueck" data-quicklink="leitung-personal">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              <span>Zurück zu Personal</span>
+            </button>
+
+            <div class="pkopf">
+              <div class="pkopf__text">
+                <h2 class="pkopf__name" id="personalakte-name">Mitarbeiter</h2>
+                <div class="pkopf__daten" id="personalakte-daten"></div>
+              </div>
+            </div>
+
+            <div class="tabs ptabs" id="personalakte-tabs">
+              <button type="button" class="tabs__tab tabs__tab--active" data-personalakte-tab="uebersicht">Übersicht</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Personaldaten</button>
+              <button type="button" class="tabs__tab" data-personalakte-tab="karriere">Karriere</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Fortbildungen</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Qualifikationen</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Beurteilungen</button>
+              <button type="button" class="tabs__tab" data-personalakte-tab="notizen">Notizen</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Aufgaben</button>
+              <button type="button" class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe">Diensthistorie</button>
+            </div>
+
+            <div class="ptab-panel" id="personalakte-panel-uebersicht">
+              <div class="karte">
+                <div class="karte__kopf">
+                  <h3 class="karte__titel">Übersicht</h3>
+                </div>
+                <div id="personalakte-uebersicht-inhalt"></div>
+              </div>
+            </div>
+
+            <div class="ptab-panel" id="personalakte-panel-karriere" hidden>
+              <div class="karte">
+                <div class="karte__kopf">
+                  <h3 class="karte__titel">RP-Rang ändern</h3>
+                </div>
+                <div class="md-feld">
+                  <label for="personalakte-rang-select">Neuer Rang</label>
+                  <select id="personalakte-rang-select" class="field-input"></select>
+                </div>
+                <div class="md-feld">
+                  <label for="personalakte-rang-begruendung">Begründung (optional)</label>
+                  <input type="text" id="personalakte-rang-begruendung" class="md-input" placeholder="z. B. Beförderung nach erfolgreicher Prüfung" autocomplete="off" />
+                </div>
+                <p class="field-error" id="personalakte-rang-error" hidden></p>
+                <div class="pedit__aktionen">
+                  <button type="button" class="btn btn--primary" id="btn-personalakte-rang-speichern">Rang speichern</button>
+                </div>
+              </div>
+              <div class="karte" style="margin-top: 20px;">
+                <div class="karte__kopf">
+                  <h3 class="karte__titel">Karrierehistorie</h3>
+                </div>
+                <div id="personalakte-karriere-liste"></div>
+              </div>
+            </div>
+
+            <div class="ptab-panel" id="personalakte-panel-notizen" hidden>
+              <div class="karte">
+                <div class="karte__kopf">
+                  <h3 class="karte__titel">Neue Notiz</h3>
+                </div>
+                <div class="md-feld">
+                  <textarea id="personalakte-notiz-eingabe" class="md-input" rows="3" placeholder="Interne Leitungsnotiz - nur für Leitung/Verwalter sichtbar"></textarea>
+                </div>
+                <p class="field-error" id="personalakte-notiz-error" hidden></p>
+                <div class="pedit__aktionen">
+                  <button type="button" class="btn btn--primary" id="btn-personalakte-notiz-speichern">Notiz speichern</button>
+                </div>
+              </div>
+              <div class="karte" style="margin-top: 20px;">
+                <div class="karte__kopf">
+                  <h3 class="karte__titel">Verlauf</h3>
+                </div>
+                <div id="personalakte-notizen-liste"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================ -->
+          <!-- VIEW: VERWALTUNG – Benutzer   -->
+          <!-- ============================ -->
+          <!-- Rein technische Systemadministration, ausschließlich für
+               istAdmin() sichtbar (siehe el.navAdminToggle.hidden in
+               js/main.js). Enthält bewusst KEINE RP-Rangvergabe mehr - das
+               ist eine Leitungsfunktion und lebt jetzt in der Personalakte
+               (view-leitung-personalakte). -->
+          <section class="view" id="view-admin">
+            <div class="tabs">
+              <button class="tabs__tab tabs__tab--active" data-tab-view="admin">Benutzer</button>
+              <button class="tabs__tab" data-tab-view="admin-log">Aktivitäts-Log</button>
             </div>
 
             <div class="abschnitt">
               <h3>Benutzerverwaltung</h3>
-              <p class="abschnitt__hint">Hier verwaltest du alle Accounts: Registrierungsanfragen freigeben oder ablehnen, Rang und Verwalterrechte vergeben, Benutzer sperren/entsperren/löschen/umbenennen und interne Notizen hinterlegen. <strong>Verwalterrechte</strong> sind unabhängig vom Rang und werden separat je Benutzer vergeben.</p>
+              <p class="abschnitt__hint">Hier verwaltest du alle Accounts: Registrierungsanfragen freigeben oder ablehnen, Verwalter- und Leitungsrechte vergeben, Benutzer sperren/entsperren/löschen/umbenennen und interne Notizen hinterlegen. Den <strong>RP-Rang</strong> ändert die Leitung in der jeweiligen Personalakte.</p>
 
               <form class="settings-form" id="form-add-benutzer">
                 <input type="text" id="neuer-benutzer-name-input" class="field-input" placeholder="Benutzername, z. B. Max Mustermann" required style="flex: 1 1 200px;" />
@@ -822,22 +943,17 @@
           </section>
 
           <!-- ============================ -->
-          <!-- VIEW: LEITUNG – Aktivitäten (bisher "Verwaltung"-Log) -->
+          <!-- VIEW: VERWALTUNG – Log        -->
           <!-- ============================ -->
           <section class="view" id="view-admin-log">
-            <div class="tabs leitung-tabs">
-              <button class="tabs__tab" data-leitung-tab="leitung-uebersicht">Übersicht</button>
-              <button class="tabs__tab" data-leitung-tab="admin">Personalakten</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Fortbildungen</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Qualifikationen</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Dienstplanung</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe der Leitung">Ankündigungen</button>
-              <button class="tabs__tab tabs__tab--active" data-leitung-tab="admin-log">Aktivitäten</button>
+            <div class="tabs">
+              <button class="tabs__tab" data-tab-view="admin">Benutzer</button>
+              <button class="tabs__tab tabs__tab--active" data-tab-view="admin-log">Aktivitäts-Log</button>
             </div>
 
             <div class="abschnitt">
               <h3>Aktivitäts-Log</h3>
-              <p class="abschnitt__hint">Zeigt die letzten Verwaltungsaktionen (Freigaben, Sperren, Rollenänderungen, Löschungen, ...) — wer hat wann was gemacht.</p>
+              <p class="abschnitt__hint">Zeigt die letzten technischen Verwaltungsaktionen (Freigaben, Sperren, Löschungen, Verwalter-/Leitungsrechte, ...) — wer hat wann was gemacht. RP-Vorgänge wie Rangänderungen stehen stattdessen in der jeweiligen Personalakte.</p>
               <div class="settings-list" id="admin-log-liste"></div>
             </div>
           </section>
@@ -1304,28 +1420,29 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=154"></script>
-  <script defer src="js/core/config.js?v=154"></script>
-  <script defer src="js/core/state.js?v=154"></script>
-  <script defer src="js/core/dom.js?v=154"></script>
-  <script defer src="js/core/utils.js?v=154"></script>
-  <script defer src="js/core/akte-dokument.js?v=154"></script>
-  <script defer src="js/core/akte-pdf.js?v=154"></script>
-  <script defer src="js/ui/modals.js?v=154"></script>
-  <script defer src="js/ui/nav.js?v=154"></script>
-  <script defer src="js/ui/presence.js?v=154"></script>
-  <script defer src="js/views/startseite.js?v=154"></script>
-  <script defer src="js/views/patientenakten.js?v=154"></script>
-  <script defer src="js/views/gutachten.js?v=154"></script>
-  <script defer src="js/views/akte-link.js?v=154"></script>
-  <script defer src="js/views/termine.js?v=154"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=154"></script>
-  <script defer src="js/views/beispiele.js?v=154"></script>
-  <script defer src="js/views/einstellungen.js?v=154"></script>
-  <script defer src="js/views/admin.js?v=154"></script>
-  <script defer src="js/views/leitung.js?v=154"></script>
-  <script defer src="js/ui/version-check.js?v=154"></script>
-  <script defer src="js/main.js?v=154"></script>
-  <script type="module" src="js/auth.js?v=154"></script>
+  <script defer src="js/firebase-config.js?v=155"></script>
+  <script defer src="js/core/config.js?v=155"></script>
+  <script defer src="js/core/state.js?v=155"></script>
+  <script defer src="js/core/dom.js?v=155"></script>
+  <script defer src="js/core/utils.js?v=155"></script>
+  <script defer src="js/core/akte-dokument.js?v=155"></script>
+  <script defer src="js/core/akte-pdf.js?v=155"></script>
+  <script defer src="js/ui/modals.js?v=155"></script>
+  <script defer src="js/ui/nav.js?v=155"></script>
+  <script defer src="js/ui/presence.js?v=155"></script>
+  <script defer src="js/views/startseite.js?v=155"></script>
+  <script defer src="js/views/patientenakten.js?v=155"></script>
+  <script defer src="js/views/gutachten.js?v=155"></script>
+  <script defer src="js/views/akte-link.js?v=155"></script>
+  <script defer src="js/views/termine.js?v=155"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=155"></script>
+  <script defer src="js/views/beispiele.js?v=155"></script>
+  <script defer src="js/views/einstellungen.js?v=155"></script>
+  <script defer src="js/views/admin.js?v=155"></script>
+  <script defer src="js/views/leitung.js?v=155"></script>
+  <script defer src="js/views/leitung-personal.js?v=155"></script>
+  <script defer src="js/ui/version-check.js?v=155"></script>
+  <script defer src="js/main.js?v=155"></script>
+  <script type="module" src="js/auth.js?v=155"></script>
 </body>
 </html>

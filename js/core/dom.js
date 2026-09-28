@@ -8,6 +8,10 @@
     appRoot: document.getElementById("app-root"),
 
     sidebarNav: document.getElementById("sidebar-nav"),
+    // Zwei GETRENNTE geschützte Sidebar-Buttons - siehe main.js für die
+    // jeweils eigene Sichtbarkeitslogik (istLeitung()||istAdmin() vs. nur
+    // istAdmin()). Nicht wieder zu einem Button zusammenführen.
+    navLeitungToggle: document.getElementById("nav-leitung-toggle"),
     navAdminToggle: document.getElementById("nav-admin-toggle"),
     navAdminBadge: document.getElementById("nav-admin-badge"),
     views: document.querySelectorAll(".view"),
@@ -37,14 +41,33 @@
     // Leitung — Übersicht (siehe js/views/leitung.js)
     leitungKpiMitarbeiter: document.getElementById("leitung-kpi-mitarbeiter"),
     leitungKpiDienst: document.getElementById("leitung-kpi-dienst"),
-    leitungKpiAntraege: document.getElementById("leitung-kpi-antraege"),
     leitungKpiTermine: document.getElementById("leitung-kpi-termine"),
     leitungDienstListe: document.getElementById("leitung-dienst-liste"),
     leitungInfoText: document.getElementById("leitung-info-text"),
     leitungInfoLeer: document.getElementById("leitung-info-leer"),
     leitungInfoMeta: document.getElementById("leitung-info-meta"),
     leitungTermineListe: document.getElementById("leitung-termine-liste"),
-    leitungAktivitaetenListe: document.getElementById("leitung-aktivitaeten-liste"),
+
+    // Leitung — Personal (siehe js/views/leitung-personal.js)
+    leitungPersonalListe: document.getElementById("leitung-personal-liste"),
+    leitungPersonalEmpty: document.getElementById("leitung-personal-empty"),
+
+    // Leitung — Personalakte (eine Person, siehe js/views/leitung-personal.js)
+    personalakteName: document.getElementById("personalakte-name"),
+    personalakteDaten: document.getElementById("personalakte-daten"),
+    personalaktePanelUebersicht: document.getElementById("personalakte-panel-uebersicht"),
+    personalakteUebersichtInhalt: document.getElementById("personalakte-uebersicht-inhalt"),
+    personalaktePanelKarriere: document.getElementById("personalakte-panel-karriere"),
+    personalakteRangSelect: document.getElementById("personalakte-rang-select"),
+    personalakteRangBegruendung: document.getElementById("personalakte-rang-begruendung"),
+    personalakteRangError: document.getElementById("personalakte-rang-error"),
+    btnPersonalakteRangSpeichern: document.getElementById("btn-personalakte-rang-speichern"),
+    personalakteKarriereListe: document.getElementById("personalakte-karriere-liste"),
+    personalaktePanelNotizen: document.getElementById("personalakte-panel-notizen"),
+    personalakteNotizEingabe: document.getElementById("personalakte-notiz-eingabe"),
+    personalakteNotizError: document.getElementById("personalakte-notiz-error"),
+    btnPersonalakteNotizSpeichern: document.getElementById("btn-personalakte-notiz-speichern"),
+    personalakteNotizenListe: document.getElementById("personalakte-notizen-liste"),
 
     toast: document.getElementById("toast"),
 
@@ -423,7 +446,7 @@
   // bleiben als helle Browser-Auswahl stehen. Jedes Feld einzeln abgesichert,
   // damit ein Fehler nicht die übrigen mitnimmt.
   function wandleAuswahlfelderUm() {
-    [el.startseiteSelect, el.themaSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect].forEach((select) => {
+    [el.startseiteSelect, el.themaSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect, el.personalakteRangSelect].forEach((select) => {
       try {
         erzeugeCustomSelect(select);
       } catch (fehler) {

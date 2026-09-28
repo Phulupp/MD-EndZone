@@ -3,7 +3,7 @@
   /* ------------------------------------------------------------------------
      2. Anwendungsstatus
      ------------------------------------------------------------------------ */
-  let aktuellerNutzer = null; // { uid, name, rolle, admin }
+  let aktuellerNutzer = null; // { uid, name, rolle, admin, leitung }
   let aktuelleAnsicht = "startseite";
 
   let patienten = [];
@@ -52,12 +52,25 @@
 
   let unsubPresence = null;
 
+  // benutzerListe wird gemeinsam von der (admin-exklusiven) Verwaltung und
+  // der (leitung+admin) Personal-Übersicht genutzt (siehe starteBenutzer-
+  // verwaltung in js/views/admin.js) - eine Collection, zwei Ansichten.
   let unsubBenutzerliste = null;
   let benutzerListe = [];
   let bekanntePendingUids = null;
+  // adminLog bleibt strikt admin-exklusiv (technisches Systemprotokoll) -
+  // eigener Start/Stop, siehe starteAdminLog/stoppeAdminLog in js/views/admin.js.
   let unsubAdminLog = null;
   let adminLogEintraege = [];
   let benutzerSuche = "";
+
+  // RP-Personalakte (Leitung ODER Admin, siehe js/views/leitung-personal.js):
+  // beide Collections werden komplett geladen und je Personalakte
+  // client-seitig nach "uid" gefiltert - dasselbe Muster wie akten/termine.
+  let unsubPersonalnotizen = null;
+  let personalnotizen = [];
+  let unsubRanghistorie = null;
+  let ranghistorie = [];
   // "alle" | "pending" | "locked" | "admin" - Filter-Tabs über der
   // Benutzerliste in der Verwaltung (siehe renderBenutzerverwaltungStatusFilter
   // in admin.js).

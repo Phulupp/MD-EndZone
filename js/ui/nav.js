@@ -3,10 +3,11 @@
   /* ------------------------------------------------------------------------
      7. Navigation (Sidebar)
      ------------------------------------------------------------------------ */
-  // Views, die zusammen den Leitungsbereich bilden (siehe die
-  // Leitungs-Reiterleiste "data-leitung-tab" in index.html) - alle drei
-  // teilen sich EINEN Sidebar-Button ("Leitung", data-view="leitung-uebersicht").
-  const LEITUNG_ANSICHTEN = ["leitung-uebersicht", "admin", "admin-log"];
+  // Views, die zusammen den (RP-)Leitungsbereich bilden - teilen sich EINEN
+  // Sidebar-Button ("Leitung", data-view="leitung-uebersicht"). BEWUSST
+  // GETRENNT von "admin"/"admin-log" (technische Verwaltung, eigener
+  // Sidebar-Button) - siehe die Reiterleisten in index.html.
+  const LEITUNG_ANSICHTEN = ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"];
 
   function zeigeAnsicht(view) {
     aktuelleAnsicht = view;
@@ -15,11 +16,13 @@
     document.querySelectorAll(".sidebar__item").forEach((btn) => {
       const meineAnsicht = btn.getAttribute("data-view");
       // "patient-detail" hat keinen eigenen Sidebar-Button - zählt zu
-      // Patientenakten. "admin"/"admin-log" zählen zum Sidebar-Button
-      // "Leitung" (data-view="leitung-uebersicht"), siehe LEITUNG_ANSICHTEN.
+      // Patientenakten. "admin-log" zählt zum Sidebar-Button "Verwaltung"
+      // (data-view="admin"). Die Leitungs-Unterseiten zählen zum Sidebar-
+      // Button "Leitung" (data-view="leitung-uebersicht"), siehe LEITUNG_ANSICHTEN.
       btn.classList.toggle(
         "sidebar__item--active",
         meineAnsicht === view ||
+          (view === "admin-log" && meineAnsicht === "admin") ||
           (view === "patient-detail" && meineAnsicht === "patientenakten") ||
           (meineAnsicht === "leitung-uebersicht" && LEITUNG_ANSICHTEN.includes(view))
       );
@@ -29,7 +32,7 @@
     // Name im Kopf der Seite), Mitarbeiterliste und Leitstelle haben einen
     // eigenen Kopf - der allgemeine Seitentitel würde ihn doppeln.
     const seitenKopf = document.getElementById("page-header");
-    if (seitenKopf) seitenKopf.hidden = ["patient-detail", "mitarbeiterliste", "startseite"].includes(view);
+    if (seitenKopf) seitenKopf.hidden = ["patient-detail", "leitung-personalakte", "mitarbeiterliste", "startseite"].includes(view);
 
     const meta = VIEW_META[view] || { title: view, subtitle: "" };
     el.viewTitle.textContent = meta.title;
@@ -56,11 +59,11 @@
     btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-quicklink")));
   });
 
-  // Leitungs-Reiterleiste (Übersicht/Personalakten/.../Aktivitäten) - dieselbe
-  // Mechanik wie zuvor "data-admin-subview", nur umbenannt und auf alle
-  // Leitungs-Unterseiten erweitert (siehe LEITUNG_ANSICHTEN oben).
-  document.querySelectorAll("[data-leitung-tab]").forEach((btn) => {
-    btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-leitung-tab")));
+  // Generische Reiterleisten, die zwischen kompletten Ansichten wechseln
+  // (Leitung: Übersicht/Personal/...; Verwaltung: Benutzer/Aktivitäts-Log) -
+  // eine gemeinsame Mechanik für beide, unabhängig voneinander gruppiert.
+  document.querySelectorAll("[data-tab-view]").forEach((btn) => {
+    btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-tab-view")));
   });
 
   /* ------------------------------------------------------------------------

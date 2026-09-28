@@ -37,10 +37,19 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
-    // Ist der eingeloggte Nutzer ein Admin (= Verwalter)? Unabhängig vom
-    // Rang.
+    // Ist der eingeloggte Nutzer ein Admin (= technische Systemverwaltung)?
+    // Unabhängig vom RP-Rang UND unabhängig von istLeitung().
     function istAdmin() {
       return istEingeloggt() && eigenesUserDoc().isAdmin == true;
+    }
+
+    // Ist der eingeloggte Nutzer Leitung (= RP-interne Departmentführung)?
+    // Komplett unabhängig von istAdmin() - ein Admin ist NICHT automatisch
+    // Leitung und umgekehrt, beide Felder werden getrennt vergeben (siehe
+    // "isLeitung" in js/auth.js). .get(..., false) liefert für bestehende
+    // Accounts ohne dieses Feld sicher "false" statt eines Fehlers.
+    function istLeitung() {
+      return istEingeloggt() && eigenesUserDoc().get('isLeitung', false) == true;
     }
 
     // Prüft, ob die EIGENE zeitlich befristete Sperre (falls vorhanden)
@@ -89,34 +98,47 @@ service cloud.firestore {
        users/{uid} — ein Dokument pro Account, Dokument-ID = Firebase-Auth-UID
        ------------------------------------------------------------------ */
     match /users/{uid} {
-      // Einzelnes Dokument lesen: das eigene, oder wenn man Verwalter ist
-      allow get: if istEingeloggt() && (request.auth.uid == uid || istAdmin());
+      // Einzelnes Dokument lesen: das eigene, oder wenn man Verwalter ODER
+      // Leitung ist (Leitung braucht das für die Personalakte/Personal-Liste).
+      allow get: if istEingeloggt() && (request.auth.uid == uid || istAdmin() || istLeitung());
 
-      // Die GESAMTE Liste lesen (für die Benutzerverwaltung): nur Verwalter
-      allow list: if istAdmin();
+      // Die GESAMTE Liste lesen (Benutzerverwaltung UND die Leitungs-
+      // Personalliste nutzen dieselbe Collection): Verwalter oder Leitung.
+      allow list: if istAdmin() || istLeitung();
 
       // Neuen Account anlegen: nur das eigene Dokument, und zwingend mit
-      // status "pending" und isAdmin false - so kann sich niemand selbst
-      // sofort freischalten oder zum Verwalter machen, egal was das
-      // Frontend schickt.
+      // status "pending", isAdmin false UND isLeitung false - so kann sich
+      // niemand selbst sofort freischalten oder zum Verwalter/zur Leitung
+      // machen, egal was das Frontend schickt.
       allow create: if istEingeloggt()
                     && request.auth.uid == uid
                     && request.resource.data.status == 'pending'
-                    && request.resource.data.isAdmin == false;
+                    && request.resource.data.isAdmin == false
+                    && request.resource.data.isLeitung == false;
 
-      // Ändern: Verwalter dürfen alles ändern (Freigeben/Ablehnen/Sperren/
-      // Rang/Verwalterrechte/Notiz/Umbenennen) - AUSSER bei einem als
-      // "geschuetzt: true" markierten Account darf selbst ein Verwalter
-      // nicht die Verwalterrechte entziehen oder den Freigabe-Status
-      // wegändern (siehe verletztUnantastbarkeit() oben). Der Account
-      // selbst darf NUR sein eigenes "lastLogin"-Feld aktualisieren (beim
-      // Einloggen) - ODER, als dritte Ausnahme, sich selbst von "locked"
-      // zurück auf "approved" setzen, aber NUR wenn die eigene befristete
-      // Sperre laut Server-Uhrzeit bereits abgelaufen ist (siehe
-      // eigeneSperreAbgelaufen oben). Das ist der "Selbstheilungs"-
-      // Mechanismus, der eine zeitlich befristete Sperre automatisch enden
-      // lässt, ganz ohne eigenen Server/Cloud Function.
+      // Ändern: Verwalter dürfen weiterhin ALLES ändern (Freigeben/Ablehnen/
+      // Sperren/Verwalter-/Leitungsrechte/Notiz/Umbenennen/Rang) - AUSSER bei
+      // einem als "geschuetzt: true" markierten Account darf selbst ein
+      // Verwalter nicht die Verwalterrechte entziehen oder den Freigabe-
+      // Status wegändern (siehe verletztUnantastbarkeit() oben; isLeitung
+      // ist davon bewusst NICHT geschützt).
+      //
+      // NEU: Leitung (auch OHNE Adminrechte) darf ausschließlich das Feld
+      // "rolle" ändern - der RP-Rang. hasOnly(['rolle']) ist bewusst eng
+      // gefasst (kein hasAny!): Leitung kann damit niemals isAdmin,
+      // isLeitung, status, gesperrtBis, geschuetzt, E-Mail oder andere
+      // technische Accountdaten verändern, selbst wenn sie versucht würden,
+      // im selben Schreibvorgang mitzuschicken - Firestore lehnt den
+      // gesamten Schreibvorgang ab, sobald ein einziges anderes Feld
+      // betroffen wäre.
+      //
+      // Unverändert: der Account selbst darf NUR sein eigenes "lastLogin"
+      // aktualisieren, oder sich selbst von "locked" zurück auf "approved"
+      // setzen, wenn die eigene befristete Sperre laut Server-Uhrzeit
+      // bereits abgelaufen ist (Selbstheilungs-Mechanismus).
       allow update: if (istAdmin() && !verletztUnantastbarkeit())
+                    || (istLeitung()
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rolle']))
                     || (request.auth.uid == uid
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastLogin']))
                     || (request.auth.uid == uid
@@ -127,6 +149,7 @@ service cloud.firestore {
                         && request.resource.data.status == 'approved');
 
       // Löschen: nur Verwalter, und niemals bei einem "geschuetzt"-Account.
+      // Leitung darf NIEMALS löschen - keine Ausnahme.
       allow delete: if istAdmin() && !istUnantastbar();
     }
 
@@ -171,6 +194,37 @@ service cloud.firestore {
     match /adminLog/{logId} {
       allow create: if istAdmin();
       allow list, get: if istAdmin();
+      allow update, delete: if false;
+    }
+
+    /* ------------------------------------------------------------------
+       personalnotizen/{id} — interne RP-Leitungsnotizen zu einem Mitarbeiter
+       (uid, text, erstelltVon, erstelltAm). Mehrere Einträge je Mitarbeiter,
+       geschrieben von js/views/leitung-personal.js. Lesen/Erstellen: Leitung
+       ODER Admin - AUSDRÜCKLICH NICHT über istFreigegeben(), damit normale
+       Mitarbeiter diese Notizen nie sehen können, auch nicht über sich
+       selbst. Ändern/Löschen bewusst nur Admin (Notizen bleiben für Leitung
+       ein Verlauf, keine nachträglich korrigierbare Liste).
+       ------------------------------------------------------------------ */
+    match /personalnotizen/{id} {
+      allow read, create: if istAdmin() || istLeitung();
+      allow update, delete: if istAdmin();
+    }
+
+    /* ------------------------------------------------------------------
+       ranghistorie/{id} — RP-Karrierehistorie (uid, alterRang, neuerRang,
+       art, von, am, begruendung). Wird automatisch bei jeder Rangänderung
+       geschrieben (siehe setzeRolle in js/auth.js), unabhängig davon, ob sie
+       durch Admin oder Leitung ausgelöst wurde. Absichtlich unveränderlich
+       wie adminLog - aber eine komplett eigene Collection, NICHT dasselbe
+       technische Log. Lesen/Erstellen: Leitung ODER Admin, nie für normale
+       Mitarbeiter.
+       ------------------------------------------------------------------ */
+    match /ranghistorie/{id} {
+      allow read: if istAdmin() || istLeitung();
+      allow create: if (istAdmin() || istLeitung())
+                    && request.resource.data.uid is string
+                    && request.resource.data.neuerRang is string;
       allow update, delete: if false;
     }
 

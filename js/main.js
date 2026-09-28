@@ -29,12 +29,15 @@
   }
 
   function starteApp(detail) {
-    aktuellerNutzer = { uid: detail.uid, name: detail.username, rolle: detail.rolle, admin: !!detail.isAdmin };
+    aktuellerNutzer = { uid: detail.uid, name: detail.username, rolle: detail.rolle, admin: !!detail.isAdmin, leitung: !!detail.isLeitung };
 
     el.sidebarUserAvatar.textContent = initialenAvatar(aktuellerNutzer.name);
     el.sidebarUserName.textContent = aktuellerNutzer.name;
     aktualisiereSidebarRang(aktuellerNutzer.rolle);
 
+    // Zwei GETRENNTE geschützte Bereiche mit je eigener Sichtbarkeit - siehe
+    // die Kommentare bei den Buttons in index.html.
+    el.navLeitungToggle.hidden = !(istAdmin() || istLeitung());
     el.navAdminToggle.hidden = !istAdmin();
     if (!istAdmin()) el.navAdminBadge.hidden = true;
 
@@ -48,7 +51,12 @@
     starteMitarbeiterListener();
     starteDienstListener();
     starteLeitstelleInfoListener();
-    if (istAdmin()) starteBenutzerverwaltung();
+    // benutzerListe wird von Verwaltung UND Leitung-Personal gebraucht.
+    if (istAdmin() || istLeitung()) starteBenutzerverwaltung();
+    // adminLog bleibt strikt admin-exklusiv.
+    if (istAdmin()) starteAdminLog();
+    // personalnotizen/ranghistorie: dieselbe Sichtbarkeit wie Leitung.
+    if (istAdmin() || istLeitung()) starteLeitungPersonalListener();
 
     zeigeAnsicht(ladeStartseite());
 
@@ -60,15 +68,36 @@
   function aktualisiereNutzerProfil(detail) {
     if (!aktuellerNutzer) return;
     const warAdmin = istAdmin();
+    const warLeitung = istLeitung();
+    const hatteZugriffAufPersonal = warAdmin || warLeitung;
     aktuellerNutzer.rolle = detail.rolle;
     aktuellerNutzer.admin = !!detail.isAdmin;
+    aktuellerNutzer.leitung = !!detail.isLeitung;
     aktualisiereSidebarRang(aktuellerNutzer.rolle);
+
+    el.navLeitungToggle.hidden = !(istAdmin() || istLeitung());
     el.navAdminToggle.hidden = !istAdmin();
-    if (!warAdmin && istAdmin()) starteBenutzerverwaltung();
-    if (warAdmin && !istAdmin()) {
-      stoppeBenutzerverwaltung();
-      if (["admin", "admin-log", "leitung-uebersicht"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
+
+    const brauchtZugriffAufPersonal = istAdmin() || istLeitung();
+    if (brauchtZugriffAufPersonal && !hatteZugriffAufPersonal) {
+      starteBenutzerverwaltung();
+      starteLeitungPersonalListener();
     }
+    if (!brauchtZugriffAufPersonal && hatteZugriffAufPersonal) {
+      stoppeBenutzerverwaltung();
+      stoppeLeitungPersonalListener();
+    }
+
+    if (!warAdmin && istAdmin()) starteAdminLog();
+    if (warAdmin && !istAdmin()) stoppeAdminLog();
+
+    // Wer Adminrechte verliert, fliegt aus der Verwaltung; wer BEIDE Rechte
+    // verliert, fliegt zusätzlich aus dem gesamten Leitungsbereich.
+    if (warAdmin && !istAdmin() && ["admin", "admin-log"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
+    if (hatteZugriffAufPersonal && !brauchtZugriffAufPersonal && ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"].includes(aktuelleAnsicht)) {
+      zeigeAnsicht("startseite");
+    }
+
     renderBeispiele();
     renderMitarbeiter();
     renderLeitstelle();
@@ -78,9 +107,20 @@
   function stoppeApp() {
     aktuellerNutzer = null;
     wendeThemaAn("dunkel");
-    [unsubPatienten, unsubAkten, unsubGutachten, unsubLeitfaeden, unsubTermine, unsubMitarbeiter, unsubDienst, unsubLeitstelleInfo].forEach((unsub) => unsub && unsub());
+    [
+      unsubPatienten,
+      unsubAkten,
+      unsubGutachten,
+      unsubLeitfaeden,
+      unsubTermine,
+      unsubMitarbeiter,
+      unsubDienst,
+      unsubLeitstelleInfo,
+    ].forEach((unsub) => unsub && unsub());
     unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = unsubLeitstelleInfo = null;
     stoppeBenutzerverwaltung();
+    stoppeAdminLog();
+    stoppeLeitungPersonalListener();
     stoppeHeartbeat();
     clearInterval(versionCheckTimer);
     patienten = [];
@@ -110,6 +150,11 @@
     profilBasisStempel = 0;
     profilGeaendert = false;
     akteBasisStempel = 0;
+    benutzerListe = [];
+    adminLogEintraege = [];
+    personalnotizen = [];
+    ranghistorie = [];
+    offenerPersonalUid = null;
   }
 
   window.addEventListener("md:auth-approved", (event) => starteApp(event.detail));

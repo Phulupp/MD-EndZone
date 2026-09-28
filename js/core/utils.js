@@ -54,6 +54,12 @@
     return !!(aktuellerNutzer && aktuellerNutzer.admin);
   }
 
+  // RP-interne Departmentführung - komplett unabhängig von istAdmin() (siehe
+  // firestore.rules). Ein Admin ist NICHT automatisch Leitung und umgekehrt.
+  function istLeitung() {
+    return !!(aktuellerNutzer && aktuellerNutzer.leitung);
+  }
+
   function initialenAvatar(name) {
     if (!name) return "?";
     const teile = name.trim().split(/\s+/);
