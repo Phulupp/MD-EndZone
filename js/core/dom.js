@@ -19,13 +19,31 @@
     onlinePanel: document.getElementById("online-panel"),
     onlinePanelList: document.getElementById("online-panel-list"),
 
+    // Topbar-Uhr (siehe aktualisiereTopbarUhr in js/ui/nav.js)
+    topbarDatum: document.getElementById("topbar-datum"),
+
+    // Konto-Menü: jetzt in der Topbar statt im Sidebar-Footer (siehe index.html).
     sidebarUserBtn: document.getElementById("sidebar-user-btn"),
     sidebarUserMenu: document.getElementById("sidebar-user-menu"),
     sidebarUserAvatar: document.getElementById("sidebar-user-avatar"),
     sidebarUserName: document.getElementById("sidebar-user-name"),
     sidebarUserRole: document.getElementById("sidebar-user-role"),
+    // sidebar-rang-stufen gibt es in der kompakten Topbar-Fassung des Kontos
+    // bewusst nicht mehr (kein Platz) - main.js prüft dieses Element bereits
+    // per "if (el.sidebarRangStufen)", daher hier unproblematisch "null".
     sidebarRangStufen: document.getElementById("sidebar-rang-stufen"),
     btnLogout: document.getElementById("btn-logout"),
+
+    // Leitung — Übersicht (siehe js/views/leitung.js)
+    leitungKpiMitarbeiter: document.getElementById("leitung-kpi-mitarbeiter"),
+    leitungKpiDienst: document.getElementById("leitung-kpi-dienst"),
+    leitungKpiAntraege: document.getElementById("leitung-kpi-antraege"),
+    leitungKpiTermine: document.getElementById("leitung-kpi-termine"),
+    leitungInfoText: document.getElementById("leitung-info-text"),
+    leitungInfoLeer: document.getElementById("leitung-info-leer"),
+    leitungInfoMeta: document.getElementById("leitung-info-meta"),
+    leitungTermineListe: document.getElementById("leitung-termine-liste"),
+    leitungAktivitaetenListe: document.getElementById("leitung-aktivitaeten-liste"),
 
     toast: document.getElementById("toast"),
 

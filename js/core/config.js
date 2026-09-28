@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 152;
+  const VERSION_AKTUELL = 153;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -142,6 +142,12 @@
     mitarbeiterliste: { title: "Mitarbeiterliste", subtitle: "Alle Mitarbeiter des Medical Department." },
     beispiele: { title: "Beispiele", subtitle: "Behandlungsleitfäden für häufige Fälle." },
     einstellungen: { title: "Einstellungen", subtitle: "Persönliche Einstellungen." },
-    admin: { title: "Verwaltung", subtitle: "Benutzerverwaltung — nur für Verwalter sichtbar." },
-    "admin-log": { title: "Aktivitäts-Log", subtitle: "Wer hat wann was geändert — nur für Verwalter sichtbar." },
+    // Leitung: "admin"/"admin-log" sind bewusst die bisherigen internen
+    // View-Namen der Benutzerverwaltung/des Aktivitäts-Logs geblieben (siehe
+    // js/views/admin.js) - nur Titel/Einstieg wurden auf den neuen
+    // Leitungsbereich umgestellt, um die bestehende Logik unangetastet zu
+    // lassen (siehe Konzept Phase 1).
+    "leitung-uebersicht": { title: "Leitungsübersicht", subtitle: "Kennzahlen, anstehende Termine und Aktivitäten des Medical Department." },
+    admin: { title: "Personalakten", subtitle: "Freigaben, Ränge und Verwalterrechte verwalten — nur für die Leitung sichtbar." },
+    "admin-log": { title: "Aktivitäten", subtitle: "Wer hat wann was geändert — nur für die Leitung sichtbar." },
   };

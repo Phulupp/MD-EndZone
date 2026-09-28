@@ -29,3 +29,32 @@
   color: var(--text-soft);
   font-size: 14px;
 }
+
+/* --------------------------------------------------------------------------
+   10b. Karte: generischer Container für gebündelte Informationsblöcke (z. B.
+   Leitung-Übersicht) - bewusst schlank, damit nicht jede Ansicht ihr eigenes,
+   fast identisches Karten-CSS dupliziert (siehe .pat-register, .dienst-liste,
+   .settings-list für die älteren, view-eigenen Varianten derselben Optik).
+   -------------------------------------------------------------------------- */
+.karte {
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 20px 24px 22px;
+}
+
+.karte__kopf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.karte__titel {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}

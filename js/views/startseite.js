@@ -25,6 +25,7 @@
         dienstStatus = {};
         snap.forEach((docSnap) => (dienstStatus[docSnap.id] = docSnap.data()));
         renderLeitstelle();
+        renderLeitungUebersicht();
       },
       (fehler) => {
         console.error("Dienststatus konnte nicht geladen werden:", fehler);
@@ -114,6 +115,7 @@
         leitstelleInfo = { text: daten.text || "", von: daten.bearbeitetVon || "", am: daten.bearbeitetAm || null };
         // Wer gerade schreibt, wird nicht überschrieben.
         if (!leitstelleInfoBearbeiten) renderLeitstelleInfo();
+        renderLeitungUebersicht();
       },
       (fehler) => {
         console.error("Leitstellen-Info konnte nicht geladen werden:", fehler);

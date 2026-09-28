@@ -21,12 +21,14 @@
 
       renderBenutzerverwaltung();
       if (aktiverDetailUid) renderBenutzerDetails(aktiverDetailUid);
+      renderLeitungUebersicht();
     });
 
     if (unsubAdminLog) unsubAdminLog();
     unsubAdminLog = window.BenutzerVerwaltung.onLog((liste) => {
       adminLogEintraege = liste;
       renderAdminLog();
+      renderLeitungUebersicht();
     });
   }
 

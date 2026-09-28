@@ -58,6 +58,7 @@
           termine = [];
           snap.forEach((docSnap) => termine.push({ id: docSnap.id, ...docSnap.data() }));
           renderTermine();
+          renderLeitungUebersicht();
         },
         (fehler) => {
           console.error("Termine konnten nicht geladen werden:", fehler);

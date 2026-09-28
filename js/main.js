@@ -67,7 +67,7 @@
     if (!warAdmin && istAdmin()) starteBenutzerverwaltung();
     if (warAdmin && !istAdmin()) {
       stoppeBenutzerverwaltung();
-      if (aktuelleAnsicht === "admin" || aktuelleAnsicht === "admin-log") zeigeAnsicht("startseite");
+      if (["admin", "admin-log", "leitung-uebersicht"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
     }
     renderBeispiele();
     renderMitarbeiter();

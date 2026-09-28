@@ -3,19 +3,25 @@
   /* ------------------------------------------------------------------------
      7. Navigation (Sidebar)
      ------------------------------------------------------------------------ */
+  // Views, die zusammen den Leitungsbereich bilden (siehe die
+  // Leitungs-Reiterleiste "data-leitung-tab" in index.html) - alle drei
+  // teilen sich EINEN Sidebar-Button ("Leitung", data-view="leitung-uebersicht").
+  const LEITUNG_ANSICHTEN = ["leitung-uebersicht", "admin", "admin-log"];
+
   function zeigeAnsicht(view) {
     aktuelleAnsicht = view;
     el.views.forEach((section) => section.classList.toggle("view--active", section.id === `view-${view}`));
 
     document.querySelectorAll(".sidebar__item").forEach((btn) => {
       const meineAnsicht = btn.getAttribute("data-view");
-      // "admin-log" und "patient-detail" haben keinen eigenen Sidebar-Button -
-      // sie zählen zum Bereich Verwaltung bzw. Patientenakten.
+      // "patient-detail" hat keinen eigenen Sidebar-Button - zählt zu
+      // Patientenakten. "admin"/"admin-log" zählen zum Sidebar-Button
+      // "Leitung" (data-view="leitung-uebersicht"), siehe LEITUNG_ANSICHTEN.
       btn.classList.toggle(
         "sidebar__item--active",
         meineAnsicht === view ||
-          (view === "admin-log" && meineAnsicht === "admin") ||
-          (view === "patient-detail" && meineAnsicht === "patientenakten")
+          (view === "patient-detail" && meineAnsicht === "patientenakten") ||
+          (meineAnsicht === "leitung-uebersicht" && LEITUNG_ANSICHTEN.includes(view))
       );
     });
 
@@ -50,9 +56,25 @@
     btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-quicklink")));
   });
 
-  document.querySelectorAll("[data-admin-subview]").forEach((btn) => {
-    btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-admin-subview")));
+  // Leitungs-Reiterleiste (Übersicht/Personalakten/.../Aktivitäten) - dieselbe
+  // Mechanik wie zuvor "data-admin-subview", nur umbenannt und auf alle
+  // Leitungs-Unterseiten erweitert (siehe LEITUNG_ANSICHTEN oben).
+  document.querySelectorAll("[data-leitung-tab]").forEach((btn) => {
+    btn.addEventListener("click", () => zeigeAnsicht(btn.getAttribute("data-leitung-tab")));
   });
+
+  /* ------------------------------------------------------------------------
+     7b. Topbar-Uhr (rein clientseitig, keine Firestore-Daten)
+     ------------------------------------------------------------------------ */
+  function aktualisiereTopbarUhr() {
+    if (!el.topbarDatum) return;
+    const jetzt = new Date();
+    const wochentag = jetzt.toLocaleDateString("de-DE", { weekday: "long" });
+    const uhrzeit = `${String(jetzt.getHours()).padStart(2, "0")}:${String(jetzt.getMinutes()).padStart(2, "0")}`;
+    el.topbarDatum.textContent = `${wochentag}, ${formatDatum(jetzt)} ${uhrzeit} Uhr`;
+  }
+  aktualisiereTopbarUhr();
+  setInterval(aktualisiereTopbarUhr, 30 * 1000);
 
   // Kleine Popover (Online-Liste, Konto-Menü): immer nur eines offen, Klick
   // irgendwo sonst schließt sie.
