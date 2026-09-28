@@ -58,3 +58,101 @@
   font-weight: 700;
   color: var(--text);
 }
+
+/* --------------------------------------------------------------------------
+   10c. Kennzahlen-Reihe: kompakter Streifen statt großer Hero-Cards, von
+   Leitung- UND Verwaltungs-Übersicht genutzt (bewusst KEIN Ansichts-Präfix
+   im Namen mehr, seit beide Bereiche dieselbe Komponente teilen).
+   -------------------------------------------------------------------------- */
+.kennzahlen-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--karte);
+  border: 1px solid var(--panel-edge-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.kennzahl {
+  flex: 1 1 200px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 22px;
+  border-right: 1px solid var(--panel-edge-soft);
+}
+
+.kennzahl:last-child {
+  border-right: none;
+}
+
+.kennzahl__wert {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.kennzahl__von {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-soft);
+}
+
+.kennzahl__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   10d. Kompakte Listenzeile: dünne, unaufdringliche Zeile für Mini-Listen in
+   Karten (nächste Termine, letzte Aktivitäten, Dienstübersicht, ...).
+   -------------------------------------------------------------------------- */
+.mini-zeile {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--panel-edge-soft);
+  font-size: 13.5px;
+}
+
+.mini-zeile:last-child {
+  border-bottom: none;
+}
+
+.mini-zeile__zeit {
+  flex: 0 0 auto;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.mini-zeile__haupt {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-zeile__nebentext {
+  flex: 0 0 auto;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* Kompakter Empty-State für kleinere Karten - der obige .empty-state ist für
+   ganzseitige Leerzustände gedacht und dafür zu groß/zentriert. */
+.empty-state--kompakt {
+  padding: 4px 0;
+  text-align: left;
+  font-size: 13px;
+}

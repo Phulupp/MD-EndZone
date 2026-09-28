@@ -28,6 +28,7 @@
 
       renderBenutzerverwaltung();
       if (aktiverDetailUid) renderBenutzerDetails(aktiverDetailUid);
+      renderAdminUebersicht();
       renderLeitungUebersicht();
       renderLeitungPersonal();
       aktualisierePersonalakteAnsicht();
@@ -55,6 +56,7 @@
     unsubAdminLog = window.BenutzerVerwaltung.onLog((liste) => {
       adminLogEintraege = liste;
       renderAdminLog();
+      renderAdminUebersicht();
     });
   }
 
@@ -64,6 +66,36 @@
       unsubAdminLog = null;
     }
   }
+
+  /* ------------------------------------------------------------------------
+     19c. Verwaltungs-Übersicht
+     ------------------------------------------------------------------------
+     Kompakter Kennzahlen-Streifen + letzte Systemaktivitäten - reine
+     Auswertung von benutzerListe/adminLogEintraege, keine Dummy-Daten. */
+  function renderAdminUebersicht() {
+    if (!el.adminKpiInsgesamt || !istAdmin()) return;
+    el.adminKpiInsgesamt.textContent = String(benutzerListe.length);
+    el.adminKpiAktiv.textContent = String(benutzerListe.filter((b) => b.status === "approved").length);
+    el.adminKpiGesperrt.textContent = String(benutzerListe.filter((b) => b.status === "locked").length);
+    el.adminKpiAntraege.textContent = String(benutzerListe.filter((b) => b.status === "pending").length);
+    el.adminKpiAdmins.textContent = String(benutzerListe.filter((b) => b.isAdmin).length);
+    el.adminKpiLeitung.textContent = String(benutzerListe.filter((b) => b.isLeitung).length);
+
+    if (el.adminUebersichtAktivitaeten) {
+      const letzte = adminLogEintraege.slice(0, 6);
+      el.adminUebersichtAktivitaeten.innerHTML = letzte.length
+        ? letzte.map(adminLogEintragHtml).join("")
+        : `<p class="empty-state empty-state--kompakt">Noch keine Systemaktivitäten.</p>`;
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     19d. System (vorbereiteter Bereich - keine erfundenen Einstellungen)
+     ------------------------------------------------------------------------ */
+  function renderAdminSystem() {
+    if (el.adminSystemVersion) el.adminSystemVersion.textContent = String(VERSION_AKTUELL);
+  }
+  renderAdminSystem();
 
   function gefiltertBenutzer() {
     let liste = benutzerListe;
@@ -120,8 +152,8 @@
           <div class="settings-list__info">
             <div class="settings-list__toprow">
               <span class="settings-list__name">${escapeHtml(b.username || "Unbekannt")}</span>
-              ${rangBadgeHtml(b.rolle)}
               ${b.isAdmin ? '<span class="badge badge--verwalter">Verwalter</span>' : ""}
+              ${b.isLeitung ? '<span class="badge badge--verwalter">Leitung</span>' : ""}
               ${statusLabel ? `<span class="badge badge--danger-soft">${statusLabel}</span>` : ""}
             </div>
             <div class="settings-list__subrow">
@@ -151,10 +183,28 @@
     });
   }
 
+  // Benutzerdetails-Modal: klare Trennung TECHNISCHER ACCOUNT (Status,
+  // E-Mail, Zeiten, Verwalter-/Leitungsrechte, RP-Rang nur lesend) von
+  // AKTIONEN (destruktive/einmalige Schaltflächen) - siehe Vorgabe. Der
+  // RP-Rang wird bewusst NICHT hier bearbeitet, sondern in der Personalakte
+  // der Leitung (js/views/leitung-personal.js).
   function renderBenutzerDetails(uid) {
     const b = benutzerListe.find((x) => x.uid === uid);
     if (!b) return;
     el.benutzerDetailsName.textContent = b.username || "Unbekannt";
+
+    const statusText =
+      b.status === "approved"
+        ? "Aktiv"
+        : b.status === "pending"
+        ? "Wartet auf Freigabe"
+        : b.status === "rejected"
+        ? "Abgelehnt"
+        : b.status === "locked"
+        ? b.gesperrtBis
+          ? `Gesperrt bis ${formatDatumUhrzeit(b.gesperrtBis)}`
+          : "Dauerhaft gesperrt"
+        : "—";
 
     el.benutzerDetailsBody.innerHTML = `
       <div class="detail-grid">
@@ -165,14 +215,27 @@
                 <button class="btn btn--danger btn--sm" data-benutzer-aktion="ablehnen">Ablehnen</button></div>`
             : ""
         }
-        <div class="detail-row"><span class="detail-row__label">Aktueller RP-Rang</span>
-          <span>${rangBadgeHtml(b.rolle) || "—"}</span></div>
-        <p class="abschnitt__hint" style="margin:-8px 0 0;">Den RP-Rang ändert die Leitung in der jeweiligen Personalakte, nicht hier.</p>
+
+        <h4 class="detail-abschnitt-titel">Technischer Account</h4>
+        <div class="detail-row"><span class="detail-row__label">Accountstatus</span><span>${escapeHtml(statusText)}</span></div>
+        <div class="detail-row"><span class="detail-row__label">E-Mail</span><span>${escapeHtml(b.email || "—")}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Registriert</span><span>${formatDatumUhrzeit(b.createdAt)}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Letzter Login</span><span>${formatDatumUhrzeit(b.lastLogin)}</span></div>
         <div class="detail-row"><span class="detail-row__label">Verwalterrechte</span>
           <label class="field-checkbox-row"><input type="checkbox" id="detail-admin-checkbox" ${b.isAdmin ? "checked" : ""}/> Verwalter</label></div>
         <div class="detail-row"><span class="detail-row__label">Leitungsrechte</span>
           <label class="field-checkbox-row"><input type="checkbox" id="detail-leitung-checkbox" ${b.isLeitung ? "checked" : ""}/> Leitung (RP-Führungsebene)</label></div>
-        <div class="detail-row"><span class="detail-row__label">Status</span>
+        <div class="detail-row"><span class="detail-row__label">RP-Rang</span>
+          <span>${rangBadgeHtml(b.rolle) || "—"}</span></div>
+        <p class="abschnitt__hint" style="margin: -10px 0 0;">RP-Rang wird über die Personalakte der Leitung verwaltet.</p>
+        <div class="detail-row"><span class="detail-row__label">Umbenennen</span>
+          <input type="text" class="field-input" id="detail-name-input" value="${escapeHtml(b.username || "")}" style="max-width:220px;" />
+          <button class="btn btn--ghost btn--sm" data-benutzer-aktion="umbenennen">Speichern</button></div>
+        <div class="detail-row"><span class="detail-row__label">Notiz</span>
+          <input type="text" class="field-input" id="detail-notiz-input" value="${escapeHtml(b.adminNote || "")}" style="flex:1;" /></div>
+
+        <h4 class="detail-abschnitt-titel">Aktionen</h4>
+        <div class="detail-row"><span class="detail-row__label">Sperrstatus</span>
           ${
             b.status === "locked"
               ? `<button class="btn btn--ghost btn--sm" data-benutzer-aktion="entsperren">Entsperren</button>`
@@ -185,19 +248,12 @@
                  <button class="btn btn--danger btn--sm" data-benutzer-aktion="sperren">Sperren</button>`
           }
         </div>
-        <div class="detail-row"><span class="detail-row__label">Umbenennen</span>
-          <input type="text" class="field-input" id="detail-name-input" value="${escapeHtml(b.username || "")}" style="max-width:220px;" />
-          <button class="btn btn--ghost btn--sm" data-benutzer-aktion="umbenennen">Speichern</button></div>
-        <div class="detail-row"><span class="detail-row__label">Notiz</span>
-          <input type="text" class="field-input" id="detail-notiz-input" value="${escapeHtml(b.adminNote || "")}" style="flex:1;" /></div>
         ${
           b.email
             ? `<div class="detail-row"><span class="detail-row__label">Passwort</span>
                 <button class="btn btn--ghost btn--sm" data-benutzer-aktion="passwort-reset">Zurücksetzen-E-Mail senden</button></div>`
             : ""
         }
-        <div class="detail-row"><span class="detail-row__label">Registriert</span><span>${formatDatumUhrzeit(b.createdAt)}</span></div>
-        <div class="detail-row"><span class="detail-row__label">Letzter Login</span><span>${formatDatumUhrzeit(b.lastLogin)}</span></div>
         <div class="detail-row" style="justify-content:flex-end; border-top:1px solid var(--panel-edge); padding-top:14px;">
           <button class="btn btn--danger btn--sm" data-benutzer-aktion="loeschen">Benutzer löschen</button>
         </div>
@@ -273,17 +329,71 @@
     });
   }
 
-  function renderAdminLog() {
-    if (!el.adminLogListe) return;
-    el.adminLogListe.innerHTML = adminLogEintraege
-      .map(
-        (log) => `<div class="admin-log__item">
-          <span class="admin-log__item-text"><strong>${escapeHtml(log.adminName || "Unbekannt")}</strong> — ${escapeHtml(log.aktion)}${
-            log.zielName ? ` · ${escapeHtml(log.zielName)}` : ""
-          }${log.details ? ` (${escapeHtml(log.details)})` : ""}</span>
-          <span class="admin-log__item-zeit">${formatDatumUhrzeit(log.zeitpunkt)}</span>
-        </div>`
-      )
-      .join("");
+  /* ------------------------------------------------------------------------
+     19e. Aktivitätslog: Darstellung + Filter
+     ------------------------------------------------------------------------ */
+  // Gemeinsame Zeilen-Vorlage - auch von renderAdminUebersicht genutzt, damit
+  // die "Letzte Systemaktivitäten"-Karte und das volle Log gleich aussehen.
+  // Zeit zuerst (eigene Zeile), dann wer/was/wen - siehe Vorgabe-Beispiel.
+  function adminLogEintragHtml(log) {
+    return `<div class="admin-log__item">
+        <span class="admin-log__item-zeit">${formatDatumUhrzeit(log.zeitpunkt)}</span>
+        <span class="admin-log__item-text"><strong>${escapeHtml(log.adminName || "Unbekannt")}</strong> — ${escapeHtml(log.aktion)}${
+      log.zielName ? ` · ${escapeHtml(log.zielName)}` : ""
+    }${log.details ? ` (${escapeHtml(log.details)})` : ""}</span>
+      </div>`;
   }
 
+  function renderAdminLogAktionFilter() {
+    if (!el.adminLogAktionFilter) return;
+    const aktionen = Array.from(new Set(adminLogEintraege.map((l) => l.aktion).filter(Boolean))).sort((a, b) => a.localeCompare(b, "de"));
+    const gewaehlt = adminLogAktionFilterWert;
+    el.adminLogAktionFilter.innerHTML =
+      `<option value="alle">Alle Aktionen</option>` + aktionen.map((a) => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join("");
+    // Falls die zuvor gewählte Aktion nicht mehr im (aktuellen 50er-Fenster)
+    // Log vorkommt, fällt der Filter sauber auf "Alle Aktionen" zurück.
+    el.adminLogAktionFilter.value = aktionen.includes(gewaehlt) ? gewaehlt : "alle";
+    adminLogAktionFilterWert = el.adminLogAktionFilter.value;
+    aktualisiereCustomSelect(el.adminLogAktionFilter);
+  }
+
+  function gefiltertesAdminLog() {
+    let liste = adminLogEintraege;
+    if (adminLogAktionFilterWert !== "alle") liste = liste.filter((l) => l.aktion === adminLogAktionFilterWert);
+    if (adminLogZeitraumFilterWert !== "alle") {
+      const grenzeMs = adminLogZeitraumFilterWert === "heute" ? tagAnfang(new Date()).getTime() : Date.now() - Number(adminLogZeitraumFilterWert) * 86400000;
+      liste = liste.filter((l) => zeitstempelWert(l.zeitpunkt) >= grenzeMs);
+    }
+    const begriff = adminLogSuche.trim().toLowerCase();
+    if (begriff) {
+      liste = liste.filter((l) => (l.adminName || "").toLowerCase().includes(begriff) || (l.zielName || "").toLowerCase().includes(begriff));
+    }
+    return liste;
+  }
+
+  function renderAdminLog() {
+    if (!el.adminLogListe) return;
+    renderAdminLogAktionFilter();
+    const liste = gefiltertesAdminLog();
+    el.adminLogListe.innerHTML = liste.map(adminLogEintragHtml).join("");
+    if (el.adminLogLeer) el.adminLogLeer.hidden = liste.length > 0;
+  }
+
+  if (el.adminLogSucheInput) {
+    el.adminLogSucheInput.addEventListener("input", () => {
+      adminLogSuche = el.adminLogSucheInput.value;
+      renderAdminLog();
+    });
+  }
+  if (el.adminLogAktionFilter) {
+    el.adminLogAktionFilter.addEventListener("change", () => {
+      adminLogAktionFilterWert = el.adminLogAktionFilter.value;
+      renderAdminLog();
+    });
+  }
+  if (el.adminLogZeitraumFilter) {
+    el.adminLogZeitraumFilter.addEventListener("change", () => {
+      adminLogZeitraumFilterWert = el.adminLogZeitraumFilter.value;
+      renderAdminLog();
+    });
+  }

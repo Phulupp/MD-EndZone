@@ -93,7 +93,7 @@
 
     // Wer Adminrechte verliert, fliegt aus der Verwaltung; wer BEIDE Rechte
     // verliert, fliegt zusätzlich aus dem gesamten Leitungsbereich.
-    if (warAdmin && !istAdmin() && ["admin", "admin-log"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
+    if (warAdmin && !istAdmin() && ["admin-uebersicht", "admin", "admin-system", "admin-log"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
     if (hatteZugriffAufPersonal && !brauchtZugriffAufPersonal && ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"].includes(aktuelleAnsicht)) {
       zeigeAnsicht("startseite");
     }

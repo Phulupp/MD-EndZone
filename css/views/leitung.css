@@ -2,53 +2,10 @@
    24. Leitung — Übersicht
    --------------------------------------------------------------------------
    Bewusst kein "Admin-Dashboard mit großen Statistik-Cards": die Kennzahlen
-   sind ein kompakter Streifen statt vier Hero-Kacheln, der gewonnene Platz
-   geht an strukturierte Listen (Dienstübersicht, Aktivitäten, Termine) in
-   einem zweispaltigen Layout - links das Laufende, rechts das Vorausschauende. */
-.leitung-kennzahlen {
-  display: flex;
-  flex-wrap: wrap;
-  background: var(--karte);
-  border: 1px solid var(--panel-edge-soft);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  margin-bottom: 22px;
-  overflow: hidden;
-}
-
-.leitung-kennzahl {
-  flex: 1 1 200px;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 14px 22px;
-  border-right: 1px solid var(--panel-edge-soft);
-}
-
-.leitung-kennzahl:last-child {
-  border-right: none;
-}
-
-.leitung-kennzahl__wert {
-  font-size: 23px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
-.leitung-kennzahl__von {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--text-soft);
-}
-
-.leitung-kennzahl__label {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
+   (.kennzahlen-reihe, siehe css/components/cards.css) sind ein kompakter
+   Streifen statt vier Hero-Kacheln, der gewonnene Platz geht an strukturierte
+   Listen (Dienstübersicht, Aktivitäten, Termine) in einem zweispaltigen
+   Layout - links das Laufende, rechts das Vorausschauende. */
 
 /* Zweispaltig: links die laufenden Dinge (Dienst, Infos, Aktivitäten),
    rechts das Vorausschauende (Termine, Aufgaben, Fortbildungen). Die rechte
@@ -71,42 +28,6 @@
   .leitung-layout {
     grid-template-columns: 1fr;
   }
-}
-
-.leitung-mini-zeile {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--panel-edge-soft);
-  font-size: 13.5px;
-}
-
-.leitung-mini-zeile:last-child {
-  border-bottom: none;
-}
-
-.leitung-mini-zeile__zeit {
-  flex: 0 0 auto;
-  color: var(--text-soft);
-  font-variant-numeric: tabular-nums;
-}
-
-.leitung-mini-zeile__haupt {
-  flex: 1;
-  min-width: 0;
-  color: var(--text);
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.leitung-mini-zeile__nebentext {
-  flex: 0 0 auto;
-  font-weight: 400;
-  color: var(--text-muted);
 }
 
 /* Wichtige Informationen: schlanker Inhalts-Wrapper statt eigener Karte mit
@@ -135,13 +56,4 @@
 
 .leitung-info-inhalt__meta:empty {
   display: none;
-}
-
-/* Kompakter Empty-State für kleinere Karten (Offene Aufgaben, Anstehende
-   Fortbildungen, Dienstübersicht) - der generische .empty-state ist für
-   ganzseitige Leerzustände gedacht und dafür zu groß/zentriert. */
-.empty-state--kompakt {
-  padding: 4px 0;
-  text-align: left;
-  font-size: 13px;
 }

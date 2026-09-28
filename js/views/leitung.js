@@ -27,11 +27,11 @@
   function leitungDienstZeileHtml(person) {
     const eintrag = person.id ? dienstStatus[person.id] : null;
     const rang = person.rang.trim();
-    return `<div class="leitung-mini-zeile">
-        <span class="leitung-mini-zeile__haupt">${escapeHtml(person.name.trim())}${
-      rang ? ` <span class="leitung-mini-zeile__nebentext">· ${escapeHtml(rang)}</span>` : ""
+    return `<div class="mini-zeile">
+        <span class="mini-zeile__haupt">${escapeHtml(person.name.trim())}${
+      rang ? ` <span class="mini-zeile__nebentext">· ${escapeHtml(rang)}</span>` : ""
     }</span>
-        <span class="leitung-mini-zeile__nebentext">${escapeHtml(eintrag ? seitText(eintrag.aktualisiertAm) : "")}</span>
+        <span class="mini-zeile__nebentext">${escapeHtml(eintrag ? seitText(eintrag.aktualisiertAm) : "")}</span>
       </div>`;
   }
 
@@ -52,10 +52,10 @@
   function leitungTerminZeileHtml(t) {
     const patient = t.patientId ? patienten.find((x) => x.id === t.patientId) : null;
     const name = patient ? patient.name : t.patientName || "—";
-    return `<div class="leitung-mini-zeile">
-        <span class="leitung-mini-zeile__zeit">${escapeHtml(leitungTerminTagLabel(terminTag(t)))} · ${escapeHtml(terminZeit(t))}</span>
-        <span class="leitung-mini-zeile__haupt">${escapeHtml(name)}</span>
-        <span class="leitung-mini-zeile__nebentext">${escapeHtml(t.art || "Termin")}</span>
+    return `<div class="mini-zeile">
+        <span class="mini-zeile__zeit">${escapeHtml(leitungTerminTagLabel(terminTag(t)))} · ${escapeHtml(terminZeit(t))}</span>
+        <span class="mini-zeile__haupt">${escapeHtml(name)}</span>
+        <span class="mini-zeile__nebentext">${escapeHtml(t.art || "Termin")}</span>
       </div>`;
   }
 
@@ -67,7 +67,7 @@
     const personen = dienstPersonen();
     const imDienstListe = personen.filter((p) => statusVon(p) === "im-dienst");
     el.leitungKpiDienst.innerHTML = personen.length
-      ? `${imDienstListe.length}<span class="leitung-kennzahl__von"> / ${personen.length}</span>`
+      ? `${imDienstListe.length}<span class="kennzahl__von"> / ${personen.length}</span>`
       : "–";
     el.leitungDienstListe.innerHTML = imDienstListe.length
       ? imDienstListe.map(leitungDienstZeileHtml).join("")

@@ -598,10 +598,10 @@
   cursor: default;
 }
 
-/* Leitungs-Reiterleiste: etwas kompakter als die generischen .tabs
-   (z. B. bei der Benutzerverwaltungs-Statusfilterung), da hier sieben statt
-   zwei Einträge nebeneinander stehen. */
-.leitung-tabs {
+/* Kompakte Reiterleiste (Leitung UND Verwaltung nutzen sie): etwas enger als
+   die generischen .tabs (z. B. bei der Benutzerverwaltungs-Statusfilterung),
+   da hier mehr Einträge nebeneinander stehen. */
+.tabs--kompakt {
   gap: 20px;
   margin-bottom: 24px;
 }

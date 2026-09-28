@@ -268,7 +268,16 @@
     startseiteSelect: document.getElementById("startseite-select"),
     themaSelect: document.getElementById("thema-select"),
 
-    // Verwaltung
+    // Verwaltung — Übersicht
+    adminKpiInsgesamt: document.getElementById("admin-kpi-insgesamt"),
+    adminKpiAktiv: document.getElementById("admin-kpi-aktiv"),
+    adminKpiGesperrt: document.getElementById("admin-kpi-gesperrt"),
+    adminKpiAntraege: document.getElementById("admin-kpi-antraege"),
+    adminKpiAdmins: document.getElementById("admin-kpi-admins"),
+    adminKpiLeitung: document.getElementById("admin-kpi-leitung"),
+    adminUebersichtAktivitaeten: document.getElementById("admin-uebersicht-aktivitaeten"),
+
+    // Verwaltung — Benutzer
     formAddBenutzer: document.getElementById("form-add-benutzer"),
     neuerBenutzerNameInput: document.getElementById("neuer-benutzer-name-input"),
     neuerBenutzerEmailInput: document.getElementById("neuer-benutzer-email-input"),
@@ -278,7 +287,16 @@
     benutzerverwaltungListe: document.getElementById("benutzerverwaltung-liste"),
     benutzerDetailsName: document.getElementById("benutzer-details-name"),
     benutzerDetailsBody: document.getElementById("benutzer-details-body"),
+
+    // Verwaltung — System
+    adminSystemVersion: document.getElementById("admin-system-version"),
+
+    // Verwaltung — Aktivitätslog
+    adminLogSucheInput: document.getElementById("admin-log-suche"),
+    adminLogAktionFilter: document.getElementById("admin-log-aktion-filter"),
+    adminLogZeitraumFilter: document.getElementById("admin-log-zeitraum-filter"),
     adminLogListe: document.getElementById("admin-log-liste"),
+    adminLogLeer: document.getElementById("admin-log-leer"),
 
     // Modals allgemein
     deleteTitle: document.getElementById("delete-title"),
@@ -446,7 +464,17 @@
   // bleiben als helle Browser-Auswahl stehen. Jedes Feld einzeln abgesichert,
   // damit ein Fehler nicht die übrigen mitnimmt.
   function wandleAuswahlfelderUm() {
-    [el.startseiteSelect, el.themaSelect, el.neuerBenutzerRolleInput, el.beispielKategorieSelect, el.terminArtSelect, el.terminStatusSelect, el.personalakteRangSelect].forEach((select) => {
+    [
+      el.startseiteSelect,
+      el.themaSelect,
+      el.neuerBenutzerRolleInput,
+      el.beispielKategorieSelect,
+      el.terminArtSelect,
+      el.terminStatusSelect,
+      el.personalakteRangSelect,
+      el.adminLogAktionFilter,
+      el.adminLogZeitraumFilter,
+    ].forEach((select) => {
       try {
         erzeugeCustomSelect(select);
       } catch (fehler) {

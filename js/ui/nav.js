@@ -5,9 +5,12 @@
      ------------------------------------------------------------------------ */
   // Views, die zusammen den (RP-)Leitungsbereich bilden - teilen sich EINEN
   // Sidebar-Button ("Leitung", data-view="leitung-uebersicht"). BEWUSST
-  // GETRENNT von "admin"/"admin-log" (technische Verwaltung, eigener
-  // Sidebar-Button) - siehe die Reiterleisten in index.html.
+  // GETRENNT von der Verwaltung (eigener Sidebar-Button) - siehe die
+  // Reiterleisten in index.html.
   const LEITUNG_ANSICHTEN = ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"];
+  // Views, die zusammen die technische Verwaltung bilden - teilen sich EINEN
+  // Sidebar-Button ("Verwaltung", data-view="admin-uebersicht").
+  const VERWALTUNG_ANSICHTEN = ["admin-uebersicht", "admin", "admin-system", "admin-log"];
 
   function zeigeAnsicht(view) {
     aktuelleAnsicht = view;
@@ -16,15 +19,14 @@
     document.querySelectorAll(".sidebar__item").forEach((btn) => {
       const meineAnsicht = btn.getAttribute("data-view");
       // "patient-detail" hat keinen eigenen Sidebar-Button - zählt zu
-      // Patientenakten. "admin-log" zählt zum Sidebar-Button "Verwaltung"
-      // (data-view="admin"). Die Leitungs-Unterseiten zählen zum Sidebar-
-      // Button "Leitung" (data-view="leitung-uebersicht"), siehe LEITUNG_ANSICHTEN.
+      // Patientenakten. Die Leitungs-/Verwaltungs-Unterseiten zählen jeweils
+      // zu ihrem eigenen Sidebar-Button, siehe LEITUNG_ANSICHTEN/VERWALTUNG_ANSICHTEN.
       btn.classList.toggle(
         "sidebar__item--active",
         meineAnsicht === view ||
-          (view === "admin-log" && meineAnsicht === "admin") ||
           (view === "patient-detail" && meineAnsicht === "patientenakten") ||
-          (meineAnsicht === "leitung-uebersicht" && LEITUNG_ANSICHTEN.includes(view))
+          (meineAnsicht === "leitung-uebersicht" && LEITUNG_ANSICHTEN.includes(view)) ||
+          (meineAnsicht === "admin-uebersicht" && VERWALTUNG_ANSICHTEN.includes(view))
       );
     });
 

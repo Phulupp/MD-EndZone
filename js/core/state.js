@@ -63,6 +63,10 @@
   let unsubAdminLog = null;
   let adminLogEintraege = [];
   let benutzerSuche = "";
+  // Filter über dem Aktivitätslog (siehe renderAdminLog in js/views/admin.js).
+  let adminLogSuche = "";
+  let adminLogAktionFilterWert = "alle";
+  let adminLogZeitraumFilterWert = "alle";
 
   // RP-Personalakte (Leitung ODER Admin, siehe js/views/leitung-personal.js):
   // beide Collections werden komplett geladen und je Personalakte

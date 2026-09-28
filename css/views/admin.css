@@ -142,10 +142,30 @@
   flex: 0 0 190px;
 }
 
-/* Der Rang-Regler ist die am häufigsten gebrauchte Zeile - ein dezenter
-   linker Akzentstreifen hebt sie von den übrigen Aktionen ab. */
-.detail-row--rang {
-  border-left: 2px solid var(--accent-bright);
-  padding-left: 12px;
-  margin-left: -14px;
+/* Überschrift innerhalb des Benutzerdetails-Modals ("Technischer Account" /
+   "Aktionen") - trennt rein informative/umschaltbare Felder klar von
+   destruktiven Aktionsschaltflächen. */
+.detail-abschnitt-titel {
+  margin: 4px 0 -2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.detail-abschnitt-titel:first-child {
+  margin-top: 0;
+}
+
+/* Filterleiste über dem Aktivitätslog. */
+.admin-log-filter {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 4px;
+}
+
+.admin-log-filter .field-input {
+  flex: 1 1 200px;
 }

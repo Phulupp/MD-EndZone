@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 155;
+  const VERSION_AKTUELL = 156;
 
   // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
   // und werden separat je Benutzer vergeben, siehe isAdmin).
@@ -152,6 +152,12 @@
     // Kein Sidebar-/Reiter-Eintrag - wird per oeffnePersonalakte (js/views/
     // leitung-personal.js) geöffnet, Titel dort auf den Namen gesetzt.
     "leitung-personalakte": { title: "Personalakte", subtitle: "" },
-    admin: { title: "Verwaltung", subtitle: "Technische Benutzerverwaltung — nur für Verwalter sichtbar." },
-    "admin-log": { title: "Aktivitäts-Log", subtitle: "Wer hat wann was geändert — nur für Verwalter sichtbar." },
+    // Verwaltung: rein technische Systemadministration, ausschließlich
+    // istAdmin() - "admin-uebersicht" ist die neue Landing-Page (analog
+    // "leitung-uebersicht"), "admin"/"admin-log" sind die bisherigen internen
+    // View-Namen geblieben (Benutzer/Aktivitäts-Log), "admin-system" ist neu.
+    "admin-uebersicht": { title: "Verwaltungsübersicht", subtitle: "Kennzahlen und letzte Systemaktivitäten — nur für Verwalter sichtbar." },
+    admin: { title: "Benutzer", subtitle: "Technische Benutzerverwaltung — nur für Verwalter sichtbar." },
+    "admin-system": { title: "System", subtitle: "Systeminformationen — nur für Verwalter sichtbar." },
+    "admin-log": { title: "Aktivitätslog", subtitle: "Wer hat wann was geändert — nur für Verwalter sichtbar." },
   };
