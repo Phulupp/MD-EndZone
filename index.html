@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=158" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=159" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,26 +29,26 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=158" />
-  <link rel="stylesheet" href="css/base/reset.css?v=158" />
-  <link rel="stylesheet" href="css/base/background.css?v=158" />
-  <link rel="stylesheet" href="css/views/auth.css?v=158" />
-  <link rel="stylesheet" href="css/components/forms.css?v=158" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=158" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=158" />
-  <link rel="stylesheet" href="css/components/cards.css?v=158" />
-  <link rel="stylesheet" href="css/components/badges.css?v=158" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=158" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=158" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=158" />
-  <link rel="stylesheet" href="css/views/termine.css?v=158" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=158" />
-  <link rel="stylesheet" href="css/components/modals.css?v=158" />
-  <link rel="stylesheet" href="css/views/admin.css?v=158" />
-  <link rel="stylesheet" href="css/views/leitung.css?v=158" />
-  <link rel="stylesheet" href="css/components/toast.css?v=158" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=158" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=158" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=159" />
+  <link rel="stylesheet" href="css/base/reset.css?v=159" />
+  <link rel="stylesheet" href="css/base/background.css?v=159" />
+  <link rel="stylesheet" href="css/views/auth.css?v=159" />
+  <link rel="stylesheet" href="css/components/forms.css?v=159" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=159" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=159" />
+  <link rel="stylesheet" href="css/components/cards.css?v=159" />
+  <link rel="stylesheet" href="css/components/badges.css?v=159" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=159" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=159" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=159" />
+  <link rel="stylesheet" href="css/views/termine.css?v=159" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=159" />
+  <link rel="stylesheet" href="css/components/modals.css?v=159" />
+  <link rel="stylesheet" href="css/views/admin.css?v=159" />
+  <link rel="stylesheet" href="css/views/leitung.css?v=159" />
+  <link rel="stylesheet" href="css/components/toast.css?v=159" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=159" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=159" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -501,6 +501,14 @@
               </div>
               <div class="pkopf__aktionen">
                 <button type="button" class="pkopf__link" id="btn-patient-bearbeiten">Bearbeiten</button>
+                <button type="button" class="btn btn--primary" id="btn-akte-neu">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neue Akte</span>
+                </button>
+                <button type="button" class="btn btn--primary" id="btn-gutachten-neu" hidden>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Neues Gutachten</span>
+                </button>
               </div>
             </div>
 
@@ -571,24 +579,55 @@
               </div>
             </div>
 
-            <!-- Reiter: Akten | Gutachten (siehe js/views/gutachten.js) -->
+            <!-- Reiter: Übersicht | Akten | Gutachten (siehe js/views/gutachten.js) -->
             <div class="tabs ptabs">
-              <button type="button" class="tabs__tab tabs__tab--active" data-ptab="akten">Akten<span class="tabs__zaehler" id="ptab-zaehler-akten"></span></button>
+              <button type="button" class="tabs__tab tabs__tab--active" data-ptab="uebersicht">Übersicht</button>
+              <button type="button" class="tabs__tab" data-ptab="akten">Akten<span class="tabs__zaehler" id="ptab-zaehler-akten"></span></button>
               <button type="button" class="tabs__tab" data-ptab="gutachten">Gutachten<span class="tabs__zaehler" id="ptab-zaehler-gutachten"></span></button>
-              <div class="ptabs__aktion">
-                <button type="button" class="btn btn--primary" id="btn-akte-neu">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  <span>Neue Akte</span>
-                </button>
-                <button type="button" class="btn btn--primary" id="btn-gutachten-neu" hidden>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  <span>Neues Gutachten</span>
-                </button>
+            </div>
+
+            <!-- Übersicht: berechnete Kennzahlen + letzte Aktivität (keine
+                 neuen Datenfelder - reine Auswertung der Akten/Gutachten). -->
+            <div class="ptab-panel" id="ptab-uebersicht">
+              <div class="kennzahlen-reihe">
+                <div class="kennzahl">
+                  <span class="kennzahl__wert" id="patient-kpi-akten">0</span>
+                  <span class="kennzahl__label">Akten</span>
+                </div>
+                <div class="kennzahl">
+                  <span class="kennzahl__wert" id="patient-kpi-letzter-besuch">—</span>
+                  <span class="kennzahl__label">Letzter Besuch</span>
+                </div>
+                <div class="kennzahl">
+                  <span class="kennzahl__wert" id="patient-kpi-letzte-behandlung">—</span>
+                  <span class="kennzahl__label">Letzte Behandlung</span>
+                </div>
+                <div class="kennzahl">
+                  <span class="kennzahl__wert" id="patient-kpi-gutachten">0</span>
+                  <span class="kennzahl__label">Gutachten</span>
+                </div>
+              </div>
+
+              <div class="pat-uebersicht-layout">
+                <div class="karte">
+                  <div class="karte__kopf">
+                    <h3 class="karte__titel">Letzte Akten</h3>
+                    <button type="button" class="pkopf__link" data-ptab-gehe-zu="akten">Alle ansehen</button>
+                  </div>
+                  <div id="patient-uebersicht-akten"></div>
+                </div>
+                <div class="karte">
+                  <div class="karte__kopf">
+                    <h3 class="karte__titel">Gutachten</h3>
+                    <button type="button" class="pkopf__link" data-ptab-gehe-zu="gutachten">Alle ansehen</button>
+                  </div>
+                  <div id="patient-uebersicht-gutachten"></div>
+                </div>
               </div>
             </div>
 
             <!-- Akten: volle Breite -->
-            <div class="ptab-panel" id="ptab-akten">
+            <div class="ptab-panel" id="ptab-akten" hidden>
               <div class="pakten">
                 <div class="pakten__kopf" hidden>
                   <p class="pakten__anzahl" id="patient-akten-anzahl"></p>
@@ -1191,11 +1230,19 @@
             <button type="button" class="konflikt-hinweis__aktion" id="btn-akte-konflikt-laden">Neu laden (verwirft meine Eingaben)</button>
           </div>
 
-          <div class="md-feld akte-titelfeld">
-            <label for="akte-behandlungsgrund" class="akte-titel-label"><span>Titel</span><span class="akte-titel-zaehler" id="akte-titel-zaehler">0 / 60</span></label>
-            <input type="text" id="akte-behandlungsgrund" class="md-input md-input--gross" maxlength="60" placeholder="Kurz, z. B. Platzwunde am Kopf" autocomplete="off" />
-            <p class="akte-titel-hinweis">Das Datum wird automatisch dahinter angezeigt. Symptome und Details gehören in den Hergang.</p>
+          <div class="doc-form-kopf doc-form-kopf--akte">
+            <div class="md-feld akte-titelfeld">
+              <label for="akte-behandlungsgrund" class="akte-titel-label"><span>Titel</span><span class="akte-titel-zaehler" id="akte-titel-zaehler">0 / 60</span></label>
+              <input type="text" id="akte-behandlungsgrund" class="md-input md-input--gross" maxlength="60" placeholder="Kurz, z. B. Platzwunde am Kopf" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="akte-datum">Datum &amp; Uhrzeit</label>
+              <input type="datetime-local" id="akte-datum" class="md-input" />
+            </div>
           </div>
+          <p class="doc-form-hinweis">Pflicht sind nur Titel und Datum. Das Datum wird danach automatisch neben dem Titel angezeigt, Symptome und Details gehören in den Hergang.</p>
+
+          <div class="akte-hinweis akte-hinweis--form" id="akte-form-hinweise" hidden></div>
 
           <div class="md-feld">
             <label for="akte-hergang">Hergang</label>
@@ -1216,17 +1263,6 @@
 
           <p class="field-error" id="akte-error" hidden></p>
         </div>
-
-        <aside class="akte-blatt__seite">
-          <div class="akte-blatt__seite-innen">
-            <div class="md-feld">
-              <label for="akte-datum">Datum &amp; Uhrzeit</label>
-              <input type="datetime-local" id="akte-datum" class="md-input" />
-            </div>
-            <div class="akte-hinweis akte-hinweis--form" id="akte-form-hinweise" hidden></div>
-            <p class="akte-seite__hinweis">Pflicht sind nur Behandlungsgrund und Datum. Alles andere ist optional.</p>
-          </div>
-        </aside>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-close-modal="modal-akte-form">Abbrechen</button>
@@ -1245,11 +1281,9 @@
         <div class="akte-blatt__haupt">
           <span class="akte-blatt__kicker" id="akte-detail-kicker">Behandlungsakte</span>
           <h3 id="akte-detail-titel">Akte</h3>
+          <dl class="akte-meta" id="akte-detail-seite"></dl>
           <div id="akte-detail-inhalt"></div>
         </div>
-        <aside class="akte-blatt__seite">
-          <dl class="akte-blatt__seite-innen akte-seite" id="akte-detail-seite"></dl>
-        </aside>
       </div>
       <div class="modal__footer">
         <button type="button" class="akte-fuss__loeschen" id="btn-akte-loeschen">Löschen</button>
@@ -1272,6 +1306,26 @@
           <span class="akte-blatt__kicker">Psychologisches Gutachten · Kleiner Waffenschein</span>
           <h3 id="gutachten-form-titel">Neues Gutachten</h3>
 
+          <div class="doc-form-kopf doc-form-kopf--gutachten">
+            <div class="md-feld">
+              <label for="gutachten-name">Name</label>
+              <input type="text" id="gutachten-name" class="md-input" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="gutachten-geburtsdatum">Geburtsdatum</label>
+              <input type="text" id="gutachten-geburtsdatum" class="md-input" placeholder="TT.MM.JJJJ" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="gutachten-telefon">Telefonnummer</label>
+              <input type="text" id="gutachten-telefon" class="md-input" autocomplete="off" />
+            </div>
+            <div class="md-feld">
+              <label for="gutachten-datum">Ausgestellt am</label>
+              <input type="datetime-local" id="gutachten-datum" class="md-input" />
+            </div>
+          </div>
+          <p class="doc-form-hinweis">Die Personendaten stammen aus dem Patientenprofil und werden fest im Gutachten gespeichert. Ausgestellt von <strong id="gutachten-aussteller">—</strong>.</p>
+
           <div class="md-feld akte-titelfeld">
             <label id="gutachten-ergebnis-label">Ergebnis</label>
             <div class="gutachten-optionen" id="gutachten-optionen" role="radiogroup" aria-labelledby="gutachten-ergebnis-label">
@@ -1291,31 +1345,6 @@
 
           <p class="field-error" id="gutachten-error" hidden></p>
         </div>
-
-        <aside class="akte-blatt__seite">
-          <div class="akte-blatt__seite-innen">
-            <div class="md-feld">
-              <label for="gutachten-name">Name</label>
-              <input type="text" id="gutachten-name" class="md-input" autocomplete="off" />
-            </div>
-            <div class="md-feld">
-              <label for="gutachten-geburtsdatum">Geburtsdatum</label>
-              <input type="text" id="gutachten-geburtsdatum" class="md-input" placeholder="TT.MM.JJJJ" autocomplete="off" />
-            </div>
-            <div class="md-feld">
-              <label for="gutachten-telefon">Telefonnummer</label>
-              <input type="text" id="gutachten-telefon" class="md-input" autocomplete="off" />
-            </div>
-            <div class="md-feld">
-              <label for="gutachten-datum">Ausgestellt am</label>
-              <input type="datetime-local" id="gutachten-datum" class="md-input" />
-            </div>
-            <dl class="akte-seite">
-              <div><dt>Ausgestellt von</dt><dd id="gutachten-aussteller">—</dd></div>
-            </dl>
-            <p class="akte-seite__hinweis">Die Personendaten stammen aus dem Patientenprofil und werden fest im Gutachten gespeichert.</p>
-          </div>
-        </aside>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-close-modal="modal-gutachten-form">Abbrechen</button>
@@ -1334,11 +1363,9 @@
         <div class="akte-blatt__haupt">
           <span class="akte-blatt__kicker" id="gutachten-detail-kicker">Psychologisches Gutachten</span>
           <h3 id="gutachten-detail-titel">Gutachten</h3>
+          <dl class="akte-meta" id="gutachten-detail-seite"></dl>
           <div id="gutachten-detail-inhalt"></div>
         </div>
-        <aside class="akte-blatt__seite">
-          <dl class="akte-blatt__seite-innen akte-seite" id="gutachten-detail-seite"></dl>
-        </aside>
       </div>
       <div class="modal__footer">
         <button type="button" class="akte-fuss__loeschen" id="btn-gutachten-loeschen" hidden>Löschen</button>
@@ -1646,31 +1673,31 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=158"></script>
-  <script defer src="js/core/config.js?v=158"></script>
-  <script defer src="js/core/state.js?v=158"></script>
-  <script defer src="js/core/dom.js?v=158"></script>
-  <script defer src="js/core/utils.js?v=158"></script>
-  <script defer src="js/core/raenge.js?v=158"></script>
-  <script defer src="js/core/akte-dokument.js?v=158"></script>
-  <script defer src="js/core/akte-pdf.js?v=158"></script>
-  <script defer src="js/ui/modals.js?v=158"></script>
-  <script defer src="js/ui/nav.js?v=158"></script>
-  <script defer src="js/ui/presence.js?v=158"></script>
-  <script defer src="js/views/startseite.js?v=158"></script>
-  <script defer src="js/views/patientenakten.js?v=158"></script>
-  <script defer src="js/views/gutachten.js?v=158"></script>
-  <script defer src="js/views/akte-link.js?v=158"></script>
-  <script defer src="js/views/termine.js?v=158"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=158"></script>
-  <script defer src="js/views/beispiele.js?v=158"></script>
-  <script defer src="js/views/einstellungen.js?v=158"></script>
-  <script defer src="js/views/admin.js?v=158"></script>
-  <script defer src="js/views/admin-raenge.js?v=158"></script>
-  <script defer src="js/views/leitung.js?v=158"></script>
-  <script defer src="js/views/leitung-personal.js?v=158"></script>
-  <script defer src="js/ui/version-check.js?v=158"></script>
-  <script defer src="js/main.js?v=158"></script>
-  <script type="module" src="js/auth.js?v=158"></script>
+  <script defer src="js/firebase-config.js?v=159"></script>
+  <script defer src="js/core/config.js?v=159"></script>
+  <script defer src="js/core/state.js?v=159"></script>
+  <script defer src="js/core/dom.js?v=159"></script>
+  <script defer src="js/core/utils.js?v=159"></script>
+  <script defer src="js/core/raenge.js?v=159"></script>
+  <script defer src="js/core/akte-dokument.js?v=159"></script>
+  <script defer src="js/core/akte-pdf.js?v=159"></script>
+  <script defer src="js/ui/modals.js?v=159"></script>
+  <script defer src="js/ui/nav.js?v=159"></script>
+  <script defer src="js/ui/presence.js?v=159"></script>
+  <script defer src="js/views/startseite.js?v=159"></script>
+  <script defer src="js/views/patientenakten.js?v=159"></script>
+  <script defer src="js/views/gutachten.js?v=159"></script>
+  <script defer src="js/views/akte-link.js?v=159"></script>
+  <script defer src="js/views/termine.js?v=159"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=159"></script>
+  <script defer src="js/views/beispiele.js?v=159"></script>
+  <script defer src="js/views/einstellungen.js?v=159"></script>
+  <script defer src="js/views/admin.js?v=159"></script>
+  <script defer src="js/views/admin-raenge.js?v=159"></script>
+  <script defer src="js/views/leitung.js?v=159"></script>
+  <script defer src="js/views/leitung-personal.js?v=159"></script>
+  <script defer src="js/ui/version-check.js?v=159"></script>
+  <script defer src="js/main.js?v=159"></script>
+  <script type="module" src="js/auth.js?v=159"></script>
 </body>
 </html>

@@ -26,7 +26,10 @@
           gutachten = [];
           snap.forEach((docSnap) => gutachten.push({ id: docSnap.id, ...docSnap.data() }));
           renderPatientenListe();
-          if (offenerPatientId) renderPatientDetailGutachten(offenerPatientId);
+          if (offenerPatientId) {
+            renderPatientDetailGutachten(offenerPatientId);
+            renderPatientUebersicht(offenerPatientId);
+          }
           if (offenesGutachtenId) {
             const g = gutachten.find((x) => x.id === offenesGutachtenId);
             if (g) fuelleGutachtenDetail(g);
@@ -59,6 +62,7 @@
     document.querySelectorAll("[data-ptab]").forEach((knopf) => {
       knopf.classList.toggle("tabs__tab--active", knopf.getAttribute("data-ptab") === tab);
     });
+    el.ptabUebersicht.hidden = tab !== "uebersicht";
     el.ptabAkten.hidden = tab !== "akten";
     el.ptabGutachten.hidden = tab !== "gutachten";
     el.btnAkteNeu.hidden = tab !== "akten";
@@ -67,6 +71,11 @@
 
   document.querySelectorAll("[data-ptab]").forEach((knopf) => {
     knopf.addEventListener("click", () => setzePatientTab(knopf.getAttribute("data-ptab")));
+  });
+
+  // "Alle ansehen" in den Übersicht-Karten springt direkt in den jeweiligen Reiter.
+  document.querySelectorAll("[data-ptab-gehe-zu]").forEach((knopf) => {
+    knopf.addEventListener("click", () => setzePatientTab(knopf.getAttribute("data-ptab-gehe-zu")));
   });
 
   // --- Liste im Reiter -----------------------------------------------------
@@ -119,6 +128,13 @@
       if (event.target.closest("[data-gutachten-loeschen]")) return;
       event.preventDefault();
       oeffneEintrag(event);
+    });
+  }
+
+  if (el.patientUebersichtGutachten) {
+    el.patientUebersichtGutachten.addEventListener("click", (event) => {
+      const knopf = event.target.closest("[data-gutachten-oeffnen]");
+      if (knopf) oeffneGutachtenDetail(knopf.getAttribute("data-gutachten-oeffnen"));
     });
   }
 

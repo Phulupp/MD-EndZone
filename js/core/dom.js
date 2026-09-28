@@ -182,6 +182,16 @@
     btnAkteKonfliktLaden: document.getElementById("btn-akte-konflikt-laden"),
     btnAkteLoeschen: document.getElementById("btn-akte-loeschen"),
 
+    // Übersicht-Reiter der Patientenseite (siehe renderPatientUebersicht in
+    // js/views/patientenakten.js) - berechnete Kennzahlen, keine eigenen Daten.
+    ptabUebersicht: document.getElementById("ptab-uebersicht"),
+    patientKpiAkten: document.getElementById("patient-kpi-akten"),
+    patientKpiLetzterBesuch: document.getElementById("patient-kpi-letzter-besuch"),
+    patientKpiLetzteBehandlung: document.getElementById("patient-kpi-letzte-behandlung"),
+    patientKpiGutachten: document.getElementById("patient-kpi-gutachten"),
+    patientUebersichtAkten: document.getElementById("patient-uebersicht-akten"),
+    patientUebersichtGutachten: document.getElementById("patient-uebersicht-gutachten"),
+
     // Gutachten (siehe js/views/gutachten.js)
     ptabZaehlerAkten: document.getElementById("ptab-zaehler-akten"),
     ptabZaehlerGutachten: document.getElementById("ptab-zaehler-gutachten"),

@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 158;
+  const VERSION_AKTUELL = 159;
 
   // RP-Ränge: zentral in der Firestore-Collection "raenge" verwaltet (siehe
   // js/core/raenge.js) - "users.rolle" enthält direkt die stabile rangId

@@ -124,7 +124,10 @@
           // Anzeige-Listen werden live nachgezogen; ein offenes Akte-Formular
           // wird nie überschrieben, nur auf fremde Änderungen hingewiesen.
           renderPatientenListe();
-          if (offenerPatientId) renderPatientDetailAkten(offenerPatientId);
+          if (offenerPatientId) {
+            renderPatientDetailAkten(offenerPatientId);
+            renderPatientUebersicht(offenerPatientId);
+          }
           pruefeAkteKonflikt();
         },
         (fehler) => console.error("Akten konnten nicht geladen werden:", fehler)
@@ -429,7 +432,8 @@
     fuellePatientDetailFelder(p);
     setzeProfilBearbeiten(!!bearbeiten);
     renderPatientDetailAkten(patientId);
-    setzePatientTab("akten");
+    renderPatientUebersicht(patientId);
+    setzePatientTab("uebersicht");
     aktualisiereAdminSteuerung();
     if (bearbeiten && el.patientGeburtsdatum) el.patientGeburtsdatum.focus();
   }
@@ -743,6 +747,64 @@
     el.patientAktenSuche.addEventListener("input", () => {
       patientAktenSuchbegriff = el.patientAktenSuche.value;
       if (offenerPatientId) renderPatientDetailAkten(offenerPatientId);
+    });
+  }
+
+  // --- Übersicht-Reiter: berechnete Kennzahlen + letzte Aktivität ----------
+  // Reine Auswertung der schon geladenen Akten/Gutachten - keine eigenen
+  // Datenfelder, keine zusätzliche Firestore-Abfrage.
+  function kurzform(text, max) {
+    const t = text || "";
+    return t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t;
+  }
+
+  function renderPatientUebersicht(patientId) {
+    if (!el.patientKpiAkten) return;
+    const seineAkten = patientAkten(patientId);
+    const seineGutachten = patientGutachten(patientId);
+    const letzteAkte = seineAkten.length ? seineAkten[seineAkten.length - 1] : null;
+
+    el.patientKpiAkten.textContent = String(seineAkten.length);
+    el.patientKpiLetzterBesuch.textContent = letzteAkte ? formatDatum(letzteAkte.datum) : "—";
+    el.patientKpiLetzterBesuch.title = letzteAkte ? formatDatumZeit(letzteAkte.datum) : "";
+    el.patientKpiLetzteBehandlung.textContent = letzteAkte ? kurzform(letzteAkte.behandlungsgrund || "—", 26) : "—";
+    el.patientKpiLetzteBehandlung.title = letzteAkte ? letzteAkte.behandlungsgrund || "" : "";
+    el.patientKpiGutachten.textContent = String(seineGutachten.length);
+
+    if (el.patientUebersichtAkten) {
+      const juengste = seineAkten.slice(-3).reverse();
+      el.patientUebersichtAkten.innerHTML = juengste.length
+        ? juengste
+            .map(
+              (a) => `<button type="button" class="mini-zeile mini-zeile--klickbar" data-akte-oeffnen="${a.id}">
+                  <span class="mini-zeile__haupt">${escapeHtml(a.behandlungsgrund || "Behandlungsakte")}</span>
+                  <span class="mini-zeile__nebentext">${escapeHtml(formatDatum(a.datum))}</span>
+                </button>`
+            )
+            .join("")
+        : '<p class="empty-state--kompakt">Noch keine Akte angelegt.</p>';
+    }
+
+    if (el.patientUebersichtGutachten) {
+      const juengsteGutachten = seineGutachten.slice(-3).reverse();
+      el.patientUebersichtGutachten.innerHTML = juengsteGutachten.length
+        ? juengsteGutachten
+            .map((g) => {
+              const modifikator = g.ergebnis === "erteilt" ? "erteilt" : "nicht-erteilt";
+              return `<button type="button" class="mini-zeile mini-zeile--klickbar" data-gutachten-oeffnen="${g.id}">
+                  <span class="mini-zeile__haupt">${escapeHtml(formatDatum(g.datum))}</span>
+                  <span class="mini-zeile__nebentext mini-zeile__nebentext--${modifikator}">${escapeHtml(gutachtenErgebnisText(g))}</span>
+                </button>`;
+            })
+            .join("")
+        : '<p class="empty-state--kompakt">Noch kein Gutachten erstellt.</p>';
+    }
+  }
+
+  if (el.patientUebersichtAkten) {
+    el.patientUebersichtAkten.addEventListener("click", (event) => {
+      const knopf = event.target.closest("[data-akte-oeffnen]");
+      if (knopf) oeffneAkteDetailModal(knopf.getAttribute("data-akte-oeffnen"));
     });
   }
 
