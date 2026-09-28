@@ -75,23 +75,84 @@
     const funk = person.funk.trim();
     const id = attributSicher(person.id);
     const offen = dienstMenueOffen && dienstMenueOffen === person.id;
+    // Bestenmöglicher Namensabgleich (wie leitungFunkVonName) - rein für die
+    // Anzeige "Du", keine Sicherheitsprüfung. Siehe Abschlussbericht: eine
+    // echte serverseitige "nur eigenen Status ändern"-Regel ist aktuell
+    // nicht sauber möglich, da Mitarbeiterliste-Zeilen nicht mit einer uid
+    // verknüpft sind.
+    const istEigeneZeile = !!(aktuellerNutzer && person.name.trim().toLowerCase() === aktuellerNutzer.name.trim().toLowerCase());
     const option = (wert) =>
       `<button type="button" role="option" class="dienst-auswahl__option${wert === status ? " dienst-auswahl__option--aktiv" : ""}" data-dienst-setzen="${wert}" aria-selected="${wert === status}">${DIENST_STATUS[wert]}</button>`;
     return `<div class="dienst-zeile dienst-zeile--${im ? "im" : "ausser"}" data-dienst-id="${id}">
-        <span class="dienst-zeile__punkt" aria-hidden="true"></span>
-        <span class="dienst-zeile__haupt">
+        <span class="dienst-zeile__mitarbeiter">
+          <span class="dienst-zeile__punkt" aria-hidden="true"></span>
           <span class="dienst-zeile__name">${escapeHtml(person.name.trim())}</span>
-          ${rang ? `<span class="dienst-zeile__rang"${farbe ? ` style="color:${farbe};"` : ""}>${escapeHtml(rang)}</span>` : ""}
+          ${istEigeneZeile ? '<span class="dienst-zeile__du">Du</span>' : ""}
+          ${funk ? `<span class="dienst-zeile__funk" title="Funknummer">${escapeHtml(funk)}</span>` : ""}
         </span>
-        ${funk ? `<span class="dienst-zeile__funk" title="Funknummer">${escapeHtml(funk)}</span>` : ""}
+        <span class="dienst-zeile__rang"${farbe ? ` style="color:${farbe};"` : ""}>${rang ? escapeHtml(rang) : "—"}</span>
+        <span class="dienst-zeile__status">
+          <div class="dienst-auswahl${offen ? " dienst-auswahl--offen" : ""}">
+            <button type="button" class="dienst-auswahl__knopf dienst-auswahl__knopf--${im ? "im" : "ausser"}" data-dienst-toggle aria-haspopup="listbox" aria-expanded="${offen ? "true" : "false"}"${person.id ? "" : ' disabled title="Die Liste wird gerade vorbereitet - bitte kurz warten."'}>
+              <span>${DIENST_STATUS[status]}</span><span class="dienst-auswahl__pfeil" aria-hidden="true">⌄</span>
+            </button>
+            <div class="dienst-auswahl__menue" role="listbox">${option("im-dienst")}${option("ausser-dienst")}</div>
+          </div>
+        </span>
         <span class="dienst-zeile__seit"${eintrag && eintrag.von ? ` title="Gesetzt von ${attributSicher(eintrag.von)}"` : ""}>${escapeHtml(eintrag ? seitText(eintrag.aktualisiertAm) : "")}</span>
-        <div class="dienst-auswahl${offen ? " dienst-auswahl--offen" : ""}">
-          <button type="button" class="dienst-auswahl__knopf dienst-auswahl__knopf--${im ? "im" : "ausser"}" data-dienst-toggle aria-haspopup="listbox" aria-expanded="${offen ? "true" : "false"}"${person.id ? "" : ' disabled title="Die Liste wird gerade vorbereitet - bitte kurz warten."'}>
-            <span>${DIENST_STATUS[status]}</span><span class="dienst-auswahl__pfeil" aria-hidden="true">⌄</span>
-          </button>
-          <div class="dienst-auswahl__menue" role="listbox">${option("im-dienst")}${option("ausser-dienst")}</div>
-        </div>
       </div>`;
+  }
+
+  // Klick auf eine Zeile (außerhalb der Status-Auswahl) öffnet die
+  // vorhandene Mitarbeiter-/Personalansicht - keine neue parallele Ansicht.
+  // Admin/Leitung landen (per Namensabgleich mit benutzerListe, dasselbe
+  // bestenmögliche Muster wie leitungFunkVonName) direkt in der
+  // Personalakte; alle anderen in der bestehenden Mitarbeiterliste.
+  function oeffneMitarbeiterAusLeitstelle(id) {
+    const person = dienstPersonen().find((p) => p.id === id);
+    if (!person) return;
+    const name = person.name.trim().toLowerCase();
+    if (istAdmin() || istLeitung()) {
+      const treffer = benutzerListe.find((b) => b.status === "approved" && (b.username || "").trim().toLowerCase() === name);
+      if (treffer) {
+        oeffnePersonalakte(treffer.uid);
+        return;
+      }
+    }
+    zeigeAnsicht("mitarbeiterliste");
+  }
+
+  // Aktive Einheiten: abgeleitet aus Funknummer (Mitarbeiterliste) + aktuellem
+  // Dienststatus - es gibt kein separates Einheiten-/Fahrzeugsystem, deshalb
+  // keine eigene Collection und keine erfundenen Einheiten. Mitarbeiter im
+  // Dienst ohne eingetragene Funknummer erscheinen hier bewusst nicht (sie
+  // stehen weiterhin in der Dienstübersicht).
+  function aktiveEinheitenListe() {
+    const gruppen = {};
+    dienstPersonen()
+      .filter((p) => statusVon(p) === "im-dienst" && p.funk.trim())
+      .forEach((p) => {
+        const funk = p.funk.trim();
+        (gruppen[funk] = gruppen[funk] || []).push(p.name.trim());
+      });
+    return Object.keys(gruppen)
+      .sort((a, b) => a.localeCompare(b, "de", { numeric: true }))
+      .map((funk) => ({ funk, mitarbeiter: gruppen[funk] }));
+  }
+
+  function renderAktiveEinheiten() {
+    if (!el.leitstelleEinheitenListe) return;
+    const einheiten = aktiveEinheitenListe();
+    el.leitstelleEinheitenListe.innerHTML = einheiten.length
+      ? einheiten
+          .map(
+            (e) => `<div class="mini-zeile">
+          <span class="mini-zeile__haupt">${escapeHtml(e.funk)}</span>
+          <span class="mini-zeile__nebentext">${escapeHtml(e.mitarbeiter.join(", "))}</span>
+        </div>`
+          )
+          .join("")
+      : `<p class="empty-state empty-state--kompakt">Keine Einheiten hinterlegt.</p>`;
   }
 
   function renderLeitstelle() {
@@ -101,9 +162,12 @@
     const personen = dienstPersonen();
     const imDienst = personen.filter((p) => statusVon(p) === "im-dienst").length;
     el.dienstZaehler.innerHTML = personen.length ? `${imDienst}<span class="leitstelle-stat__von"> / ${personen.length}</span>` : "–";
+    if (el.leitstelleGesamtZaehler) el.leitstelleGesamtZaehler.textContent = personen.length ? String(personen.length) : "–";
+    if (el.dienstAusserZaehler) el.dienstAusserZaehler.textContent = personen.length ? String(personen.length - imDienst) : "–";
     el.dienstListe.innerHTML = personen.length
       ? personen.map(dienstZeileHtml).join("")
       : `<p class="empty-state">Noch keine Mitarbeiter eingetragen. Trage sie in der <button type="button" class="empty-state__link" data-quicklink="mitarbeiterliste">Mitarbeiterliste</button> ein, dann erscheinen sie hier.</p>`;
+    renderAktiveEinheiten();
   }
 
   // --- Info-Feld (kurzer gemeinsamer Text, jeder darf ihn aktualisieren) -------
@@ -242,6 +306,10 @@
       } else if (option) {
         schliesseDienstMenue();
         setzeDienststatus(id, option.dataset.dienstSetzen);
+      } else if (!event.target.closest(".dienst-auswahl")) {
+        // Klick auf die Zeile selbst (nicht auf die Status-Auswahl) -
+        // vorhandene Mitarbeiter-/Personalansicht öffnen.
+        oeffneMitarbeiterAusLeitstelle(id);
       }
     });
   }

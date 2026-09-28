@@ -148,12 +148,60 @@
   text-decoration: underline;
 }
 
-/* Dienstübersicht: eine Karte, eine Zeile je Mitarbeiter. Wer im Dienst ist,
-   bekommt einen grünen Punkt und einen Hauch Grün. */
+/* Zweispaltig: links das Wichtigste (Dienstübersicht), rechts das
+   Ergänzende (Einheiten, Einsätze) - eigene Klassen statt der ähnlichen
+   Leitung-Layout-Klassen, bewusst keine Änderung außerhalb der Leitstelle. */
+.leitstelle-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin-top: 40px;
+}
+
+.leitstelle-nebenspalte {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 980px) {
+  .leitstelle-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dienstübersicht: kompakte Tabelle (Mitarbeiter | Rang | Status | Seit).
+   Scrollt bei Bedarf horizontal, statt auf schmalen Bildschirmen die
+   Spalten unleserlich zusammenzuquetschen. */
+.dienst-tabelle-wrap {
+  overflow-x: auto;
+}
+
+.dienst-spaltenkopf,
+.dienst-zeile {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.6fr) minmax(120px, 0.9fr) 168px 140px;
+  align-items: center;
+  column-gap: 18px;
+  min-width: 640px;
+}
+
+.dienst-spaltenkopf {
+  padding: 13px 24px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--kopfstreifen);
+  border: 1px solid var(--panel-edge-soft);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
 .dienst-liste {
   background: var(--karte);
   border: 1px solid var(--panel-edge-soft);
-  border-radius: var(--radius-lg);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   box-shadow: var(--shadow-card);
 }
 
@@ -162,16 +210,14 @@
 }
 
 .dienst-zeile {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 16px 24px;
+  padding: 15px 24px;
   border-bottom: 1px solid var(--panel-edge-soft);
+  cursor: pointer;
   transition: background 0.15s ease;
 }
 
-.dienst-zeile:first-child {
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+.dienst-zeile:hover {
+  background: rgba(var(--tint), 0.06);
 }
 
 .dienst-zeile:last-child {
@@ -179,12 +225,15 @@
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
-.dienst-zeile:only-child {
-  border-radius: var(--radius-lg);
-}
-
 .dienst-zeile--im {
   background: linear-gradient(90deg, rgba(67, 181, 122, 0.08), transparent 45%);
+}
+
+.dienst-zeile__mitarbeiter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .dienst-zeile__punkt {
@@ -200,16 +249,8 @@
   box-shadow: 0 0 0 4px var(--status-done-soft);
 }
 
-.dienst-zeile__haupt {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.35;
-}
-
 .dienst-zeile__name {
-  font-size: 15.5px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text);
   overflow-wrap: anywhere;
@@ -220,15 +261,25 @@
 }
 
 .dienst-zeile__rang {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-soft);
+}
+
+.dienst-zeile__du {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent-bright);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
 }
 
 .dienst-zeile__funk {
   flex-shrink: 0;
   padding: 3px 12px;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   border: 1px solid var(--panel-edge);
@@ -236,9 +287,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Die Status-Auswahl selbst ist eine eigene Aktion - Klick darauf öffnet
+   NICHT die Personalansicht (siehe Klick-Behandlung in js/views/startseite.js). */
+.dienst-zeile__status {
+  cursor: default;
+}
+
 .dienst-zeile__seit {
-  flex-shrink: 0;
-  min-width: 150px;
   font-size: 12.5px;
   text-align: right;
   color: var(--text-muted);
@@ -336,21 +391,9 @@
     font-size: 44px;
   }
 
-  .dienst-zeile {
-    flex-wrap: wrap;
-    row-gap: 8px;
-  }
-
-  .dienst-zeile__haupt {
-    flex-basis: calc(100% - 40px);
-  }
-
-  .dienst-zeile__seit {
-    flex: 1;
-    min-width: 0;
-    text-align: left;
-    padding-left: 25px;
-  }
+  /* Die Dienstübersicht-Tabelle quetscht auf schmalen Bildschirmen nicht
+     zusammen, sondern scrollt horizontal (siehe .dienst-tabelle-wrap und
+     die feste min-width auf .dienst-zeile/.dienst-spaltenkopf oben). */
 }
 
 /* Funkstatus 1-6 zum Nachlesen: zugeklappt, nur das Wort "Funkstatus". */

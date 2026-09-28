@@ -71,11 +71,14 @@
 
     toast: document.getElementById("toast"),
 
-    // Startseite
+    // Startseite (Leitstelle)
     leitstelleFunk: document.getElementById("leitstelle-funk"),
+    leitstelleGesamtZaehler: document.getElementById("leitstelle-gesamt-zaehler"),
+    dienstAusserZaehler: document.getElementById("dienst-ausser-zaehler"),
     dienstError: document.getElementById("dienst-error"),
     dienstZaehler: document.getElementById("dienst-zaehler"),
     dienstListe: document.getElementById("dienst-liste"),
+    leitstelleEinheitenListe: document.getElementById("leitstelle-einheiten-liste"),
     infoAnsicht: document.getElementById("info-ansicht"),
     infoText: document.getElementById("info-text"),
     infoLeer: document.getElementById("info-leer"),

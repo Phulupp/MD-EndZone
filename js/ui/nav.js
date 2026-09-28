@@ -34,7 +34,9 @@
     // Name im Kopf der Seite), Mitarbeiterliste und Leitstelle haben einen
     // eigenen Kopf - der allgemeine Seitentitel würde ihn doppeln.
     const seitenKopf = document.getElementById("page-header");
-    if (seitenKopf) seitenKopf.hidden = ["patient-detail", "leitung-personalakte", "mitarbeiterliste", "startseite"].includes(view);
+    // Die Leitstelle bekommt jetzt den normalen Seitenkopf (Titel + "Operative
+    // Übersicht", siehe VIEW_META) - vorher stand hier gar kein Titel.
+    if (seitenKopf) seitenKopf.hidden = ["patient-detail", "leitung-personalakte", "mitarbeiterliste"].includes(view);
 
     const meta = VIEW_META[view] || { title: view, subtitle: "" };
     el.viewTitle.textContent = meta.title;

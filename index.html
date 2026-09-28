@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=157" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=158" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,26 +29,26 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=157" />
-  <link rel="stylesheet" href="css/base/reset.css?v=157" />
-  <link rel="stylesheet" href="css/base/background.css?v=157" />
-  <link rel="stylesheet" href="css/views/auth.css?v=157" />
-  <link rel="stylesheet" href="css/components/forms.css?v=157" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=157" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=157" />
-  <link rel="stylesheet" href="css/components/cards.css?v=157" />
-  <link rel="stylesheet" href="css/components/badges.css?v=157" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=157" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=157" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=157" />
-  <link rel="stylesheet" href="css/views/termine.css?v=157" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=157" />
-  <link rel="stylesheet" href="css/components/modals.css?v=157" />
-  <link rel="stylesheet" href="css/views/admin.css?v=157" />
-  <link rel="stylesheet" href="css/views/leitung.css?v=157" />
-  <link rel="stylesheet" href="css/components/toast.css?v=157" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=157" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=157" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=158" />
+  <link rel="stylesheet" href="css/base/reset.css?v=158" />
+  <link rel="stylesheet" href="css/base/background.css?v=158" />
+  <link rel="stylesheet" href="css/views/auth.css?v=158" />
+  <link rel="stylesheet" href="css/components/forms.css?v=158" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=158" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=158" />
+  <link rel="stylesheet" href="css/components/cards.css?v=158" />
+  <link rel="stylesheet" href="css/components/badges.css?v=158" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=158" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=158" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=158" />
+  <link rel="stylesheet" href="css/views/termine.css?v=158" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=158" />
+  <link rel="stylesheet" href="css/components/modals.css?v=158" />
+  <link rel="stylesheet" href="css/views/admin.css?v=158" />
+  <link rel="stylesheet" href="css/views/leitung.css?v=158" />
+  <link rel="stylesheet" href="css/components/toast.css?v=158" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=158" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=158" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -352,7 +352,10 @@
           <!-- VIEW: STARTSEITE (LEITSTELLE) -->
           <!-- ============================ -->
           <section class="view view--active" id="view-startseite">
-            <!-- Kennzahlen als Kacheln (Platz für weitere, z. B. Fahrzeuge) -->
+            <!-- Kennzahlen: reine Auswertung der Mitarbeiterliste/des
+                 Dienststatus, keine erfundenen Zahlen. Dient zugleich als
+                 "Schnellübersicht" - eine Kennzahlenreihe reicht, eine zweite
+                 wäre nur Wiederholung. -->
             <div class="leitstelle-stats">
               <div class="leitstelle-stat leitstelle-stat--funk">
                 <span class="leitstelle-stat__label">MD-Funk</span>
@@ -360,9 +363,19 @@
                 <span class="leitstelle-stat__hinweis">Hauptfunk Medical Department</span>
               </div>
               <div class="leitstelle-stat">
+                <span class="leitstelle-stat__label">Mitarbeiter gesamt</span>
+                <span class="leitstelle-stat__wert" id="leitstelle-gesamt-zaehler">–</span>
+                <span class="leitstelle-stat__hinweis">Alle Mitarbeiter des MD</span>
+              </div>
+              <div class="leitstelle-stat">
                 <span class="leitstelle-stat__label">Im Dienst</span>
                 <span class="leitstelle-stat__wert" id="dienst-zaehler">–</span>
                 <span class="leitstelle-stat__hinweis">Mitarbeiter aktuell im Dienst</span>
+              </div>
+              <div class="leitstelle-stat">
+                <span class="leitstelle-stat__label">Außer Dienst</span>
+                <span class="leitstelle-stat__wert" id="dienst-ausser-zaehler">–</span>
+                <span class="leitstelle-stat__hinweis">Mitarbeiter aktuell außer Dienst</span>
               </div>
             </div>
 
@@ -387,9 +400,46 @@
               <p class="leitstelle-info__meta" id="info-meta"></p>
             </div>
 
-            <h3 class="leitstelle-kopf">Dienstübersicht</h3>
-            <p class="field-error" id="dienst-error" hidden></p>
-            <div class="dienst-liste" id="dienst-liste"></div>
+            <!-- Zweispaltig: links das Wichtigste (Dienstübersicht), rechts
+                 das Ergänzende (Einheiten, Einsätze). Bewusst eigene Klassen
+                 statt der Leitung-Layout-Klassen wiederzuverwenden - keine
+                 Änderungen außerhalb der Leitstelle. -->
+            <div class="leitstelle-layout">
+              <div class="leitstelle-hauptspalte">
+                <h3 class="leitstelle-kopf">Dienstübersicht</h3>
+                <p class="field-error" id="dienst-error" hidden></p>
+                <div class="dienst-tabelle-wrap">
+                  <div class="dienst-spaltenkopf">
+                    <span>Mitarbeiter</span>
+                    <span>Rang</span>
+                    <span>Status</span>
+                    <span>Seit</span>
+                  </div>
+                  <div class="dienst-liste" id="dienst-liste"></div>
+                </div>
+              </div>
+
+              <div class="leitstelle-nebenspalte">
+                <!-- Abgeleitet aus Funknummer (Mitarbeiterliste) + aktuellem
+                     Dienststatus - kein separates Einheiten-/Fahrzeugsystem
+                     vorhanden, deshalb keine eigene Collection dafür. -->
+                <div class="karte">
+                  <div class="karte__kopf">
+                    <h3 class="karte__titel">Aktive Einheiten</h3>
+                  </div>
+                  <div id="leitstelle-einheiten-liste"></div>
+                </div>
+
+                <!-- Kein Einsatz-/Vorgangssystem vorhanden - bewusst kein
+                     neues Einsatzmanagement, nur ein sauberer Leerzustand. -->
+                <div class="karte">
+                  <div class="karte__kopf">
+                    <h3 class="karte__titel">Einsatzübersicht</h3>
+                  </div>
+                  <p class="empty-state empty-state--kompakt">Keine laufenden Einsätze.</p>
+                </div>
+              </div>
+            </div>
 
             <!-- Funkstatus zum Nachlesen (fester Text, zugeklappt) -->
             <details class="funkstatus">
@@ -1596,31 +1646,31 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=157"></script>
-  <script defer src="js/core/config.js?v=157"></script>
-  <script defer src="js/core/state.js?v=157"></script>
-  <script defer src="js/core/dom.js?v=157"></script>
-  <script defer src="js/core/utils.js?v=157"></script>
-  <script defer src="js/core/raenge.js?v=157"></script>
-  <script defer src="js/core/akte-dokument.js?v=157"></script>
-  <script defer src="js/core/akte-pdf.js?v=157"></script>
-  <script defer src="js/ui/modals.js?v=157"></script>
-  <script defer src="js/ui/nav.js?v=157"></script>
-  <script defer src="js/ui/presence.js?v=157"></script>
-  <script defer src="js/views/startseite.js?v=157"></script>
-  <script defer src="js/views/patientenakten.js?v=157"></script>
-  <script defer src="js/views/gutachten.js?v=157"></script>
-  <script defer src="js/views/akte-link.js?v=157"></script>
-  <script defer src="js/views/termine.js?v=157"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=157"></script>
-  <script defer src="js/views/beispiele.js?v=157"></script>
-  <script defer src="js/views/einstellungen.js?v=157"></script>
-  <script defer src="js/views/admin.js?v=157"></script>
-  <script defer src="js/views/admin-raenge.js?v=157"></script>
-  <script defer src="js/views/leitung.js?v=157"></script>
-  <script defer src="js/views/leitung-personal.js?v=157"></script>
-  <script defer src="js/ui/version-check.js?v=157"></script>
-  <script defer src="js/main.js?v=157"></script>
-  <script type="module" src="js/auth.js?v=157"></script>
+  <script defer src="js/firebase-config.js?v=158"></script>
+  <script defer src="js/core/config.js?v=158"></script>
+  <script defer src="js/core/state.js?v=158"></script>
+  <script defer src="js/core/dom.js?v=158"></script>
+  <script defer src="js/core/utils.js?v=158"></script>
+  <script defer src="js/core/raenge.js?v=158"></script>
+  <script defer src="js/core/akte-dokument.js?v=158"></script>
+  <script defer src="js/core/akte-pdf.js?v=158"></script>
+  <script defer src="js/ui/modals.js?v=158"></script>
+  <script defer src="js/ui/nav.js?v=158"></script>
+  <script defer src="js/ui/presence.js?v=158"></script>
+  <script defer src="js/views/startseite.js?v=158"></script>
+  <script defer src="js/views/patientenakten.js?v=158"></script>
+  <script defer src="js/views/gutachten.js?v=158"></script>
+  <script defer src="js/views/akte-link.js?v=158"></script>
+  <script defer src="js/views/termine.js?v=158"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=158"></script>
+  <script defer src="js/views/beispiele.js?v=158"></script>
+  <script defer src="js/views/einstellungen.js?v=158"></script>
+  <script defer src="js/views/admin.js?v=158"></script>
+  <script defer src="js/views/admin-raenge.js?v=158"></script>
+  <script defer src="js/views/leitung.js?v=158"></script>
+  <script defer src="js/views/leitung-personal.js?v=158"></script>
+  <script defer src="js/ui/version-check.js?v=158"></script>
+  <script defer src="js/main.js?v=158"></script>
+  <script type="module" src="js/auth.js?v=158"></script>
 </body>
 </html>

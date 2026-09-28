@@ -12,7 +12,7 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 157;
+  const VERSION_AKTUELL = 158;
 
   // RP-Ränge: zentral in der Firestore-Collection "raenge" verwaltet (siehe
   // js/core/raenge.js) - "users.rolle" enthält direkt die stabile rangId
@@ -85,7 +85,7 @@
   ];
 
   const VIEW_META = {
-    startseite: { title: "Leitstelle", subtitle: "" },
+    startseite: { title: "Leitstelle", subtitle: "Operative Übersicht" },
     patientenakten: { title: "Patientenakten", subtitle: "Suche, lege Patienten an und dokumentiere Behandlungen." },
     // Kein Sidebar-Button - wird per oeffnePatientSeite (js/views/
     // patientenakten.js) geöffnet, Titel dort auf den Patientennamen gesetzt.
