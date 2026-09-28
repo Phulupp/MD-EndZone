@@ -73,8 +73,11 @@ import {
 const firebaseConfig = window.firebaseConfig;
 
 // Der Rang, den ein neu registrierter Benutzer automatisch erhält (unterster
-// Rang der MD-Hierarchie) - siehe erstelleBenutzerProfil weiter unten.
-const STANDARD_RANG_NEUER_BENUTZER = "Azubi";
+// Rang der MD-Hierarchie) - siehe erstelleBenutzerProfil weiter unten. Ist
+// die rangId aus der Collection "raenge" (siehe js/core/raenge.js), nicht
+// mehr ein Anzeigename - auth.js ist ein ES-Modul und lädt "raenge" nicht
+// selbst, daher bewusst als fester Wert hier hinterlegt.
+const STANDARD_RANG_NEUER_BENUTZER = "azubi";
 
 if (!firebaseConfig || !firebaseConfig.apiKey) {
   console.warn("auth.js: Firebase-Konfiguration fehlt - Login-System wird nicht gestartet.");

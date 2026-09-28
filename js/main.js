@@ -4,24 +4,21 @@
      21. Start / Stop der App (reagiert auf js/auth.js-Events)
      ------------------------------------------------------------------------ */
   // Rang-Anzeige in der Sidebar-Identität setzen - Name/Avatar-Farbe (siehe
-  // RANG_AKZENTE in js/core/config.js) UND ein Rang-Stufen-Balken, der die
-  // Position innerhalb der MD-Hierarchie zeigt (ein Segment pro Rang in
-  // BENUTZER_RAENGE, gefüllt bis zur eigenen Stufe) - die beiden
-  // Spitzenränge (RANG_AKZENTRING) bekommen zusätzlich einen leuchtenden
-  // Akzentring um den Avatar.
-  function aktualisiereSidebarRang(gespeicherterRang) {
-    // Alte, umbenannte Ränge werden für die Anzeige auf den neuen Namen
-    // abgebildet (siehe RANG_ALIAS in js/core/config.js).
-    const rolle = normalisiereRang(gespeicherterRang);
-    el.sidebarUserRole.textContent = rolle;
-    const farbe = RANG_AKZENTE[rolle] || RANG_AKZENT_STANDARD;
+  // js/core/raenge.js) UND ein Rang-Stufen-Balken, der die Position
+  // innerhalb der MD-Hierarchie zeigt (ein Segment je geladenem Rang,
+  // gefüllt bis zur eigenen Stufe) - Ränge mit "akzentring:true" bekommen
+  // zusätzlich einen leuchtenden Akzentring um den Avatar.
+  function aktualisiereSidebarRang(rangId) {
+    const name = rangName(rangId);
+    el.sidebarUserRole.textContent = name;
+    const farbe = rangFarbe(rangId);
     el.sidebarUserRole.style.color = farbe;
     el.sidebarUserAvatar.style.setProperty("--rang-farbe", farbe);
-    el.sidebarUserAvatar.classList.toggle("sidebar__user-avatar--akzent", RANG_AKZENTRING.includes(rolle));
+    el.sidebarUserAvatar.classList.toggle("sidebar__user-avatar--akzent", rangAkzentring(rangId));
 
     if (el.sidebarRangStufen) {
-      const stufe = BENUTZER_RAENGE.indexOf(rolle) + 1;
-      el.sidebarRangStufen.innerHTML = BENUTZER_RAENGE.map((_, i) => {
+      const stufe = raenge.findIndex((r) => r.rangId === rangId) + 1;
+      el.sidebarRangStufen.innerHTML = raenge.map((_, i) => {
         const aktiv = i < stufe;
         return `<span class="sidebar__rang-stufe" style="${aktiv ? `background:${farbe};` : ""}"></span>`;
       }).join("");
@@ -43,6 +40,9 @@
 
     ladeThema();
     starteHeartbeat();
+    // Ränge: für jeden freigegebenen Nutzer, nicht nur Admin/Leitung (siehe
+    // js/core/raenge.js).
+    starteRaengeListener();
     startePatientenListener();
     starteAktenListener();
     starteGutachtenListener();
@@ -93,7 +93,7 @@
 
     // Wer Adminrechte verliert, fliegt aus der Verwaltung; wer BEIDE Rechte
     // verliert, fliegt zusätzlich aus dem gesamten Leitungsbereich.
-    if (warAdmin && !istAdmin() && ["admin-uebersicht", "admin", "admin-system", "admin-log"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
+    if (warAdmin && !istAdmin() && ["admin-uebersicht", "admin", "admin-raenge", "admin-system", "admin-log"].includes(aktuelleAnsicht)) zeigeAnsicht("startseite");
     if (hatteZugriffAufPersonal && !brauchtZugriffAufPersonal && ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"].includes(aktuelleAnsicht)) {
       zeigeAnsicht("startseite");
     }
@@ -118,6 +118,7 @@
       unsubLeitstelleInfo,
     ].forEach((unsub) => unsub && unsub());
     unsubPatienten = unsubAkten = unsubGutachten = unsubLeitfaeden = unsubTermine = unsubMitarbeiter = unsubDienst = unsubLeitstelleInfo = null;
+    stoppeRaengeListener();
     stoppeBenutzerverwaltung();
     stoppeAdminLog();
     stoppeLeitungPersonalListener();

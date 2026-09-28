@@ -70,7 +70,8 @@
     const im = status === "im-dienst";
     const eintrag = person.id ? dienstStatus[person.id] : null;
     const rang = person.rang.trim();
-    const farbe = RANG_AKZENTE[normalisiereRang(rang)];
+    // Freitext-Feld, keine rangId - siehe farbeVonRangName in js/core/raenge.js.
+    const farbe = farbeVonRangName(rang);
     const funk = person.funk.trim();
     const id = attributSicher(person.id);
     const offen = dienstMenueOffen && dienstMenueOffen === person.id;

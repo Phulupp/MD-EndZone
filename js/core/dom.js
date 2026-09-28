@@ -288,6 +288,21 @@
     benutzerDetailsName: document.getElementById("benutzer-details-name"),
     benutzerDetailsBody: document.getElementById("benutzer-details-body"),
 
+    // Verwaltung — Ränge & Rollen
+    adminRaengeListe: document.getElementById("admin-raenge-liste"),
+    btnRangAnlegen: document.getElementById("btn-rang-anlegen"),
+    rangFormTitel: document.getElementById("rang-form-titel"),
+    rangEditingId: document.getElementById("rang-editing-id"),
+    rangNameInput: document.getElementById("rang-name-input"),
+    rangKurznameInput: document.getElementById("rang-kurzname-input"),
+    rangBeschreibungInput: document.getElementById("rang-beschreibung-input"),
+    rangFarbeSelect: document.getElementById("rang-farbe-select"),
+    rangPositionInput: document.getElementById("rang-position-input"),
+    rangAkzentringCheckbox: document.getElementById("rang-akzentring-checkbox"),
+    rangAktivCheckbox: document.getElementById("rang-aktiv-checkbox"),
+    rangFormError: document.getElementById("rang-form-error"),
+    btnConfirmRang: document.getElementById("btn-confirm-rang"),
+
     // Verwaltung — System
     adminSystemVersion: document.getElementById("admin-system-version"),
 
@@ -474,6 +489,7 @@
       el.personalakteRangSelect,
       el.adminLogAktionFilter,
       el.adminLogZeitraumFilter,
+      el.rangFarbeSelect,
     ].forEach((select) => {
       try {
         erzeugeCustomSelect(select);

@@ -72,15 +72,12 @@
     return `id-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
-  // Farbige Rang-Badge (siehe RANG_AKZENTE in js/core/config.js) - genutzt
-  // sowohl in der Sidebar-Profilkarte (dort inline, siehe
-  // aktualisiereSidebarRang in js/main.js) als auch in der
-  // Benutzerverwaltung (js/views/admin.js), damit ein Rang überall in der
-  // App gleich aussieht statt an einer Stelle bunt und an der anderen
-  // schlichter Text zu sein.
-  function rangBadgeHtml(rolle) {
-    if (!rolle) return "";
-    rolle = normalisiereRang(rolle);
-    const farbe = RANG_AKZENTE[rolle] || RANG_AKZENT_STANDARD;
-    return `<span class="badge" style="color:${farbe};">${escapeHtml(rolle)}</span>`;
+  // Farbige Rang-Badge (siehe js/core/raenge.js) - genutzt sowohl in der
+  // Sidebar-Profilkarte (dort inline, siehe aktualisiereSidebarRang in
+  // js/main.js) als auch in Verwaltung/Leitung, damit ein Rang überall in
+  // der App gleich aussieht statt an einer Stelle bunt und an der anderen
+  // schlichter Text zu sein. "rangId" ist der Wert aus users.rolle.
+  function rangBadgeHtml(rangId) {
+    if (!rangId) return "";
+    return `<span class="badge" style="color:${rangFarbe(rangId)};">${escapeHtml(rangName(rangId))}</span>`;
   }

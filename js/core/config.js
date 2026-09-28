@@ -12,62 +12,14 @@
   /* ------------------------------------------------------------------------
      1. Konstanten
      ------------------------------------------------------------------------ */
-  const VERSION_AKTUELL = 156;
+  const VERSION_AKTUELL = 157;
 
-  // Ränge im MD (rein organisatorisch — Verwalterrechte sind unabhängig davon
-  // und werden separat je Benutzer vergeben, siehe isAdmin).
-  // Reihenfolge = Hierarchie, aufsteigend (der letzte Rang ist der höchste).
-  const BENUTZER_RAENGE = [
-    "Azubi",
-    "Sanitätshelfer",
-    "Rettungssanitäter",
-    "Notfallsanitäter",
-    "Organisatorischer Leiter Rettungsdienst",
-    "Medizinstudent",
-    "Notarzt",
-    "Leitender Notarzt",
-    "Ärztlicher Leiter Rettungsdienst",
-  ];
-  const NEUER_BENUTZER_STANDARD_RANG = "Azubi";
-
-  // Bereits vergebene Ränge aus der früheren Liste, die es so nicht mehr gibt
-  // und eindeutig einem neuen Rang entsprechen. Nur für die ANZEIGE (Sidebar,
-  // Benutzerverwaltung) - in der Datenbank steht weiter der alte Wert, bis ein
-  // Verwalter dem Benutzer einen Rang neu zuweist.
-  const RANG_ALIAS = {
-    Praktikant: "Azubi",
-    "Ärztlicher Leiter": "Ärztlicher Leiter Rettungsdienst",
-  };
-
-  function normalisiereRang(rolle) {
-    return RANG_ALIAS[rolle] || rolle;
-  }
-
-  // Optischer Akzent für die Rang-Badge - JEDER Rang bekommt jetzt eine
-  // eigene Farbe (abgestuft von gedämpftem Blau-Grau für Junior-Ränge bis
-  // zum kräftigen Marken-Rot für den höchsten Rang), statt wie vorher nur
-  // die beiden Spitzenränge farbig und der Rest reiner Text. Siehe
-  // aktualisiereSidebarRang in js/main.js (Sidebar-Profilkarte) und
-  // rangBadgeHtml in js/core/utils.js (Benutzerverwaltung).
-  const RANG_AKZENTE = {
-    Azubi: "#6b7d89",
-    Sanitätshelfer: "#4f92a6",
-    Rettungssanitäter: "#3fa58f",
-    Notfallsanitäter: "#58a865",
-    "Organisatorischer Leiter Rettungsdienst": "#5b8fd6",
-    Medizinstudent: "#8b7fd6",
-    Notarzt: "#c9a227",
-    "Leitender Notarzt": "#d9724a",
-    "Ärztlicher Leiter Rettungsdienst": "#d94452",
-  };
-  // Fallback für unbekannte/veraltete Rang-Werte (z. B. noch nicht
-  // umgestellte Bestandsaccounts) - neutrales Blau-Grau statt eines Fehlers.
-  const RANG_AKZENT_STANDARD = "#6b7d89";
-  // Die Leitungsränge bekommen zusätzlich den leuchtenden Akzentring um den
-  // Avatar (siehe .sidebar__user-avatar--akzent in css/layout/shell.css) -
-  // eine zusätzliche Auszeichnung für die Führungsebene, obendrauf auf die
-  // Farbbadge, die jeder Rang bekommt.
-  const RANG_AKZENTRING = ["Notarzt", "Leitender Notarzt", "Ärztlicher Leiter Rettungsdienst"];
+  // RP-Ränge: zentral in der Firestore-Collection "raenge" verwaltet (siehe
+  // js/core/raenge.js) - "users.rolle" enthält direkt die stabile rangId
+  // (z. B. "notarzt"), Name/Farbe/Reihenfolge/Akzentring werden zur
+  // Laufzeit aus der geladenen Rangliste nachgeschlagen. Frühere hartkodierte
+  // Konstanten (BENUTZER_RAENGE/RANG_ALIAS/RANG_AKZENTE/RANG_AKZENTRING)
+  // gibt es bewusst nicht mehr.
 
   const PATIENTEN_COLLECTION = "patienten";
   const AKTEN_COLLECTION = "akten";
@@ -158,6 +110,7 @@
     // View-Namen geblieben (Benutzer/Aktivitäts-Log), "admin-system" ist neu.
     "admin-uebersicht": { title: "Verwaltungsübersicht", subtitle: "Kennzahlen und letzte Systemaktivitäten — nur für Verwalter sichtbar." },
     admin: { title: "Benutzer", subtitle: "Technische Benutzerverwaltung — nur für Verwalter sichtbar." },
+    "admin-raenge": { title: "Ränge & Rollen", subtitle: "Zentrale RP-Rangverwaltung — nur für Verwalter sichtbar." },
     "admin-system": { title: "System", subtitle: "Systeminformationen — nur für Verwalter sichtbar." },
     "admin-log": { title: "Aktivitätslog", subtitle: "Wer hat wann was geändert — nur für Verwalter sichtbar." },
   };

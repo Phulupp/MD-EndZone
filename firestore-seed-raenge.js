@@ -2,10 +2,12 @@
    Einmaliges Seed-Werkzeug — Phase 1 der Rang-Migration
    ============================================================================
    WICHTIG: Diese Datei ist KEIN Teil der App - sie wird von index.html NICHT
-   geladen. Sie dient nur dazu, die neue Collection "raenge" einmalig mit den
-   9 heutigen Rängen aus js/core/config.js (BENUTZER_RAENGE/RANG_AKZENTE/
-   RANG_AKZENTRING) zu befüllen, BEVOR irgendein Teil der App diese Collection
-   überhaupt liest.
+   geladen. Sie diente dazu, die Collection "raenge" einmalig mit den 9
+   ursprünglichen Rängen zu befüllen (die zugrunde liegenden Konstanten aus
+   js/core/config.js - BENUTZER_RAENGE/RANG_AKZENTE/RANG_AKZENTRING - wurden
+   danach entfernt, "users.rolle" enthält jetzt direkt die rangId, siehe
+   js/core/raenge.js). Bleibt als Referenz erhalten; für neue Ränge gibt es
+   jetzt die Oberfläche "Verwaltung -> Ränge & Rollen".
 
    Voraussetzung: Die Regeln aus firestore.rules (Abschnitt "raenge/{rangId}")
    müssen vorher in der Firebase-Konsole veröffentlicht sein, sonst schlägt

@@ -16,7 +16,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Medical Department — Verwaltung</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=156" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg?v=157" />
 
   <!-- Google Fonts: Inter für die gesamte App (klar, modern, klinisch). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,26 +29,26 @@
   <!-- Stylesheets: gleiche Kaskaden-Reihenfolge wie zuvor (base > layout >
        components > views). Reihenfolge ist wichtig und darf nicht vertauscht
        werden. -->
-  <link rel="stylesheet" href="css/base/tokens.css?v=156" />
-  <link rel="stylesheet" href="css/base/reset.css?v=156" />
-  <link rel="stylesheet" href="css/base/background.css?v=156" />
-  <link rel="stylesheet" href="css/views/auth.css?v=156" />
-  <link rel="stylesheet" href="css/components/forms.css?v=156" />
-  <link rel="stylesheet" href="css/components/buttons.css?v=156" />
-  <link rel="stylesheet" href="css/layout/shell.css?v=156" />
-  <link rel="stylesheet" href="css/components/cards.css?v=156" />
-  <link rel="stylesheet" href="css/components/badges.css?v=156" />
-  <link rel="stylesheet" href="css/views/startseite.css?v=156" />
-  <link rel="stylesheet" href="css/views/patientenakten.css?v=156" />
-  <link rel="stylesheet" href="css/views/beispiele.css?v=156" />
-  <link rel="stylesheet" href="css/views/termine.css?v=156" />
-  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=156" />
-  <link rel="stylesheet" href="css/components/modals.css?v=156" />
-  <link rel="stylesheet" href="css/views/admin.css?v=156" />
-  <link rel="stylesheet" href="css/views/leitung.css?v=156" />
-  <link rel="stylesheet" href="css/components/toast.css?v=156" />
-  <link rel="stylesheet" href="css/layout/footer.css?v=156" />
-  <link rel="stylesheet" href="css/base/responsive.css?v=156" />
+  <link rel="stylesheet" href="css/base/tokens.css?v=157" />
+  <link rel="stylesheet" href="css/base/reset.css?v=157" />
+  <link rel="stylesheet" href="css/base/background.css?v=157" />
+  <link rel="stylesheet" href="css/views/auth.css?v=157" />
+  <link rel="stylesheet" href="css/components/forms.css?v=157" />
+  <link rel="stylesheet" href="css/components/buttons.css?v=157" />
+  <link rel="stylesheet" href="css/layout/shell.css?v=157" />
+  <link rel="stylesheet" href="css/components/cards.css?v=157" />
+  <link rel="stylesheet" href="css/components/badges.css?v=157" />
+  <link rel="stylesheet" href="css/views/startseite.css?v=157" />
+  <link rel="stylesheet" href="css/views/patientenakten.css?v=157" />
+  <link rel="stylesheet" href="css/views/beispiele.css?v=157" />
+  <link rel="stylesheet" href="css/views/termine.css?v=157" />
+  <link rel="stylesheet" href="css/views/mitarbeiterliste.css?v=157" />
+  <link rel="stylesheet" href="css/components/modals.css?v=157" />
+  <link rel="stylesheet" href="css/views/admin.css?v=157" />
+  <link rel="stylesheet" href="css/views/leitung.css?v=157" />
+  <link rel="stylesheet" href="css/components/toast.css?v=157" />
+  <link rel="stylesheet" href="css/layout/footer.css?v=157" />
+  <link rel="stylesheet" href="css/base/responsive.css?v=157" />
 
   <!-- Firebase SDK (Authentifizierung + Datenbank). "defer" statt normaler
        blockierender <script>-Tags: der Browser kann so den Rest der Seite
@@ -909,7 +909,7 @@
             <div class="tabs tabs--kompakt">
               <button class="tabs__tab tabs__tab--active" data-tab-view="admin-uebersicht">Übersicht</button>
               <button class="tabs__tab" data-tab-view="admin">Benutzer</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe - erfordert eine Datenmodell-Migration, siehe Analyse">Ränge &amp; Rollen</button>
+              <button class="tabs__tab" data-tab-view="admin-raenge">Ränge &amp; Rollen</button>
               <button class="tabs__tab" data-tab-view="admin-system">System</button>
               <button class="tabs__tab" data-tab-view="admin-log">Aktivitätslog</button>
             </div>
@@ -962,7 +962,7 @@
             <div class="tabs tabs--kompakt">
               <button class="tabs__tab" data-tab-view="admin-uebersicht">Übersicht</button>
               <button class="tabs__tab tabs__tab--active" data-tab-view="admin">Benutzer</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe - erfordert eine Datenmodell-Migration, siehe Analyse">Ränge &amp; Rollen</button>
+              <button class="tabs__tab" data-tab-view="admin-raenge">Ränge &amp; Rollen</button>
               <button class="tabs__tab" data-tab-view="admin-system">System</button>
               <button class="tabs__tab" data-tab-view="admin-log">Aktivitätslog</button>
             </div>
@@ -974,17 +974,9 @@
               <form class="settings-form" id="form-add-benutzer">
                 <input type="text" id="neuer-benutzer-name-input" class="field-input" placeholder="Benutzername, z. B. Max Mustermann" required style="flex: 1 1 200px;" />
                 <input type="email" id="neuer-benutzer-email-input" class="field-input" placeholder="E-Mail-Adresse" required style="flex: 1 1 200px;" />
-                <select id="neuer-benutzer-rolle-input" class="field-input" style="flex: 0 0 280px;">
-                  <option value="Azubi">Azubi</option>
-                  <option value="Sanitätshelfer">Sanitätshelfer</option>
-                  <option value="Rettungssanitäter">Rettungssanitäter</option>
-                  <option value="Notfallsanitäter">Notfallsanitäter</option>
-                  <option value="Organisatorischer Leiter Rettungsdienst">Organisatorischer Leiter Rettungsdienst</option>
-                  <option value="Medizinstudent">Medizinstudent</option>
-                  <option value="Notarzt">Notarzt</option>
-                  <option value="Leitender Notarzt">Leitender Notarzt</option>
-                  <option value="Ärztlicher Leiter Rettungsdienst">Ärztlicher Leiter Rettungsdienst</option>
-                </select>
+                <!-- Optionen werden dynamisch aus der zentralen Rangliste befüllt,
+                     siehe renderNeuerBenutzerRolleOptionen in js/views/admin.js. -->
+                <select id="neuer-benutzer-rolle-input" class="field-input" style="flex: 0 0 280px;"></select>
                 <button type="submit" class="btn btn--primary">Benutzer erstellen</button>
               </form>
               <p class="abschnitt__hint" style="margin: 14px 0 0;">Neu erstellte Benutzer sind sofort freigegeben und bekommen automatisch eine E-Mail von Firebase, um ihr eigenes Passwort festzulegen. Der anfängliche RP-Rang lässt sich später jederzeit über die Personalakte der Leitung ändern.</p>
@@ -1002,6 +994,34 @@
           </section>
 
           <!-- ============================ -->
+          <!-- VIEW: VERWALTUNG – Ränge & Rollen -->
+          <!-- ============================ -->
+          <!-- Zentrale RP-Rangverwaltung (Collection "raenge") - ausschließlich
+               für Admin bearbeitbar (siehe js/views/admin-raenge.js). Ränge
+               werden nie gelöscht, nur über "Aktiv" deaktiviert. -->
+          <section class="view" id="view-admin-raenge">
+            <div class="tabs tabs--kompakt">
+              <button class="tabs__tab" data-tab-view="admin-uebersicht">Übersicht</button>
+              <button class="tabs__tab" data-tab-view="admin">Benutzer</button>
+              <button class="tabs__tab tabs__tab--active" data-tab-view="admin-raenge">Ränge &amp; Rollen</button>
+              <button class="tabs__tab" data-tab-view="admin-system">System</button>
+              <button class="tabs__tab" data-tab-view="admin-log">Aktivitätslog</button>
+            </div>
+
+            <div class="abschnitt">
+              <div class="pat-kopf" style="margin-bottom: 22px;">
+                <h3 style="margin: 0;">Medical Department</h3>
+                <button type="button" class="btn btn--primary" id="btn-rang-anlegen">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Rang hinzufügen</span>
+                </button>
+              </div>
+              <p class="abschnitt__hint">RP-Ränge zentral verwalten. Reihenfolge, Farbe und Name gelten überall in der App (Sidebar, Mitarbeiterliste, Leitung). Ein Rang wird nie gelöscht, nur deaktiviert - er bleibt dann bei allen, die ihn bereits tragen, sichtbar, kann aber nicht neu vergeben werden.</p>
+              <div class="settings-list" id="admin-raenge-liste"></div>
+            </div>
+          </section>
+
+          <!-- ============================ -->
           <!-- VIEW: VERWALTUNG – System     -->
           <!-- ============================ -->
           <!-- Vorbereiteter Bereich - bewusst keine erfundenen Einstellungen,
@@ -1011,7 +1031,7 @@
             <div class="tabs tabs--kompakt">
               <button class="tabs__tab" data-tab-view="admin-uebersicht">Übersicht</button>
               <button class="tabs__tab" data-tab-view="admin">Benutzer</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe - erfordert eine Datenmodell-Migration, siehe Analyse">Ränge &amp; Rollen</button>
+              <button class="tabs__tab" data-tab-view="admin-raenge">Ränge &amp; Rollen</button>
               <button class="tabs__tab tabs__tab--active" data-tab-view="admin-system">System</button>
               <button class="tabs__tab" data-tab-view="admin-log">Aktivitätslog</button>
             </div>
@@ -1034,7 +1054,7 @@
             <div class="tabs tabs--kompakt">
               <button class="tabs__tab" data-tab-view="admin-uebersicht">Übersicht</button>
               <button class="tabs__tab" data-tab-view="admin">Benutzer</button>
-              <button class="tabs__tab" disabled title="Folgt in einer späteren Ausbaustufe - erfordert eine Datenmodell-Migration, siehe Analyse">Ränge &amp; Rollen</button>
+              <button class="tabs__tab" data-tab-view="admin-raenge">Ränge &amp; Rollen</button>
               <button class="tabs__tab" data-tab-view="admin-system">System</button>
               <button class="tabs__tab tabs__tab--active" data-tab-view="admin-log">Aktivitätslog</button>
             </div>
@@ -1462,6 +1482,59 @@
   </div>
 
   <!-- ============================ -->
+  <!-- MODAL: Rang anlegen/bearbeiten (Verwaltung) -->
+  <!-- ============================ -->
+  <div class="modal-overlay" id="modal-rang-form">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 id="rang-form-titel">Neuer Rang</h3>
+        <button class="modal__close" data-close-modal="modal-rang-form">✕</button>
+      </div>
+      <div class="modal__body">
+        <input type="hidden" id="rang-editing-id" value="" />
+
+        <label class="field-label" for="rang-name-input">Name</label>
+        <input type="text" id="rang-name-input" class="field-input" placeholder="z. B. Notarzt" autocomplete="off" />
+
+        <label class="field-label" for="rang-kurzname-input">Kurzbezeichnung</label>
+        <input type="text" id="rang-kurzname-input" class="field-input" placeholder="z. B. NA" maxlength="8" autocomplete="off" />
+
+        <label class="field-label" for="rang-beschreibung-input">Beschreibung</label>
+        <textarea id="rang-beschreibung-input" class="field-input field-textarea" rows="2" placeholder="Optional, z. B. Eigenständige medizinische Versorgung und Behandlung."></textarea>
+
+        <label class="field-label" for="rang-farbe-select">Farbe</label>
+        <select id="rang-farbe-select" class="field-input">
+          <option value="slate">Schiefergrau</option>
+          <option value="cyan">Cyan</option>
+          <option value="teal">Türkis</option>
+          <option value="gruen">Grün</option>
+          <option value="blau">Blau</option>
+          <option value="violett">Violett</option>
+          <option value="gold">Gold</option>
+          <option value="orange">Orange</option>
+          <option value="rot">Rot</option>
+        </select>
+
+        <label class="field-label" for="rang-position-input">Position (bestimmt die Reihenfolge)</label>
+        <input type="number" id="rang-position-input" class="field-input" step="10" />
+
+        <label class="field-checkbox-row" style="margin-top: 16px;">
+          <input type="checkbox" id="rang-akzentring-checkbox" /> Leuchtender Akzentring um den Avatar (für Spitzenränge)
+        </label>
+        <label class="field-checkbox-row">
+          <input type="checkbox" id="rang-aktiv-checkbox" /> Aktiv (kann neu vergeben werden)
+        </label>
+
+        <p class="field-error" id="rang-form-error" hidden></p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" data-close-modal="modal-rang-form">Abbrechen</button>
+        <button class="btn btn--primary" id="btn-confirm-rang">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
   <!-- MODAL: Datenschutz            -->
   <!-- ============================ -->
   <div class="modal-overlay" id="modal-datenschutz">
@@ -1523,29 +1596,31 @@
        (nicht type="module") "defer"-Skripte, damit sie sich gemeinsame
        globale Variablen/Funktionen teilen können. js/main.js muss immer
        zuletzt kommen, da es die App erst startet. -->
-  <script defer src="js/firebase-config.js?v=156"></script>
-  <script defer src="js/core/config.js?v=156"></script>
-  <script defer src="js/core/state.js?v=156"></script>
-  <script defer src="js/core/dom.js?v=156"></script>
-  <script defer src="js/core/utils.js?v=156"></script>
-  <script defer src="js/core/akte-dokument.js?v=156"></script>
-  <script defer src="js/core/akte-pdf.js?v=156"></script>
-  <script defer src="js/ui/modals.js?v=156"></script>
-  <script defer src="js/ui/nav.js?v=156"></script>
-  <script defer src="js/ui/presence.js?v=156"></script>
-  <script defer src="js/views/startseite.js?v=156"></script>
-  <script defer src="js/views/patientenakten.js?v=156"></script>
-  <script defer src="js/views/gutachten.js?v=156"></script>
-  <script defer src="js/views/akte-link.js?v=156"></script>
-  <script defer src="js/views/termine.js?v=156"></script>
-  <script defer src="js/views/mitarbeiterliste.js?v=156"></script>
-  <script defer src="js/views/beispiele.js?v=156"></script>
-  <script defer src="js/views/einstellungen.js?v=156"></script>
-  <script defer src="js/views/admin.js?v=156"></script>
-  <script defer src="js/views/leitung.js?v=156"></script>
-  <script defer src="js/views/leitung-personal.js?v=156"></script>
-  <script defer src="js/ui/version-check.js?v=156"></script>
-  <script defer src="js/main.js?v=156"></script>
-  <script type="module" src="js/auth.js?v=156"></script>
+  <script defer src="js/firebase-config.js?v=157"></script>
+  <script defer src="js/core/config.js?v=157"></script>
+  <script defer src="js/core/state.js?v=157"></script>
+  <script defer src="js/core/dom.js?v=157"></script>
+  <script defer src="js/core/utils.js?v=157"></script>
+  <script defer src="js/core/raenge.js?v=157"></script>
+  <script defer src="js/core/akte-dokument.js?v=157"></script>
+  <script defer src="js/core/akte-pdf.js?v=157"></script>
+  <script defer src="js/ui/modals.js?v=157"></script>
+  <script defer src="js/ui/nav.js?v=157"></script>
+  <script defer src="js/ui/presence.js?v=157"></script>
+  <script defer src="js/views/startseite.js?v=157"></script>
+  <script defer src="js/views/patientenakten.js?v=157"></script>
+  <script defer src="js/views/gutachten.js?v=157"></script>
+  <script defer src="js/views/akte-link.js?v=157"></script>
+  <script defer src="js/views/termine.js?v=157"></script>
+  <script defer src="js/views/mitarbeiterliste.js?v=157"></script>
+  <script defer src="js/views/beispiele.js?v=157"></script>
+  <script defer src="js/views/einstellungen.js?v=157"></script>
+  <script defer src="js/views/admin.js?v=157"></script>
+  <script defer src="js/views/admin-raenge.js?v=157"></script>
+  <script defer src="js/views/leitung.js?v=157"></script>
+  <script defer src="js/views/leitung-personal.js?v=157"></script>
+  <script defer src="js/ui/version-check.js?v=157"></script>
+  <script defer src="js/main.js?v=157"></script>
+  <script type="module" src="js/auth.js?v=157"></script>
 </body>
 </html>

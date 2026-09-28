@@ -116,7 +116,7 @@
     if (!el.personalakteName) return;
     el.personalakteName.textContent = person.username || "Unbekannt";
     const funk = leitungFunkVonName(person.username);
-    const eintraege = [personalakteEintragHtml("Rang", normalisiereRang(person.rolle) || "—")];
+    const eintraege = [personalakteEintragHtml("Rang", rangName(person.rolle) || "—")];
     if (funk) eintraege.push(personalakteEintragHtml("Funknummer", funk));
     eintraege.push(personalakteEintragHtml("Eintrittsdatum", person.eintrittsdatum || "—"));
     el.personalakteDaten.innerHTML = eintraege.join("");
@@ -133,7 +133,9 @@
         <div><dt>Eintrittsdatum</dt><dd>${escapeHtml(person.eintrittsdatum || "—")}</dd></div>
         <div><dt>Personalnotizen</dt><dd>${notizenAnzahl}</dd></div>
         <div><dt>Letzte Rangänderung</dt><dd>${
-          letzte ? `${escapeHtml(letzte.alterRang || "Aufnahme")} → ${escapeHtml(letzte.neuerRang)}, ${formatDatumUhrzeit(letzte.am)}` : "—"
+          letzte
+            ? `${escapeHtml(letzte.alterRang ? rangName(letzte.alterRang) : "Aufnahme")} → ${escapeHtml(rangName(letzte.neuerRang))}, ${formatDatumUhrzeit(letzte.am)}`
+            : "—"
         }</dd></div>
       </dl>`;
   }
@@ -141,9 +143,18 @@
   // --- Personalakte: Karriere (RP-Rang ändern + Historie) -----------------------
   function renderPersonalakteKarriere(person) {
     if (!el.personalakteRangSelect) return;
-    el.personalakteRangSelect.innerHTML = BENUTZER_RAENGE.map(
-      (r) => `<option value="${r}" ${r === normalisiereRang(person.rolle) ? "selected" : ""}>${r}</option>`
-    ).join("");
+    // Nur aktive Ränge zur Auswahl - AUSSER der Mitarbeiter trägt gerade
+    // einen inzwischen deaktivierten Rang, dann bleibt dieser sichtbar
+    // (klar markiert), damit das Öffnen der Seite ihn nicht unbemerkt auf
+    // einen anderen Rang umstellt.
+    const optionen = aktiveRaenge().slice();
+    if (person.rolle && !optionen.some((r) => r.rangId === person.rolle)) {
+      const aktueller = findeRang(person.rolle);
+      optionen.unshift({ rangId: person.rolle, name: aktueller ? `${aktueller.name} (deaktiviert)` : person.rolle });
+    }
+    el.personalakteRangSelect.innerHTML = optionen
+      .map((r) => `<option value="${escapeHtml(r.rangId)}" ${r.rangId === person.rolle ? "selected" : ""}>${escapeHtml(r.name)}</option>`)
+      .join("");
     aktualisiereCustomSelect(el.personalakteRangSelect);
     el.personalakteRangBegruendung.value = "";
     versteckeFeldFehler(el.personalakteRangError);
@@ -156,7 +167,7 @@
           .map(
             (eintrag) => `<div class="admin-log__item">
           <span class="admin-log__item-text">${
-            eintrag.alterRang ? `${escapeHtml(eintrag.alterRang)} → ${escapeHtml(eintrag.neuerRang)}` : `Aufnahme als ${escapeHtml(eintrag.neuerRang)}`
+            eintrag.alterRang ? `${escapeHtml(rangName(eintrag.alterRang))} → ${escapeHtml(rangName(eintrag.neuerRang))}` : `Aufnahme als ${escapeHtml(rangName(eintrag.neuerRang))}`
           }${eintrag.begruendung ? ` — ${escapeHtml(eintrag.begruendung)}` : ""}</span>
           <span class="admin-log__item-zeit">${escapeHtml(eintrag.von || "")}, ${formatDatumUhrzeit(eintrag.am)}</span>
         </div>`

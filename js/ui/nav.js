@@ -10,7 +10,7 @@
   const LEITUNG_ANSICHTEN = ["leitung-uebersicht", "leitung-personal", "leitung-personalakte"];
   // Views, die zusammen die technische Verwaltung bilden - teilen sich EINEN
   // Sidebar-Button ("Verwaltung", data-view="admin-uebersicht").
-  const VERWALTUNG_ANSICHTEN = ["admin-uebersicht", "admin", "admin-system", "admin-log"];
+  const VERWALTUNG_ANSICHTEN = ["admin-uebersicht", "admin", "admin-raenge", "admin-system", "admin-log"];
 
   function zeigeAnsicht(view) {
     aktuelleAnsicht = view;

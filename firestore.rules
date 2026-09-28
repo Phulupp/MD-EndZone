@@ -137,19 +137,16 @@ service cloud.firestore {
       // setzen, wenn die eigene befristete Sperre laut Server-Uhrzeit
       // bereits abgelaufen ist (Selbstheilungs-Mechanismus).
       //
-      // VORBEREITET FÜR SPÄTER (Phase 4/5 der Rang-Migration, siehe Konzept,
-      // NOCH NICHT aktiv): Sobald "users" auf ein Feld "rolleId" umgestellt
-      // wird, muss der Leitungs-Zweig unten zusätzlich serverseitig prüfen,
-      // dass der neu gesetzte Rang existiert und aktiv ist, z. B. durch
-      // Ergänzen von:
-      //   && get(/databases/$(database)/documents/raenge/$(request.resource.data.rolleId)).data.aktiv == true
-      // Diese Prüfung ist bewusst noch NICHT eingebaut, weil Leitung aktuell
-      // ausschließlich das Feld "rolle" (Freitext) schreibt, nicht "rolleId" -
-      // eine Prüfung gegen "raenge" wäre hier heute wirkungslos und würde nur
-      // unnötig einen zusätzlichen Lesevorgang pro Rangänderung kosten.
+      // "rolle" enthält direkt die rangId (siehe raenge/{rangId} weiter
+      // unten). Leitung darf damit AUSSCHLIESSLICH einen Rang setzen, dessen
+      // Dokument existiert und "aktiv:true" ist - serverseitig erzwungen,
+      // nicht nur im Dropdown der Personalakte. Admin bleibt davon bewusst
+      // unberührt (siehe erster Zweig oben) und kann auch einen inaktiven
+      // Rang setzen, falls das je nötig sein sollte.
       allow update: if (istAdmin() && !verletztUnantastbarkeit())
                     || (istLeitung()
-                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rolle']))
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rolle'])
+                        && get(/databases/$(database)/documents/raenge/$(request.resource.data.rolle)).data.aktiv == true)
                     || (request.auth.uid == uid
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastLogin']))
                     || (request.auth.uid == uid
@@ -240,12 +237,11 @@ service cloud.firestore {
     }
 
     /* ------------------------------------------------------------------
-       raenge/{rangId} — PHASE 1 der Rang-Migration (siehe Konzept): zentrale
-       Rangdefinitionen, Dokument-ID = stabile "rangId" (z. B. "notarzt"),
-       die auch nach einer Umbenennung des Anzeigenamens unverändert bleibt.
-       Ersetzt KÜNFTIG die hartkodierte BENUTZER_RAENGE-Liste - in dieser
-       Phase liest/schreibt noch KEINE bestehende Funktion diese Collection,
-       "users.rolle" bleibt unverändert der reine String wie bisher.
+       raenge/{rangId} — zentrale RP-Rangdefinitionen, Dokument-ID = stabile
+       "rangId" (z. B. "notarzt"), die auch nach einer Umbenennung des
+       Anzeigenamens unverändert bleibt. "users.rolle" enthält direkt diese
+       rangId (siehe js/core/raenge.js) - es gibt bewusst kein separates
+       Feld "rolleId" und keine hartkodierte Rangliste im Code mehr.
 
        Lesen: jeder freigegebene Nutzer (Ränge werden für Badges/Anzeigen in
        der normalen UI gebraucht, siehe rangBadgeHtml - keine sensiblen

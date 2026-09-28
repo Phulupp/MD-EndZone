@@ -52,6 +52,13 @@
 
   let unsubPresence = null;
 
+  // Zentrale Rangliste (Collection "raenge", siehe js/core/raenge.js) - für
+  // JEDEN freigegebenen Nutzer geladen (Ränge erscheinen überall: Sidebar,
+  // Mitarbeiterliste, Leitstelle, Personalakte), nicht nur für Admin/Leitung.
+  // Bereits nach "position" sortiert gehalten.
+  let raenge = [];
+  let unsubRaenge = null;
+
   // benutzerListe wird gemeinsam von der (admin-exklusiven) Verwaltung und
   // der (leitung+admin) Personal-Übersicht genutzt (siehe starteBenutzer-
   // verwaltung in js/views/admin.js) - eine Collection, zwei Ansichten.

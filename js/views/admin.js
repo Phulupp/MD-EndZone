@@ -97,6 +97,21 @@
   }
   renderAdminSystem();
 
+  // Rang-Auswahl im "Benutzer erstellen"-Formular: dynamisch aus der
+  // zentralen Rangliste statt einer hartkodierten Options-Liste (siehe
+  // js/core/raenge.js - aufgerufen von dessen Snapshot-Listener). Nur aktive
+  // Ränge, damit ein neu angelegter Account nie mit einem deaktivierten
+  // Rang startet.
+  function renderNeuerBenutzerRolleOptionen() {
+    if (!el.neuerBenutzerRolleInput) return;
+    const bisheriger = el.neuerBenutzerRolleInput.value;
+    el.neuerBenutzerRolleInput.innerHTML = aktiveRaenge()
+      .map((r) => `<option value="${escapeHtml(r.rangId)}">${escapeHtml(r.name)}</option>`)
+      .join("");
+    if (aktiveRaenge().some((r) => r.rangId === bisheriger)) el.neuerBenutzerRolleInput.value = bisheriger;
+    aktualisiereCustomSelect(el.neuerBenutzerRolleInput);
+  }
+
   function gefiltertBenutzer() {
     let liste = benutzerListe;
     if (benutzerStatusFilter === "pending") liste = liste.filter((b) => b.status === "pending");

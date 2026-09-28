@@ -100,8 +100,10 @@
       const inhalt = escapeHtml(zeile[feld].trim());
       let stil = "";
       if (feld === "rang") {
-        // Bekannte Ränge in ihrer Rang-Farbe (siehe RANG_AKZENTE), sonst Text.
-        const farbe = RANG_AKZENTE[normalisiereRang(zeile.rang.trim())];
+        // Freitext-Feld, keine rangId - bekommt nur dann eine Farbe, wenn
+        // der getippte Text exakt einem aktuellen Rangnamen entspricht
+        // (siehe farbeVonRangName in js/core/raenge.js).
+        const farbe = farbeVonRangName(zeile.rang.trim());
         if (farbe) stil = ` style="color:${farbe};"`;
       }
       return `<td class="ma-zelle ma-zelle--${feld}" data-label="${label}"${stil}>${inhalt}</td>`;
