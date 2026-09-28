@@ -136,6 +136,17 @@ service cloud.firestore {
       // aktualisieren, oder sich selbst von "locked" zurück auf "approved"
       // setzen, wenn die eigene befristete Sperre laut Server-Uhrzeit
       // bereits abgelaufen ist (Selbstheilungs-Mechanismus).
+      //
+      // VORBEREITET FÜR SPÄTER (Phase 4/5 der Rang-Migration, siehe Konzept,
+      // NOCH NICHT aktiv): Sobald "users" auf ein Feld "rolleId" umgestellt
+      // wird, muss der Leitungs-Zweig unten zusätzlich serverseitig prüfen,
+      // dass der neu gesetzte Rang existiert und aktiv ist, z. B. durch
+      // Ergänzen von:
+      //   && get(/databases/$(database)/documents/raenge/$(request.resource.data.rolleId)).data.aktiv == true
+      // Diese Prüfung ist bewusst noch NICHT eingebaut, weil Leitung aktuell
+      // ausschließlich das Feld "rolle" (Freitext) schreibt, nicht "rolleId" -
+      // eine Prüfung gegen "raenge" wäre hier heute wirkungslos und würde nur
+      // unnötig einen zusätzlichen Lesevorgang pro Rangänderung kosten.
       allow update: if (istAdmin() && !verletztUnantastbarkeit())
                     || (istLeitung()
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rolle']))
@@ -226,6 +237,34 @@ service cloud.firestore {
                     && request.resource.data.uid is string
                     && request.resource.data.neuerRang is string;
       allow update, delete: if false;
+    }
+
+    /* ------------------------------------------------------------------
+       raenge/{rangId} — PHASE 1 der Rang-Migration (siehe Konzept): zentrale
+       Rangdefinitionen, Dokument-ID = stabile "rangId" (z. B. "notarzt"),
+       die auch nach einer Umbenennung des Anzeigenamens unverändert bleibt.
+       Ersetzt KÜNFTIG die hartkodierte BENUTZER_RAENGE-Liste - in dieser
+       Phase liest/schreibt noch KEINE bestehende Funktion diese Collection,
+       "users.rolle" bleibt unverändert der reine String wie bisher.
+
+       Lesen: jeder freigegebene Nutzer (Ränge werden für Badges/Anzeigen in
+       der normalen UI gebraucht, siehe rangBadgeHtml - keine sensiblen
+       Daten). Schreiben (Erstellen/Bearbeiten): nur Admin - Leitung darf
+       Ränge lesen, aber weder erstellen noch bearbeiten noch deaktivieren.
+       Löschen ist bewusst UNMÖGLICH (nicht nur in der UI weggelassen,
+       sondern hier hart verboten) - ein Rang wird ausschließlich über
+       "aktiv: false" deaktiviert, nie entfernt, damit historische
+       Ranghistorie-Einträge und bestehende Zuweisungen niemals ins Leere
+       zeigen.
+       ------------------------------------------------------------------ */
+    match /raenge/{rangId} {
+      allow read: if istFreigegeben();
+      allow create, update: if istAdmin()
+                            && request.resource.data.name is string
+                            && request.resource.data.farbeToken in ['slate', 'cyan', 'teal', 'gruen', 'blau', 'violett', 'gold', 'orange', 'rot']
+                            && request.resource.data.position is int
+                            && request.resource.data.aktiv is bool;
+      allow delete: if false;
     }
 
     /* ------------------------------------------------------------------
